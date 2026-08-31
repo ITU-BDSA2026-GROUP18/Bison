@@ -28,6 +28,6 @@ static void observe(string observation)
     string author = Environment.UserName;
     long timeStamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
-    string line = author + ",\"" + observation + "\"," + timeStamp;
+    string line = "\n" + author + ",\"" + observation + "\"," + timeStamp;
     File.AppendAllText("bison_observe_cli_db.csv", line);
 }
