@@ -1,0 +1,1 @@
+echo "running" && ./Bison.CLI/bin/Release/net10.0/Bison.CLI
