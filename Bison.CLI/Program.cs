@@ -1,8 +1,16 @@
 ﻿using System.Globalization;
 
+
+#if FLAG_TEST
+    Console.WriteLine("omg my flag works");
+#endif
+
+if(args.Length == 0){
+    Console.WriteLine("No argument was given");
+    return;
+} 
 if(args[0] == "read") read();
 else if (args[0] == "observe") observe(args[1]);
-else Console.WriteLine("No argument was given");
 
 static void read() 
 {
