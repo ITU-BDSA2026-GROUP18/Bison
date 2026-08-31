@@ -1,4 +1,9 @@
-﻿static void read() 
+﻿using System.Globalization;
+
+if(args[0] == "read") read();
+else if (args[0] == "observe") observe(args[1]);
+
+static void read() 
 {
     string[] lines = File.ReadAllLines("bison_observe_cli_db.csv");
     List<string> db = new List<string>();
@@ -17,4 +22,12 @@
 
         Console.WriteLine(db[i] + " @ " + dto.ToString("MM/dd/yy HH:mm:ss", CultureInfo.InvariantCulture) + " " + db[i+1]);
     }
+}
+static void observe(string observation)
+{
+    string author = Environment.UserName;
+    long timeStamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+
+    string line = author + ",\"" + observation + "\"," + timeStamp;
+    File.AppendAllText("bison_observe_cli_db.csv", line);
 }
