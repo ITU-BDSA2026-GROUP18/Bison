@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <!-- Feature flags 
-      to use ur own feature flags use -p:Flag_TEST when building
+      to use ur own feature flags use -p:DefineConstants=FLAG_TEST when building
       dotnet build -p:you_flags
     -->
   </PropertyGroup>

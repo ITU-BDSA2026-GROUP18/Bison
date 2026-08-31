@@ -1,6 +1,5 @@
 ﻿using System.Globalization;
 
-
 #if FLAG_TEST
     Console.WriteLine("omg my flag works");
 #endif
