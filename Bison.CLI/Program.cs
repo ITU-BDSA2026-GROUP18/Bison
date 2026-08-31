@@ -2,6 +2,7 @@
 
 if(args[0] == "read") read();
 else if (args[0] == "observe") observe(args[1]);
+else Console.WriteLine("No argument was given");
 
 static void read() 
 {
