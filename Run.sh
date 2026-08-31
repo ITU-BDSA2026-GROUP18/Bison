@@ -1,1 +1,1 @@
-echo "running" && ./Bison.CLI/bin/Release/net10.0/Bison.CLI
+echo "running" && ./Bison.CLI/bin/Release/net8.0/Bison.CLI "$@"
