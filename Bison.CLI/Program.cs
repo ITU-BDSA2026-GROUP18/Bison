@@ -40,8 +40,9 @@ class Program
             long timeStamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
             var cheep = new Cheep(author, observation, timeStamp);
-            csv.WriteRecord(cheep);
             csv.NextRecord();
+            csv.WriteRecord(cheep);
+            
         }
     }
 }
