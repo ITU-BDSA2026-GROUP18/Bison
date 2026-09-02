@@ -8,6 +8,29 @@ class Program
 {
     static void Main(string[] args)
     {
+		
+	RootCommand rootCommand = new("Bison.CLI");
+
+	var readCommand = new Command("--read", 
+				"Prints out entire contents of CSV to the console");
+
+	readCommand.SetAction(parseResult => read());
+
+	var obsTarg = new Argument<string>("Description");
+	var obsCommand = new Command("--observe", "Add observation to the CSV database")
+	{
+	    obsTarg
+	};
+	
+	obsCommand.SetAction(parseResult => observe(parseResult.GetValue(obsTarg)!));
+
+	rootCommand.Subcommands.Add(readCommand);
+	rootCommand.Subcommands.Add(obsCommand);
+	rootCommand.Parse(args).Invoke();
+
+
+
+	/*
         #if FLAG_TEST
             Console.WriteLine("omg my flag works");
         #endif
@@ -19,6 +42,7 @@ class Program
 
         if(args[0] == "read") read();
         else if (args[0] == "observe") observe(args[1]);
+	*/
     }
     
     static void read() 
