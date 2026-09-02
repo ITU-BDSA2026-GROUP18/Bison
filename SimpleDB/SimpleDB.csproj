@@ -1,18 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <!-- Feature flags 
-      to use ur own feature flags use -p:DefineConstants=FLAG_TEST when building
-      dotnet build -p:you_flags
-    -->
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../SimpleDB/SimpleDB.csproj" />
     <PackageReference Include="CsvHelper" Version="33.1.0" />
   </ItemGroup>
 
