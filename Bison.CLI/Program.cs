@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using CsvHelper;
+using System.CommandLine;
 
 public record Cheep(string Author, string Observation, long Timestamp);
 
@@ -18,8 +19,9 @@ class Program
 
         if(args[0] == "read") read();
         else if (args[0] == "observe") observe(args[1]);
-
-        static void read() 
+    }
+    
+    static void read() 
         {
             using var reader = new StreamReader("bison_observe_cli_db.csv");
             using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
@@ -44,5 +46,4 @@ class Program
             csv.WriteRecord(cheep);
             
         }
-    }
 }
