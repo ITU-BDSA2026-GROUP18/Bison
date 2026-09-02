@@ -1,23 +1,23 @@
 name: .NET Build and Test
 on:
   push:
-    branches: [ $default-branch ]
+    branches: [ main ]
   pull_request:
-    branches: [ $default-branch ]
+    branches: [ main ]
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
     - name: Setup .NET
-    uses: actions/setup-dotnet@v3
-    with:
-      dotnet-version: 8.0.x
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.x
     - name: Restore dependencies
-    run: dotnet restore
+      run: dotnet restore
     - name: Build
-    run: dotnet build --no-restore
-    run: echo works?
+      run: dotnet build --no-restore
+    - name: Echo check
+      run: echo works?
     - name: Test
-    run: dotnet test --no-build --verbosity normal
-    
+      run: dotnet test --no-build --verbosity normal
