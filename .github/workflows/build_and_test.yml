@@ -16,7 +16,7 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build --no-restore
+      run: ./Build.sh
     - name: Echo check
       run: echo works?
     - name: Test
