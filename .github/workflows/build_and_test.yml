@@ -16,7 +16,7 @@ jobs:
     - name: Restore dependencies
       run: cd Bison.CLI/ && dotnet restore
     - name: Build
-      run: cd .. && ./Build.sh
+      run: ./Build.sh
     - name: Echo check
       run: echo works?
     - name: Test
