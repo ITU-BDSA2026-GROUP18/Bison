@@ -14,10 +14,13 @@ jobs:
       with:
         dotnet-version: 8.0.x
     - name: Restore dependencies
+      run: cd Bison.CLI/
       run: dotnet restore
     - name: Build
+      run: cd ..
       run: ./Build.sh
     - name: Echo check
       run: echo works?
     - name: Test
+      run: cd Bison.CLI/
       run: dotnet test --no-build --verbosity normal
