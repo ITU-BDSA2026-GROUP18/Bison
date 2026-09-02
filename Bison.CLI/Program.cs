@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using CsvHelper;
+using SimpleDB;
 using System.CommandLine;
 
 public record Cheep(string Author, string Observation, long Timestamp);
@@ -33,30 +32,25 @@ class Program
             Console.WriteLine("omg my flag works");
         #endif
     }
-    
     static void read() 
+    {
+        IDatabaseRepository<Cheep> database = new CSVDatabase<Cheep>();
+        var records = database.read();
+        foreach (var record in records)
         {
-            using var reader = new StreamReader("bison_observe_cli_db.csv");
-            using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
-            var records = csv.GetRecords<Cheep>();
-            foreach (var record in records)
-            {
-                DateTimeOffset utcTime = DateTimeOffset.FromUnixTimeSeconds(record.Timestamp);
-                Console.WriteLine($"{record.Author} @ {utcTime.LocalDateTime}: {record.Observation}");
-            }
+            DateTimeOffset utcTime = DateTimeOffset.FromUnixTimeSeconds(record.Timestamp);
+            Console.WriteLine($"{record.Author} @ {utcTime.LocalDateTime}: {record.Observation}");
         }
+    }
+    
+    static void observe(string observation)
+    {
+        IDatabaseRepository<Cheep> database = new CSVDatabase<Cheep>();
+        string author = Environment.UserName;
+        long timeStamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        var rec = new Cheep(author, observation, timeStamp);
+
+        database.store(rec);
         
-        static void observe(string observation)
-        {
-            using var writer = new StreamWriter("bison_observe_cli_db.csv", append: true);
-            using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
-
-            string author = Environment.UserName;
-            long timeStamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-
-            var cheep = new Cheep(author, observation, timeStamp);
-            csv.NextRecord();
-            csv.WriteRecord(cheep);
-            
-        }
+    }
 }
