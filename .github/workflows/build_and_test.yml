@@ -1,7 +1,7 @@
 name: .NET Build and Test
 
 env:
- DOTNET_CLI_TELEMETRY_OPTOUT="true"
+ DOTNET_CLI_TELEMETRY_OPTOUT: "true"
 
 on:
   push:
