@@ -3,9 +3,9 @@ using SimpleDB;
 
 public record Cheep(string Author, string Observation, long Timestamp);
 
-class Program
+public class Program
 {
-    static void Main(string[] args)
+    public static void Main(string[] args)
     {
         CLIHandler clh = new CLIHandler(args);
 
