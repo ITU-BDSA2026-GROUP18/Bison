@@ -4,6 +4,8 @@ public record Cheep(string Author, string Observation, long Timestamp);
 
 class Program
 {
+    static IDatabaseRepository<Cheep> database = new CSVDatabase<Cheep>("src/SimpleDB/bison_observe_cli_db.csv");
+
     static void Main(string[] args)
     {
         CLIHandler clh = new CLIHandler(args);
@@ -14,7 +16,6 @@ class Program
     }
     public static void read() 
     {
-        IDatabaseRepository<Cheep> database = new CSVDatabase<Cheep>();
         var records = database.read();
         foreach (var record in records)
         {
@@ -25,7 +26,6 @@ class Program
     
     public static void observe(string observation)
     {
-        IDatabaseRepository<Cheep> database = new CSVDatabase<Cheep>();
         string author = Environment.UserName;
         long timeStamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         var rec = new Cheep(author, observation, timeStamp);
