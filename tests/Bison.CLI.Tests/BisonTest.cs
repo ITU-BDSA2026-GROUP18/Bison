@@ -21,7 +21,7 @@ public class BisonTest
     {
         // arrange
         var expectedTime = DateTimeOffset.FromUnixTimeSeconds(1789151813);
-        string expected = $"{expectedTime.LocalDateTime.ToString("M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture)}";
+        string expected = $"{expectedTime.LocalDateTime.ToString("d/M/yyyy HH:mm:ss", CultureInfo.InvariantCulture)}";
         var sw = new StringWriter();
         string[] args = ["--read"];
         Console.SetOut(sw); // steal console output

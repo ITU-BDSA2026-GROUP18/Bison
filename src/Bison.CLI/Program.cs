@@ -1,3 +1,4 @@
+using System.Globalization;
 using Microsoft.VisualBasic;
 using SimpleDB;
 
@@ -20,7 +21,7 @@ public class Program
         foreach (var record in records)
         {
             DateTimeOffset utcTime = DateTimeOffset.FromUnixTimeSeconds(record.Timestamp);
-            Console.WriteLine($"{record.Author} @ {utcTime.LocalDateTime}: {record.Observation}");
+            Console.WriteLine($"{record.Author} @ {utcTime.LocalDateTime.ToString("d/M/yyyy HH:mm:ss", CultureInfo.InvariantCulture)}: {record.Observation}");
         }
     }
     
