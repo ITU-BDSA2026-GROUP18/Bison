@@ -13,8 +13,12 @@ public record Cheep(string Author, string Observation, long Timestamp);
     [Fact]
     public void ReadGetsAllLines()
     {
+        //arrange in constructor
+
+        // act
         var records = database.read();
         var list = records.ToList();
+        // assert
         Assert.Equal(3, list.Count);
     }
 
@@ -24,8 +28,12 @@ public record Cheep(string Author, string Observation, long Timestamp);
     [InlineData(2, "test3", "this is the final line", 123456)]
     public void ReadGetsCorrectData(int line, String author, string observation, long timeStamp)
     {
+        //arrange in constructor
+
+        // act
         var records = database.read();
         var list = records.ToList();
+        // assert
         Assert.Equal(author, list[line].Author);
         Assert.Equal(observation, list[line].Observation);
         Assert.Equal(timeStamp, list[line].Timestamp);
