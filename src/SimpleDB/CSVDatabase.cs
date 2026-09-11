@@ -4,7 +4,6 @@ using CsvHelper;
 
 public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 {
-
     private string dbpath = "src/SimpleDB/bison_observe_cli_db.csv";
     private CSVDatabase() {}
     private static CSVDatabase<T> instance = new();
@@ -32,5 +31,13 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
     public void setPath(string path) // set custom path, used for tests
     {
         dbpath = path;
+    }
+    public void storeNoAppend(T record) // will write to the database as if its empty, aka overwrite
+    {
+        using var writer = new StreamWriter(dbpath);
+        using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
+        csv.WriteHeader<T>();
+        csv.NextRecord();
+        csv.WriteRecord(record);
     }
 }
