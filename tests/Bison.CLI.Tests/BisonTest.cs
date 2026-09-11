@@ -11,7 +11,7 @@ public class BisonTest
         
         var db = CSVDatabase<Cheep>.getInstance();
         db.setPath("../../../testDB.csv");
-        Cheep rec = new Cheep("tuff","cat at home", 1789151813);
+        Cheep rec = new Cheep(Environment.UserName,"cat at home", 1789151813);
         db.storeNoAppend(rec); // reset the db
     }
     
