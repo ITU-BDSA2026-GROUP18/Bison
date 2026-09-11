@@ -5,7 +5,9 @@
       		"configuration": {
         		"request": "launch",
         		"program": "${workspaceRoot}/src/Bison.CLI/bin/Debug/net8.0/Bison.CLI.dll",
-        		"args": [],
+        		"args": [
+				  "--read"	
+				],
         		"stopAtEntry": false
       		},
       	"breakpoints": {
