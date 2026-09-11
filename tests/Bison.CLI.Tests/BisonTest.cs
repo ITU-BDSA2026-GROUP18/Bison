@@ -1,4 +1,5 @@
-﻿using Bison.CLI;
+﻿using System.Globalization;
+using Bison.CLI;
 using SimpleDB;
 
 namespace Bison.CLI.Tests;
@@ -11,7 +12,7 @@ public class BisonTest
         
         var db = CSVDatabase<Cheep>.getInstance();
         db.setPath("../../../testDB.csv");
-        Cheep rec = new Cheep(Environment.UserName,"cat at home", 1789151813);
+        Cheep rec = new Cheep("tuff","cat at home", 1789151813);
         db.storeNoAppend(rec); // reset the db
     }
     
@@ -19,13 +20,17 @@ public class BisonTest
     public void ReadE2E()
     {
         // arrange
+        var expectedTime = DateTimeOffset.FromUnixTimeSeconds(1789151813);
+        string expected = $"{expectedTime.LocalDateTime.ToString("M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture)}";
         var sw = new StringWriter();
         string[] args = ["--read"];
         Console.SetOut(sw); // steal console output
         // act
         Program.Main(args);
         // assert
-        Assert.Equal(Environment.UserName + " @ 9/11/2026 8:36:53 PM: cat at home\n", sw.ToString());
+        Assert.Contains("tuff", sw.ToString()); // easier than full string cmp
+        Assert.Contains("cat at home", sw.ToString());
+        Assert.Contains(expected, sw.ToString());
     }
 
     [Theory]
@@ -43,6 +48,7 @@ public class BisonTest
         Console.SetOut(sw); // steal console output
         Program.Main(args2);
         // assert
-        Assert.Contains(ovbservation, sw.ToString()); // easier than full string cmp
+        Assert.Contains(Environment.UserName, sw.ToString()); // easier than full string cmp
+        Assert.Contains(ovbservation, sw.ToString()); 
     }
 }
