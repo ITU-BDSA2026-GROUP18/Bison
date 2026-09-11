@@ -1,3 +1,4 @@
+using Microsoft.VisualBasic;
 using SimpleDB;
 
 public record Cheep(string Author, string Observation, long Timestamp);
@@ -14,7 +15,7 @@ class Program
     }
     public static void read() 
     {
-        IDatabaseRepository<Cheep> database = new CSVDatabase<Cheep>();
+        var database = CSVDatabase<Cheep>.getInstance();
         var records = database.read();
         foreach (var record in records)
         {
@@ -25,7 +26,7 @@ class Program
     
     public static void observe(string observation)
     {
-        IDatabaseRepository<Cheep> database = new CSVDatabase<Cheep>();
+        var database = CSVDatabase<Cheep>.getInstance();
         string author = Environment.UserName;
         long timeStamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         var rec = new Cheep(author, observation, timeStamp);
