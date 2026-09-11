@@ -21,7 +21,5 @@ jobs:
       run: cd src/Bison.CLI/ && dotnet restore
     - name: Build
       run: ./Build.sh
-    - name: Echo check
-      run: echo works?
     - name: Test
-      run: cd src/Bison.CLI/ && dotnet test --no-build --verbosity normal
+      run: dotnet test tests/SimpleDB.Tests/ && dotnet test tests/Bison.CLI.Tests/
