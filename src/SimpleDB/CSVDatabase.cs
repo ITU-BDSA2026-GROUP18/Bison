@@ -2,8 +2,17 @@ namespace SimpleDB;
 using System.Globalization;
 using CsvHelper;
 
+public enum CheepType
+{
+    Observation,
+    Comment
+}
+
+
 public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 {
+
+	
 
     private CSVDatabase() {}
     private static CSVDatabase<T> instance = new();
@@ -20,9 +29,24 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
         return records;
     }
 
-    public void store(T record)
+    public void store(T record, CheepType t)
     {
-        using var writer = new StreamWriter("src/SimpleDB/bison_observe_cli_db.csv", append: true);
+
+		string path = "";
+
+		switch (t)
+		{
+			case CheepType.Observation:
+				path = "src/SimpleDB/bison_observe_cli_db.csv";
+			break;
+
+			case CheepType.Comment:
+				path = "src/SimpleDB/bison_comment_cli_db.csv";
+			break;
+		}
+
+        using var writer = new StreamWriter(path, append: true);
+
         using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
 
         csv.NextRecord();

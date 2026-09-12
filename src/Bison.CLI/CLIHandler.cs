@@ -18,11 +18,26 @@ class CLIHandler
             obsTarg
         };
         obsCommand.Aliases.Add("-o");
-        
+
         obsCommand.SetAction(parseResult => Program.observe(parseResult.GetValue(obsTarg)!));
+
+        var commTarg = new Argument<string>("Comment");
+        var idTarg = new Argument<string>("Id");
+ 
+        var commCommand = new Command("--comment", "Add comment to observation based on id")
+        {
+            commTarg,
+			idTarg
+        };
+        commCommand.Aliases.Add("-c");
+        
+        commCommand.SetAction(parseResult => Program.comment(parseResult.GetValue(commTarg)!, Int64.Parse(parseResult.GetValue(idTarg)!)));
+
 
         rootCommand.Subcommands.Add(readCommand);
         rootCommand.Subcommands.Add(obsCommand);
+		rootCommand.Subcommands.Add(commCommand);
+
         rootCommand.Parse(args).Invoke();
     }
 
