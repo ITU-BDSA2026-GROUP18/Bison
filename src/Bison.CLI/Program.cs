@@ -52,6 +52,32 @@ class Program
 
     public static void comment(string comment, long Id)
     {
+
+		// below is scope limited given it's just a routine for checking if ID exists.
+		// Ideally down the line we want to store this as a Set to avoid slowdown 
+		// checking against larger databases
+		{
+
+			bool idExists = false;
+
+        	var csvData = CSVDatabase<Observation>.getInstance();
+        	var csvRec = csvData.read();
+		
+        	foreach ( var existingRecord in csvRec )
+        	{
+        		if (existingRecord.Id == Id)
+					idExists = true;
+        	}
+
+			if (!idExists) // ID not found!
+			{
+           		Console.WriteLine("Observation ID not found!");
+				return;
+			}
+
+		}
+
+
         var database = CSVDatabase<Comment>.getInstance();
         string author = Environment.UserName;
         long timeStamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();

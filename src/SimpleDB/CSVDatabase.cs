@@ -37,11 +37,12 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 		switch (t)
 		{
 			case CheepType.Observation:
-				path = "src/SimpleDB/bison_observe_cli_db.csv";
+					path = "src/SimpleDB/bison_observe_cli_db.csv";
 			break;
 
 			case CheepType.Comment:
-				path = "src/SimpleDB/bison_comment_cli_db.csv";
+					path = "src/SimpleDB/bison_comment_cli_db.csv";
+
 			break;
 		}
 
