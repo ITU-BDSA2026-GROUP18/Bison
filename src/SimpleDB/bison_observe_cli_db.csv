@@ -1,9 +1,4 @@
-Author,Observation,Timestamp
-ropf,"A bird at DR Byen",1690891760
-adho,"I think that is a Heron at DR Byen",1690978778
-edka,"Ardea cinerea at DR Byen",1690979858
-noahlentz,"Heron at DR Byen",1788124888
-noahlentz,k,1788354646
-noahlentz,L,1788354659
-noahlentz,k,1789047314
-sproede,test,1789125465
+Id,Author,Description,Timestamp
+7195212031223840495,sproede,Initial Id test,1789221217
+3754585960978680090,sproede,Secondary Id test,1789222506
+3949387222741552858,sproede,Third Id test,1789222550

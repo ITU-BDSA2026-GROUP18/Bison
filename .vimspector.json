@@ -1,0 +1,22 @@
+{
+	"configurations": {
+		"launch - netcoredbg": {
+      		"adapter": "netcoredbg",
+      		"configuration": {
+        		"request": "launch",
+        		"program": "${workspaceRoot}/src/Bison.CLI/bin/Debug/net8.0/Bison.CLI.dll",
+        		"args": [
+				  "--read"	
+				],
+        		"stopAtEntry": false
+      		},
+      	"breakpoints": {
+        	"exception": {
+         	  "user-unhandled": "",
+          	  "all": ""
+        	  }
+      	}
+
+    	}
+	}
+}
