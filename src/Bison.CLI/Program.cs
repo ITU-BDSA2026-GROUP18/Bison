@@ -30,13 +30,27 @@ class Program
     public static void read() 
     {
         var database = CSVDatabase<Observation>.getInstance();
-        var records = database.read();
+        var records = database.read(CheepType.Observation);
         foreach (var record in records)
         {
             DateTimeOffset utcTime = DateTimeOffset.FromUnixTimeSeconds(record.Timestamp);
             Console.WriteLine($"{record.Id} - {record.Author} @ {utcTime.LocalDateTime}: {record.Description}");
         }
     }
+
+	public static void discussion(long observationId) // very similar to the above, could be refactored to be cleaner
+	{
+        var database = CSVDatabase<Comment>.getInstance();
+        var records = database.read(CheepType.Comment);
+        foreach (var record in records)
+        {
+			if (record.ParentId == observationId)
+			{
+            	DateTimeOffset utcTime = DateTimeOffset.FromUnixTimeSeconds(record.Timestamp);
+            	Console.WriteLine($"{record.ParentId} - {record.Author} @ {utcTime.LocalDateTime}: {record.Description}");
+			}
+        }
+	}
  	
 
     public static void observe(string observation)
@@ -45,6 +59,8 @@ class Program
         string author = Environment.UserName;
         long timeStamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         var rec = new Observation(new Random().NextInt64(0, Int64.MaxValue), author, observation, timeStamp);
+		// Pulling a random value here is also not great, throwing Ids into a set to check against 
+		// or hashing contents of Observation would be ideal
 
         database.store(rec, CheepType.Observation);
         
@@ -61,7 +77,7 @@ class Program
 			bool idExists = false;
 
         	var csvData = CSVDatabase<Observation>.getInstance();
-        	var csvRec = csvData.read();
+        	var csvRec = csvData.read(CheepType.Observation);
 		
         	foreach ( var existingRecord in csvRec )
         	{
