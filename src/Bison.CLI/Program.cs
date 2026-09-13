@@ -1,11 +1,12 @@
+using System.Globalization;
 using Microsoft.VisualBasic;
 using SimpleDB;
 
 public record Cheep(string Author, string Observation, long Timestamp);
 
-class Program
+public class Program
 {
-    static void Main(string[] args)
+    public static void Main(string[] args)
     {
         CLIHandler clh = new CLIHandler(args);
 
@@ -20,7 +21,7 @@ class Program
         foreach (var record in records)
         {
             DateTimeOffset utcTime = DateTimeOffset.FromUnixTimeSeconds(record.Timestamp);
-            Console.WriteLine($"{record.Author} @ {utcTime.LocalDateTime}: {record.Observation}");
+            Console.WriteLine($"{record.Author} @ {utcTime.LocalDateTime.ToString("d/M/yyyy HH:mm:ss", CultureInfo.InvariantCulture)}: {record.Observation}");
         }
     }
     
