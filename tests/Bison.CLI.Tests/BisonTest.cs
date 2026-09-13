@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-using Bison.CLI;
 using SimpleDB;
 
 namespace Bison.CLI.Tests;
@@ -10,10 +9,10 @@ public class BisonTest
     public BisonTest()
     {
         
-        var db = CSVDatabase<Cheep>.getInstance();
-        db.setPath("../../../testDB.csv");
-        Cheep rec = new Cheep("tuff","cat at home", 1789151813);
-        db.storeNoAppend(rec); // reset the db
+        var db = CSVDatabase<Observation>.getInstance();
+        db.setPath("../../../");
+        Observation rec = new Observation(2, "tuff", "cat at home", 1789151813);
+        db.storeNoAppend(rec, CheepType.Observation); // reset the db
     }
     
     [Fact]
@@ -31,6 +30,7 @@ public class BisonTest
         Assert.Contains("tuff", sw.ToString()); // easier than full string cmp
         Assert.Contains("cat at home", sw.ToString());
         Assert.Contains(expected, sw.ToString());
+        Assert.Contains("1", sw.ToString());
     }
 
     [Theory]
@@ -40,7 +40,7 @@ public class BisonTest
     {
         // arrange
         var sw = new StringWriter();
-        CSVDatabase<Cheep>.getInstance().setPath("../../../testDB.csv");
+        CSVDatabase<Observation>.getInstance().setPath("../../../");
         string[] args = ["-o", ovbservation];
         string[] args2 = ["-r"];
         // act
