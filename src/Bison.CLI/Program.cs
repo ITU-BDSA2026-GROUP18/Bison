@@ -6,7 +6,7 @@ public record Observation(long Id, string Author, string Description, long Times
 public record Comment(long ParentId, string Author, string Description, long Timestamp);
 //var names could be better for the above, might get around to changing it
 
-/*
+
 namespace EnumCheeps  // For telling database.store() the type of Cheep
 {
 	enum CheepType
@@ -15,7 +15,7 @@ namespace EnumCheeps  // For telling database.store() the type of Cheep
 		Comment
 	}
 }
-*/
+
 
 public class Program
 {
@@ -29,8 +29,7 @@ public class Program
     public static void read() 
     {
         var database = CSVDatabase<Observation>.getInstance();
-        database.setPath("../SimpleDB/bison_observe_cli_db.csv");
-        var records = database.read();
+        var records = database.read(CheepType.Observation);
         foreach (var record in records)
         {
             DateTimeOffset utcTime = DateTimeOffset.FromUnixTimeSeconds(record.Timestamp);
@@ -41,8 +40,7 @@ public class Program
 	public static void discussion(long observationId) // very similar to the above, could be refactored to be cleaner
 	{
         var database = CSVDatabase<Comment>.getInstance();
-        database.setPath("../SimpleDB/bison_comment_cli_db.csv");
-        var records = database.read();
+        var records = database.read(CheepType.Comment);
         foreach (var record in records)
         {
 			if (record.ParentId == observationId)
@@ -57,14 +55,13 @@ public class Program
     public static void observe(string observation)
     {
         var database = CSVDatabase<Observation>.getInstance();
-        database.setPath("../SimpleDB/bison_observe_cli_db.csv");
         string author = Environment.UserName;
         long timeStamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         var rec = new Observation(new Random().NextInt64(0, Int64.MaxValue), author, observation, timeStamp);
 		// Pulling a random value here is also not great, throwing Ids into a set to check against 
 		// or hashing contents of Observation would be ideal
 
-        database.store(rec);
+        database.store(rec, CheepType.Observation);
         
     }
 
@@ -79,7 +76,7 @@ public class Program
 			bool idExists = false;
 
         	var csvData = CSVDatabase<Observation>.getInstance();
-        	var csvRec = csvData.read();
+        	var csvRec = csvData.read(CheepType.Observation);
 		
         	foreach ( var existingRecord in csvRec )
         	{
@@ -97,11 +94,10 @@ public class Program
 
 
         var database = CSVDatabase<Comment>.getInstance();
-        database.setPath("../SimpleDB/bison_comment_cli_db.csv");
         string author = Environment.UserName;
         long timeStamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         var rec = new Comment(Id, author, comment, timeStamp);
 		
-		database.store(rec);
+		database.store(rec, CheepType.Comment);
 	}
 }

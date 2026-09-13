@@ -11,7 +11,7 @@ public enum CheepType
 
 public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 {
-	private string dbpath = "../SimpleDB/bison_observe_cli_db.csv";	
+	private string dbpath = "src/SimpleDB/";	
     private CSVDatabase() {}
     private static CSVDatabase<T> instance = new();
 
@@ -20,32 +20,31 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
         return instance;
     }
 
-/* 	private string getPath(CheepType t)
+ 	private string getPath(CheepType t)
 	{
 		switch (t)
 		{
 			case CheepType.Observation:
-					return "src/SimpleDB/bison_observe_cli_db.csv";
+					return "bison_observe_cli_db.csv";
 
 			case CheepType.Comment:
-					return "src/SimpleDB/bison_comment_cli_db.csv";
+					return "bison_comment_cli_db.csv";
+			default:
+					throw new ArgumentException("Invalid CheepType");
 		}
-		
-		// should never be reached, only exists to stop compiler from complaining
-		return ""; 
-	} */
+	} 
 
-    public IEnumerable<T> read(int? limit = null)
+    public IEnumerable<T> read(CheepType t, int? limit = null)
     {
-        using var reader = new StreamReader(dbpath);
+        using var reader = new StreamReader(dbpath + getPath(t));
         var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
         var records = csv.GetRecords<T>().ToList();
         return records;
     }
 
-    public void store(T record)
+    public void store(T record, CheepType t)
     {
-        using var writer = new StreamWriter(dbpath, append: true);
+        using var writer = new StreamWriter(dbpath + getPath(t), append: true);
         using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
 
         csv.NextRecord();
@@ -57,9 +56,9 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
         dbpath = path;
     }
 
-    public void storeNoAppend(T record) // will write to the database as if its empty, aka overwrite
+    public void storeNoAppend(T record, CheepType t) // will write to the database as if its empty, aka overwrite
     {
-        using var writer = new StreamWriter(dbpath);
+        using var writer = new StreamWriter(dbpath + getPath(t));
         using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
         csv.WriteHeader<T>();
         csv.NextRecord();

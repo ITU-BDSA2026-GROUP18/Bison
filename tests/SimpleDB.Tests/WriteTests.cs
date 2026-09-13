@@ -2,28 +2,27 @@ namespace SimpleDB.Tests;
 
 public class SimpleDBWriteTests
 {
-public record Cheep(string Author, string Observation, long Timestamp);
-    private CSVDatabase<Cheep> database;
-    private string dbpath = "../../../WriteTestDB.csv";
+    public record Observation(long Id, string Author, string Description, long Timestamp);
+    private CSVDatabase<Observation> database;
     public SimpleDBWriteTests()
     {
-        this.database = CSVDatabase<Cheep>.getInstance();
-        this.database.setPath(dbpath);
+        this.database = CSVDatabase<Observation>.getInstance();
+        this.database.setPath("../../../");
     }
 
     [Fact]
     public void WriteInputsDataToDB()
     {
         // arrange
-        var rec = new Cheep("test", "test", 123456789);
-        var len = File.ReadAllLines(dbpath).Length;
+        var rec = new Observation(0, "test", "test", 123456789);
+        var len = File.ReadAllLines("../../../bison_comment_cli_db.csv").Length; //For now the filename has to be bison_comments... to use a different csv-file
         // act
-        database.store(rec);
-        var lines = File.ReadAllLines(dbpath);
+        database.store(rec, CheepType.Comment);
+        var lines = File.ReadAllLines("../../../bison_comment_cli_db.csv");
         //assert
         Assert.Equal(len+1, lines.Length);
-        Assert.Equal("Author,Observation,Timestamp",lines[0]);
-        Assert.Equal("test,test,123456789",lines[len]);
+        Assert.Equal("Id,Author,Description,Timestamp",lines[0]);
+        Assert.Equal("0,test,test,123456789",lines[len]);
     }
 
     [Theory]
@@ -33,13 +32,13 @@ public record Cheep(string Author, string Observation, long Timestamp);
     public void WriteReadIntegration(string author, string observation, long timeStamp)
     {
         // arrange
-        var rec = new Cheep(author, observation, timeStamp);
+        var rec = new Observation(0, author, observation, timeStamp);
         // act
-        database.storeNoAppend(rec); // used so db length stays low
-        var list = database.read().ToList();
+        database.storeNoAppend(rec, CheepType.Comment); // used so db length stays low
+        var list = database.read(CheepType.Comment).ToList();
         // assert
         Assert.Equal(author, list[0].Author);
-        Assert.Equal(observation, list[0].Observation);
+        Assert.Equal(observation, list[0].Description);
         Assert.Equal(timeStamp, list[0].Timestamp);
     }
 }

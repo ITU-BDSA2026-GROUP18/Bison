@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-using Bison.CLI;
 using SimpleDB;
 
 namespace Bison.CLI.Tests;
@@ -11,9 +10,9 @@ public class BisonTest
     {
         
         var db = CSVDatabase<Observation>.getInstance();
-        db.setPath("../../../testDB.csv");
-        Observation rec = new Observation(1, "tuff", "cat at home", 1789151813);
-        db.storeNoAppend(rec); // reset the db
+        db.setPath("../../../");
+        Observation rec = new Observation(2, "tuff", "cat at home", 1789151813);
+        db.storeNoAppend(rec, CheepType.Observation); // reset the db
     }
     
     [Fact]
@@ -41,7 +40,7 @@ public class BisonTest
     {
         // arrange
         var sw = new StringWriter();
-        CSVDatabase<Observation>.getInstance().setPath("../../../testDB.csv");
+        CSVDatabase<Observation>.getInstance().setPath("../../../");
         string[] args = ["-o", ovbservation];
         string[] args2 = ["-r"];
         // act
