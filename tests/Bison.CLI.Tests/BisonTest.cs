@@ -10,9 +10,9 @@ public class BisonTest
     public BisonTest()
     {
         
-        var db = CSVDatabase<Cheep>.getInstance();
+        var db = CSVDatabase<Observation>.getInstance();
         db.setPath("../../../testDB.csv");
-        Cheep rec = new Cheep("tuff","cat at home", 1789151813);
+        Observation rec = new Observation(1, "tuff", "cat at home", 1789151813);
         db.storeNoAppend(rec); // reset the db
     }
     
@@ -31,6 +31,7 @@ public class BisonTest
         Assert.Contains("tuff", sw.ToString()); // easier than full string cmp
         Assert.Contains("cat at home", sw.ToString());
         Assert.Contains(expected, sw.ToString());
+        Assert.Contains("1", sw.ToString());
     }
 
     [Theory]
@@ -40,7 +41,7 @@ public class BisonTest
     {
         // arrange
         var sw = new StringWriter();
-        CSVDatabase<Cheep>.getInstance().setPath("../../../testDB.csv");
+        CSVDatabase<Observation>.getInstance().setPath("../../../testDB.csv");
         string[] args = ["-o", ovbservation];
         string[] args2 = ["-r"];
         // act
