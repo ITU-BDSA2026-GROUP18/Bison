@@ -17,9 +17,9 @@ namespace EnumCheeps  // For telling database.store() the type of Cheep
 }
 */
 
-class Program
+public class Program
 {
-    static void Main(string[] args)
+    public static void Main(string[] args)
     {
         CLIHandler clh = new CLIHandler(args);
         #if FLAG_TEST
