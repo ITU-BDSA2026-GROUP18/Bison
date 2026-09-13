@@ -11,7 +11,7 @@ public class BisonTest
         
         var db = CSVDatabase<Observation>.getInstance();
         db.setPath("../../../");
-        Observation rec = new Observation(2, "tuff", "cat at home", 1789151813);
+        Observation rec = new Observation(1, "tuff", "cat at home", 1789151813, "Vestamager");
         db.storeNoAppend(rec, CheepType.Observation); // reset the db
     }
     
@@ -27,10 +27,11 @@ public class BisonTest
         // act
         Program.Main(args);
         // assert
+        Assert.Contains("1", sw.ToString());
         Assert.Contains("tuff", sw.ToString()); // easier than full string cmp
         Assert.Contains("cat at home", sw.ToString());
         Assert.Contains(expected, sw.ToString());
-        Assert.Contains("1", sw.ToString());
+        Assert.Contains("Vestamager", sw.ToString());
     }
 
     [Theory]

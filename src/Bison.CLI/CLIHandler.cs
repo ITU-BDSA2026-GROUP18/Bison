@@ -22,14 +22,24 @@ class CLIHandler
 
         discCommand.SetAction(parseResult => Program.discussion(parseResult.GetValue(discTarg)!));
 
+        var locTarg = new Argument<string>("Location");
+        var locCommand = new Command("--location", "Prints out observations based on location in the CSV database")
+        {
+            locTarg
+        };
+        locCommand.Aliases.Add("-l");
+        locCommand.SetAction(parseResult => Program.location(parseResult.GetValue(locTarg)!));
+
         var obsTarg = new Argument<string>("Description");
+        var locationTarg = new Argument<string>("Location");
         var obsCommand = new Command("--observe", "Add observation to the CSV database")
         {
-            obsTarg
+            obsTarg,
+            locationTarg
         };
         obsCommand.Aliases.Add("-o");
 
-        obsCommand.SetAction(parseResult => Program.observe(parseResult.GetValue(obsTarg)!));
+        obsCommand.SetAction(parseResult => Program.observe(parseResult.GetValue(obsTarg)!, parseResult.GetValue(locationTarg)!));
 
         var commTarg = new Argument<string>("Comment");
         var idTarg = new Argument<string>("Id"); //TODO: change this to long 
@@ -47,6 +57,7 @@ class CLIHandler
         rootCommand.Subcommands.Add(readCommand);
         rootCommand.Subcommands.Add(obsCommand);
 		rootCommand.Subcommands.Add(commCommand);
+		rootCommand.Subcommands.Add(locCommand);
 
         rootCommand.Parse(args).Invoke();
     }
