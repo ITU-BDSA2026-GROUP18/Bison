@@ -11,7 +11,7 @@ public enum CheepType
 
 public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 {
-	private string dbpath = "../SimpleDB/";	
+	private string dbpath = "src/SimpleDB/";	
     private CSVDatabase() {}
     private static CSVDatabase<T> instance = new();
 
