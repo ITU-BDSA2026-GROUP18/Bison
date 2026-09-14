@@ -1,7 +1,7 @@
 using System.Globalization;
 using SimpleDB;
 
-public record Observation(long Id, string Author, string Description, long Timestamp);
+public record Observation(long Id, string Author, string Description, long Timestamp, string Location);
 
 public record Comment(long ParentId, string Author, string Description, long Timestamp);
 //var names could be better for the above, might get around to changing it
@@ -33,7 +33,7 @@ public class Program
         foreach (var record in records)
         {
             DateTimeOffset utcTime = DateTimeOffset.FromUnixTimeSeconds(record.Timestamp);
-            Console.WriteLine($"{record.Id} - {record.Author} @ {utcTime.LocalDateTime.ToString("d/M/yyyy HH:mm:ss", CultureInfo.InvariantCulture)}: {record.Description}");
+            Console.WriteLine($"{record.Id} - {record.Author} @ {utcTime.LocalDateTime.ToString("d/M/yyyy HH:mm:ss", CultureInfo.InvariantCulture)}, {record.Location}: {record.Description}");
         }
     }
 
@@ -51,13 +51,26 @@ public class Program
         }
 	}
  	
+    public static void location(string location) // very similar to the above, could be refactored to be cleaner
+    {
+        var database = CSVDatabase<Observation>.getInstance();
+        var records = database.read(CheepType.Observation);
+        foreach (var record in records)
+        {
+            if (record.Location == location)
+            {
+                DateTimeOffset utcTime = DateTimeOffset.FromUnixTimeSeconds(record.Timestamp);
+                Console.WriteLine($"{record.Id} - {record.Author} @ {utcTime.LocalDateTime.ToString("d/M/yyyy HH:mm:ss", CultureInfo.InvariantCulture)}, {record.Location}: {record.Description}");
+            }
+        }
+    }
 
-    public static void observe(string observation)
+    public static void observe(string observation, string location)
     {
         var database = CSVDatabase<Observation>.getInstance();
         string author = Environment.UserName;
         long timeStamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-        var rec = new Observation(new Random().NextInt64(0, Int64.MaxValue), author, observation, timeStamp);
+        var rec = new Observation(new Random().NextInt64(0, Int64.MaxValue), author, observation, timeStamp, location);
 		// Pulling a random value here is also not great, throwing Ids into a set to check against 
 		// or hashing contents of Observation would be ideal
 

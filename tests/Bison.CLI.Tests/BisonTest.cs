@@ -11,7 +11,7 @@ public class BisonTest
         
         var db = CSVDatabase<Observation>.getInstance();
         db.setPath("../../../");
-        Observation rec = new Observation(2, "tuff", "cat at home", 1789151813);
+        Observation rec = new Observation(1, "tuff", "cat at home", 1789151813, "Vestamager");
         db.storeNoAppend(rec, CheepType.Observation); // reset the db
     }
     
@@ -27,21 +27,22 @@ public class BisonTest
         // act
         Program.Main(args);
         // assert
+        Assert.Contains("1", sw.ToString());
         Assert.Contains("tuff", sw.ToString()); // easier than full string cmp
         Assert.Contains("cat at home", sw.ToString());
         Assert.Contains(expected, sw.ToString());
-        Assert.Contains("1", sw.ToString());
+        Assert.Contains("Vestamager", sw.ToString());
     }
 
     [Theory]
-    [InlineData("i saw big bird")]
-    [InlineData("the moon out my window")]
-    public void ObserveAndReadE2E(string ovbservation)
+    [InlineData("i saw big bird", "Vestamager")]
+    [InlineData("the moon out my window", "Home")]
+    public void ObserveAndReadE2E(string observation, string location)
     {
         // arrange
         var sw = new StringWriter();
         CSVDatabase<Observation>.getInstance().setPath("../../../");
-        string[] args = ["-o", ovbservation];
+        string[] args = ["-o", observation, location];
         string[] args2 = ["-r"];
         // act
         Program.Main(args);
@@ -49,6 +50,6 @@ public class BisonTest
         Program.Main(args2);
         // assert
         Assert.Contains(Environment.UserName, sw.ToString()); // easier than full string cmp
-        Assert.Contains(ovbservation, sw.ToString()); 
+        Assert.Contains(observation, sw.ToString()); 
     }
 }
