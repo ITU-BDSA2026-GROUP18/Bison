@@ -1,3 +1,4 @@
+using System;
 using System.Globalization;
 using SimpleDB;
 
@@ -22,16 +23,30 @@ public class Program
 {
 	public static void Main(string[] args)
 	{
+		// hacky way to do path normalization, but for now it'll work.
+		if (!(Environment.CurrentDirectory.EndsWith("bison", 0)))
+		{
+			string temppath = Environment.CurrentDirectory;
+			int bisonIdx = temppath.IndexOf("bison",StringComparison.CurrentCultureIgnoreCase) + 5;
+			Environment.CurrentDirectory = temppath.Substring(0, bisonIdx);
+		}
+
+
 		CLIHandler clh = new CLIHandler(args);
 #if FLAG_TEST
 		Console.WriteLine("omg my flag works");
 #endif
 	}
 
-	public static void read()
+	public static void read(string rootPath = null)
 	{
+		if (rootPath != null)
+		{
+			Environment.CurrentDirectory = rootPath;
+		}
+
 		var database = CSVDatabase<Observation>.getInstance();
-		database.setPath("src/SimpleDB/bison_observe_cli_db.csv");
+		database.setPath("data/bison_observe_cli_db.csv");
 		var records = database.read();
 		foreach (var record in records)
 		{
@@ -45,7 +60,7 @@ public class Program
 	public static void discussion(long observationId) // very similar to the above, could be refactored to be cleaner
 	{
 		var database = CSVDatabase<Comment>.getInstance();
-		database.setPath("src/SimpleDB/bison_comment_cli_db.csv");
+		database.setPath("data/bison_comment_cli_db.csv");
 		var records = database.read();
 		foreach (var record in records)
 		{
@@ -62,7 +77,7 @@ public class Program
 	public static void location(string location) // very similar to the above, could be refactored to be cleaner
 	{
 		var database = CSVDatabase<Observation>.getInstance();
-		database.setPath("src/SimpleDB/bison_observe_cli_db.csv");
+		database.setPath("data/bison_observe_cli_db.csv");
 		var records = database.read();
 		foreach (var record in records)
 		{
@@ -79,7 +94,7 @@ public class Program
 	public static void observe(string observation, string location)
 	{
 		var database = CSVDatabase<Observation>.getInstance();
-		database.setPath("src/SimpleDB/bison_observe_cli_db.csv");
+		database.setPath("data/bison_observe_cli_db.csv");
 		string author = Environment.UserName;
 		long timeStamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 		var rec = new Observation(
@@ -120,7 +135,7 @@ public class Program
 		}
 
 		var database = CSVDatabase<Comment>.getInstance();
-		database.setPath("src/SimpleDB/bison_comment_cli_db.csv");
+		database.setPath("data/bison_comment_cli_db.csv");
 		string author = Environment.UserName;
 		long timeStamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 		var rec = new Comment(Id, author, comment, timeStamp);

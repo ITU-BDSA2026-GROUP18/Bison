@@ -11,6 +11,20 @@ class CLIHandler
 		readCommand.SetAction(parseResult => Program.read());
 		readCommand.Aliases.Add("-r");
 
+		// terrible, terrible name. root path should be set by separate (optional) parameter, 
+		// exists for now to deal with testing.
+		var readPathTarg = new Argument<string>("RootPath"); 
+		var readPathCommand = new Command(
+			"--ReadWithRootPath",
+			"Prints out comments to Observation in the CSV database based on Manually set Root Path"
+		)
+		{
+			readPathTarg,
+		};
+		readPathCommand.Aliases.Add("-rwrp");
+
+		readPathCommand.SetAction(parseResult => Program.read(parseResult.GetValue(readPathTarg)!));
+
 		var discTarg = new Argument<long>("ObservationId");
 		var discCommand = new Command(
 			"--discussion",
@@ -50,7 +64,10 @@ class CLIHandler
 		var commTarg = new Argument<string>("Comment");
 		var idTarg = new Argument<string>("Id"); //TODO: change this to long
 
-		var commCommand = new Command("--comment", "Add comment to observation based on id")
+		var commCommand = new Command(
+				"--comment", 
+				"Add comment to observation based on id"
+		)
 		{
 			commTarg,
 			idTarg,
@@ -64,6 +81,7 @@ class CLIHandler
 			)
 		);
 
+		rootCommand.Subcommands.Add(readPathCommand);
 		rootCommand.Subcommands.Add(discCommand);
 		rootCommand.Subcommands.Add(readCommand);
 		rootCommand.Subcommands.Add(obsCommand);

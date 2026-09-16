@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using SimpleDB;
 
 namespace Bison.CLI.Tests;
@@ -7,8 +8,13 @@ public class BisonTest
 {
 	public BisonTest()
 	{
+		//this should be a publicly accessible path normalization function, for now it isn't.
+		string temppath = Environment.CurrentDirectory;
+		int bisonIdx = temppath.IndexOf("bison",StringComparison.CurrentCultureIgnoreCase) + 5;
+		Environment.CurrentDirectory = temppath.Substring(0, bisonIdx);
+
 		var db = CSVDatabase<Observation>.getInstance();
-		db.setPath("../../../bison_observe_cli_db.csv");
+		db.setPath(Environment.CurrentDirectory + "/tests/data/bison_observe_cli_db.csv");
 		Observation rec = new Observation(1, "tuff", "cat at home", 1789151813, "Vestamager");
 		db.storeNoAppend(rec); // reset the db
 	}
@@ -20,8 +26,15 @@ public class BisonTest
 		var expectedTime = DateTimeOffset.FromUnixTimeSeconds(1789151813);
 		string expected =
 			$"{expectedTime.LocalDateTime.ToString("d/M/yyyy HH:mm:ss", CultureInfo.InvariantCulture)}";
+
+		string temppath = Environment.CurrentDirectory;
+		int bisonIdx = temppath.IndexOf("bison",StringComparison.CurrentCultureIgnoreCase) + 5;
+		Environment.CurrentDirectory = temppath.Substring(0, bisonIdx);
+
+		CSVDatabase<Observation>.getInstance().setPath(Environment.CurrentDirectory + "tests/data/bison_observe_cli_db.csv");
+
 		var sw = new StringWriter();
-		string[] args = ["--read"];
+		string[] args = ["-rwrp", (Environment.CurrentDirectory + "/tests/")];
 		Console.SetOut(sw); // steal console output
 		// act
 		Program.Main(args);
@@ -40,7 +53,11 @@ public class BisonTest
 	{
 		// arrange
 		var sw = new StringWriter();
-		CSVDatabase<Observation>.getInstance().setPath("../../../bison_observe_cli_db.csv");
+		string temppath = Environment.CurrentDirectory;
+		int bisonIdx = temppath.IndexOf("bison",StringComparison.CurrentCultureIgnoreCase) + 5;
+		Environment.CurrentDirectory = temppath.Substring(0, bisonIdx);
+		
+		CSVDatabase<Observation>.getInstance().setPath(Environment.CurrentDirectory + "tests/data/bison_observe_cli_db.csv");
 		string[] args = ["-o", observation, location];
 		string[] args2 = ["-r"];
 		// act
