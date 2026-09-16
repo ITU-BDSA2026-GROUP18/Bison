@@ -10,7 +10,7 @@ public class BisonTest
 		var db = CSVDatabase<Observation>.getInstance();
 		db.setPath("../../../");
 		Observation rec = new Observation(1, "tuff", "cat at home", 1789151813, "Vestamager");
-		db.storeNoAppend(rec, CheepType.Observation); // reset the db
+		db.storeNoAppend(rec); // reset the db
 	}
 
 	[Fact]
