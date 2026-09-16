@@ -17,7 +17,7 @@ public class SimpleDBWriteTests
 	{
 		// arrange
 		var rec = new Observation(0, "test", "test", 123456789);
-		var len = File.ReadAllLines("../../../bison_comment_cli_db.csv").Length; //For now the filename has to be bison_comments... to use a different csv-file
+		var len = File.ReadAllLines("../../../bison_observe_cli_db.csv").Length; //For now the filename has to be bison_comments... to use a different csv-file
 		// act
 		database.store(rec);
 		var lines = File.ReadAllLines("../../../bison_comment_cli_db.csv");

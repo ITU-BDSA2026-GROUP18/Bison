@@ -16,7 +16,18 @@
 	<ItemGroup>
 		<Using Include="Xunit" />
 	</ItemGroup>
+	<ItemGroup>
+		<None Update="bison_observe_cli_db.csv">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="bison_comment_cli_db.csv">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
 
+	<ItemGroup>
+		<ProjectReference Include="..\..\src\Bison.CLI\Bison.CLI.csproj" />
+	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\..\src\SimpleDB\SimpleDB.csproj" />
 	</ItemGroup>
