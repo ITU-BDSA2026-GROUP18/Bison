@@ -8,7 +8,7 @@ public class BisonTest
 	public BisonTest()
 	{
 		var db = CSVDatabase<Observation>.getInstance();
-		db.setPath("../../../");
+		db.setPath("../../../bison_observe_cli_db.csv");
 		Observation rec = new Observation(1, "tuff", "cat at home", 1789151813, "Vestamager");
 		db.storeNoAppend(rec); // reset the db
 	}
@@ -40,7 +40,7 @@ public class BisonTest
 	{
 		// arrange
 		var sw = new StringWriter();
-		CSVDatabase<Observation>.getInstance().setPath("../../../");
+		CSVDatabase<Observation>.getInstance().setPath("../../../bison_observe_cli_db.csv");
 		string[] args = ["-o", observation, location];
 		string[] args2 = ["-r"];
 		// act
