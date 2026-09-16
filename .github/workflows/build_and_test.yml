@@ -23,3 +23,41 @@ jobs:
       run: ./Build.sh
     - name: Test
       run: dotnet test tests/SimpleDB.Tests/ && dotnet test tests/Bison.CLI.Tests/
+    - name: Publish
+      run: ./ArtifactBuilder.sh 
+      
+    - name: Upload win-x64
+      uses actions/upload-artifact@v7
+      with:
+        name: Windows x86 - (Intel/AMD)
+        path: src/Bison.CLI/bin/Release/net8.0/win-x64
+
+    - name: Upload win-arm64
+      uses actions/upload-artifact@v7
+      with:
+        name: Windows Arm64 - (Snapdragon)
+        path: src/Bison.CLI/bin/Release/net8.0/win-arm64
+
+    - name: Upload linux-x64
+      uses actions/upload-artifact@v7
+      with:
+        name: Linux x86
+        path: src/Bison.CLI/bin/Release/net8.0/linux-x64
+
+    - name: Upload linux-arm64
+      uses actions/upload-artifact@v7
+      with:
+        name: Linux Arm64
+        path: src/Bison.CLI/bin/Release/net8.0/linux-arm64
+
+    - name: Upload osx-x64
+      uses actions/upload-artifact@v7
+      with:
+        name: MacOS x86 - (Intel)
+        path: src/Bison.CLI/bin/Release/net8.0/osx-x64
+
+    - name: Upload osx-arm64
+      uses actions/upload-artifact@v7
+      with:
+        name: MacOS Arm64- (Apple Silicon)
+        path: src/Bison.CLI/bin/Release/net8.0/osx-arm64
