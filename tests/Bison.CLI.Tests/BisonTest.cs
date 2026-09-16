@@ -1,4 +1,6 @@
-﻿using System.Globalization;
+﻿using System.ComponentModel.Design;
+using System.Data.Common;
+using System.Globalization;
 using SimpleDB;
 
 namespace Bison.CLI.Tests;
@@ -7,10 +9,11 @@ public class BisonTest
 {
 	public BisonTest()
 	{
+		Program.ObserveDatabasePath = Path.Combine(AppContext.BaseDirectory, "bison_observe_cli_db.csv");
 		var db = CSVDatabase<Observation>.getInstance();
-		db.setPath("../../../");
+		db.setPath(Program.ObserveDatabasePath);
 		Observation rec = new Observation(1, "tuff", "cat at home", 1789151813, "Vestamager");
-		db.storeNoAppend(rec, CheepType.Observation); // reset the db
+		db.storeNoAppend(rec); // reset the db
 	}
 
 	[Fact]
@@ -50,5 +53,40 @@ public class BisonTest
 		// assert
 		Assert.Contains(Environment.UserName, sw.ToString()); // easier than full string cmp
 		Assert.Contains(observation, sw.ToString());
+	}
+	
+	[Theory]
+	[InlineData("ITU")]
+	[InlineData("Vestamager")]
+	public void LocationOutputsCorrectRecords(string location)
+	{
+		// arrange
+		var sw = new StringWriter();
+		var db = CSVDatabase<Observation>.getInstance();
+		db.setPath(Program.ObserveDatabasePath);
+		var records = db.read();
+		string[] args = ["-l", location];
+		List<Observation> relevantRecords = new List<Observation>();
+
+		// act
+		foreach (var record in records)
+		{
+			if (record.Location == location) {
+				relevantRecords.Add(record);
+			}
+		}
+		Console.SetOut(sw);
+		Program.Main(args);
+
+		// assert
+		string[] result = sw.ToString().Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+		for (int i = 0; i < relevantRecords.Count; i++)
+		{
+			Assert.Contains(relevantRecords[i].Id.ToString(), result[i]);
+			Assert.Contains(relevantRecords[i].Author, result[i]);
+			Assert.Contains(relevantRecords[i].Description, result[i]);
+			Assert.Contains(relevantRecords[i].Location, result[i]);
+		}
+		Assert.Equal(relevantRecords.Count, result.Length);
 	}
 }

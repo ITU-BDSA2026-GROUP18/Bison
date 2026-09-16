@@ -18,6 +18,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<None Update="bison_observe_cli_db.csv">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\..\src\Bison.CLI\Bison.CLI.csproj" />
 	</ItemGroup>
 </Project>
