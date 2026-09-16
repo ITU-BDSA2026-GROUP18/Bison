@@ -12,10 +12,8 @@ public class SimpleDBWriteTests
 		this.database.setPath(CommentDatabasePath);
 	}
 
-	private static string CommentDatabasePath => Path.Combine(
-		AppContext.BaseDirectory,
-		"bison_comment_cli_db.csv"
-	);
+	private static string CommentDatabasePath =>
+		Path.Combine(AppContext.BaseDirectory, "bison_comment_cli_db.csv");
 
 	[Fact]
 	public void WriteInputsDataToDB()

@@ -9,14 +9,9 @@ public record Observation(
 	string Location
 );
 
-public record Comment(
-		long ParentId, 
-		string Author, 
-		string Description, 
-		long Timestamp);
+public record Comment(long ParentId, string Author, string Description, long Timestamp);
 
 //var names could be better for the above, might get around to changing it
-
 
 public class Program
 {

@@ -1,6 +1,4 @@
-﻿
-
-using Microsoft.VisualStudio.TestPlatform.TestHost;
+﻿using Microsoft.VisualStudio.TestPlatform.TestHost;
 
 namespace SimpleDB.Tests;
 
