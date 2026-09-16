@@ -67,4 +67,4 @@ dotnet csharpier format .
 
 ## Releases
 
-`ArtifactBuilder.sh` publishes self-contained binaries for win/linux/osx on x64 and arm64. CI runs build, tests and this script on pushes and PRs against `main`, uploading each target as a workflow artifact.
+`ArtifactBuilder.sh` publishes self-contained binaries for Windows, Linux and MacOS on x86 and Arm64. CI runs build, tests and this script on pushes and PRs against `main`, uploading each target as a workflow artifact.
