@@ -9,7 +9,7 @@ public class SimpleDBWriteTests
 	public SimpleDBWriteTests()
 	{
 		this.database = CSVDatabase<Observation>.getInstance();
-		this.database.setPath("../../../");
+		this.database.setPath("../../../bison_observe_cli_db.csv");
 	}
 
 	[Fact]
