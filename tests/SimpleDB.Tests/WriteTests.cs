@@ -19,7 +19,7 @@ public class SimpleDBWriteTests
 		var rec = new Observation(0, "test", "test", 123456789);
 		var len = File.ReadAllLines("../../../bison_comment_cli_db.csv").Length; //For now the filename has to be bison_comments... to use a different csv-file
 		// act
-		database.store(rec, CheepType.Comment);
+		database.store(rec);
 		var lines = File.ReadAllLines("../../../bison_comment_cli_db.csv");
 		//assert
 		Assert.Equal(len + 1, lines.Length);
@@ -36,8 +36,8 @@ public class SimpleDBWriteTests
 		// arrange
 		var rec = new Observation(0, author, observation, timeStamp);
 		// act
-		database.storeNoAppend(rec, CheepType.Comment); // used so db length stays low
-		var list = database.read(CheepType.Comment).ToList();
+		database.storeNoAppend(rec); // used so db length stays low
+		var list = database.read().ToList();
 		// assert
 		Assert.Equal(author, list[0].Author);
 		Assert.Equal(observation, list[0].Description);
