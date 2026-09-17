@@ -19,15 +19,22 @@ public class Program
 	public static void Main(string[] args)
 	{
 		// hacky way to do path normalization, but for now it'll work.
-		
-		if (!(Environment.CurrentDirectory.EndsWith("bison", StringComparison.CurrentCultureIgnoreCase)))
+
+		if (
+			!(
+				Environment.CurrentDirectory.EndsWith(
+					"bison",
+					StringComparison.CurrentCultureIgnoreCase
+				)
+			)
+		)
 		{
 			Console.WriteLine("TRIMMING!!!!!!!!");
 			string temppath = Environment.CurrentDirectory;
-			int bisonIdx = temppath.LastIndexOf("bison", StringComparison.CurrentCultureIgnoreCase) + 5;
+			int bisonIdx =
+				temppath.LastIndexOf("bison", StringComparison.CurrentCultureIgnoreCase) + 5;
 			Environment.CurrentDirectory = temppath.Substring(0, bisonIdx);
 		}
-		
 
 		CLIHandler clh = new CLIHandler(args);
 #if FLAG_TEST

@@ -6,14 +6,20 @@ namespace Bison.CLI.Tests;
 
 public class BisonTest
 {
-
-
 	public BisonTest()
 	{
-		if (!(Environment.CurrentDirectory.EndsWith("bison", StringComparison.CurrentCultureIgnoreCase)))
+		if (
+			!(
+				Environment.CurrentDirectory.EndsWith(
+					"bison",
+					StringComparison.CurrentCultureIgnoreCase
+				)
+			)
+		)
 		{
 			string temppath = Environment.CurrentDirectory;
-			int bisonIdx = temppath.LastIndexOf("bison/", StringComparison.CurrentCultureIgnoreCase) + 5;
+			int bisonIdx =
+				temppath.LastIndexOf("bison/", StringComparison.CurrentCultureIgnoreCase) + 5;
 			Environment.CurrentDirectory = temppath.Substring(0, bisonIdx);
 		}
 
@@ -24,8 +30,6 @@ public class BisonTest
 		Observation rec = new Observation(1, "tuff", "cat at home", 1789151813, "Vestamager");
 
 		db.storeNoAppend(rec); // reset the db
-
-
 	}
 
 	[Fact]
