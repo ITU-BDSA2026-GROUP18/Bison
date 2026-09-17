@@ -34,7 +34,7 @@ public class BisonTest
 		CSVDatabase<Observation>.getInstance().setPath(Environment.CurrentDirectory + "tests/data/bison_observe_cli_db.csv");
 
 		var sw = new StringWriter();
-		string[] args = ["-rwrp", (Environment.CurrentDirectory + "/tests/")];
+		string[] args = ["-r", "-p", (Environment.CurrentDirectory + "/tests/")];
 		Console.SetOut(sw); // steal console output
 		// act
 		Program.Main(args);
