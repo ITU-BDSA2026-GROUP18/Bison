@@ -21,10 +21,17 @@ public class Program
 		// hacky way to do path normalization, but for now it'll work.
 		if (!(Environment.CurrentDirectory.EndsWith("bison", 0)))
 		{
+			//TODO: don't do weird path handling like this
+			int innerIdx = 0;
+			int totalIdx = 0;
 			string temppath = Environment.CurrentDirectory;
-			Console.WriteLine(temppath);
-			int bisonIdx = temppath.LastIndexOf("/bison", StringComparison.CurrentCultureIgnoreCase) + 6;
-			Environment.CurrentDirectory = temppath.Substring(0, bisonIdx);
+			while ( temppath.LastIndexOf("/bison", StringComparison.CurrentCultureIgnoreCase) != -1 )
+			{
+				innerIdx = temppath.LastIndexOf("/bison", StringComparison.CurrentCultureIgnoreCase) + 6;
+				totalIdx += innerIdx;
+				temppath = temppath.Substring(innerIdx);
+			}
+				Environment.CurrentDirectory = Environment.CurrentDirectory.Substring(0, totalIdx);
 		}
 
 		CLIHandler clh = new CLIHandler(args);
