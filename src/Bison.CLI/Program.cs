@@ -1,3 +1,4 @@
+using System;
 using System.Globalization;
 using SimpleDB;
 
@@ -15,19 +16,50 @@ public record Comment(long ParentId, string Author, string Description, long Tim
 
 public class Program
 {
-	public static string ObserveDatabasePath { get; set; } = "../SimpleDB/bison_observe_cli_db.csv";
-	public static string CommentDatabasePath { get; set; } = "../SimpleDB/bison_comment_cli_db.csv";
+	public static string ObserveDatabasePath { get; set; } = "./data/bison_observe_cli_db.csv";
+	public static string CommentDatabasePath { get; set; } = "./data/bison_comment_cli_db.csv";
 
 	public static void Main(string[] args)
 	{
+		/*
+		// hacky way to do path normalization, but for now it'll work.
+
+		if (
+			!(
+				Environment.CurrentDirectory.EndsWith(
+					"bison",
+					StringComparison.CurrentCultureIgnoreCase
+				)
+			)
+		)
+		{
+			Console.WriteLine("TRIMMING!!!!!!!!");
+			string temppath = Environment.CurrentDirectory;
+			int bisonIdx =
+				temppath.LastIndexOf("bison", StringComparison.CurrentCultureIgnoreCase) + 5;
+			Environment.CurrentDirectory = temppath.Substring(0, bisonIdx);
+		}
+		*/
+
 		CLIHandler clh = new CLIHandler(args);
 #if FLAG_TEST
 		Console.WriteLine("omg my flag works");
 #endif
 	}
 
-	public static void read()
+	public static void setEnvPath(string envPath)
 	{
+		if (envPath != null)
+		{
+			Environment.CurrentDirectory = envPath;
+			Console.WriteLine(Environment.CurrentDirectory);
+		}
+	}
+
+	public static void read(string? pathOption = null)
+	{
+		setEnvPath(pathOption);
+
 		var database = CSVDatabase<Observation>.getInstance();
 		database.setPath(ObserveDatabasePath);
 		var records = database.read();
@@ -88,7 +120,7 @@ public class Program
 			location
 		);
 		// Pulling a random value here is also not great, throwing Ids into a set to check against
-		// or hashing contents of Observation would be ideal
+		// or potentially hashing contents of Observation would be more ideal
 
 		database.store(rec);
 	}

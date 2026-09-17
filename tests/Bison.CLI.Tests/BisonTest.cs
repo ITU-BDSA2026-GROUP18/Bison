@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.Design;
+using System.ComponentModel.Design;
 using System.Data.Common;
 using System.Globalization;
 using SimpleDB;
@@ -16,6 +16,7 @@ public class BisonTest
 		var db = CSVDatabase<Observation>.getInstance();
 		db.setPath(Program.ObserveDatabasePath);
 		Observation rec = new Observation(1, "tuff", "cat at home", 1789151813, "Vestamager");
+
 		db.storeNoAppend(rec); // reset the db
 	}
 
@@ -23,11 +24,19 @@ public class BisonTest
 	public void ReadE2E()
 	{
 		// arrange
+		Console.WriteLine(Environment.CurrentDirectory);
 		var expectedTime = DateTimeOffset.FromUnixTimeSeconds(1789151813);
 		string expected =
 			$"{expectedTime.LocalDateTime.ToString("d/M/yyyy HH:mm:ss", CultureInfo.InvariantCulture)}";
+
+		CSVDatabase<Observation>
+			.getInstance()
+			.setPath(Environment.CurrentDirectory + "tests/data/bison_observe_cli_db.csv");
+
+		Console.WriteLine(Environment.CurrentDirectory);
 		var sw = new StringWriter();
-		string[] args = ["--read"];
+		Console.WriteLine(Environment.CurrentDirectory);
+		string[] args = ["-r"];
 		Console.SetOut(sw); // steal console output
 		// act
 		Program.Main(args);
@@ -46,7 +55,10 @@ public class BisonTest
 	{
 		// arrange
 		var sw = new StringWriter();
-		CSVDatabase<Observation>.getInstance().setPath("../../../");
+
+		CSVDatabase<Observation>
+			.getInstance()
+			.setPath(Environment.CurrentDirectory + "tests/data/bison_observe_cli_db.csv");
 		string[] args = ["-o", observation, location];
 		string[] args2 = ["-r"];
 		// act

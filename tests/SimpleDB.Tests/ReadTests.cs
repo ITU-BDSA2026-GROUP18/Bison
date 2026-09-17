@@ -13,12 +13,14 @@ public class SimpleDBReadTests
 		var dbPath = Path.Combine(AppContext.BaseDirectory, "bison_observe_cli_db.csv");
 		database.setPath(dbPath);
 		database = CSVDatabase<Observation>.getInstance();
+		this.database.setPath("../../../bison_observe_cli_db.csv");
 	}
 
 	[Fact]
 	public void ReadGetsAllLines()
 	{
 		//arrange in constructor
+		this.database.setPath("../../../bison_observe_cli_db.csv");
 
 		// act
 		var records = database.read();
