@@ -22,7 +22,8 @@ public class Program
 		if (!(Environment.CurrentDirectory.EndsWith("bison", 0)))
 		{
 			string temppath = Environment.CurrentDirectory;
-			int bisonIdx = temppath.IndexOf("bison", StringComparison.CurrentCultureIgnoreCase) + 5;
+			Console.WriteLine(temppath);
+			int bisonIdx = temppath.LastIndexOf("/bison", StringComparison.CurrentCultureIgnoreCase) + 6;
 			Environment.CurrentDirectory = temppath.Substring(0, bisonIdx);
 		}
 
