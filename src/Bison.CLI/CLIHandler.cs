@@ -6,23 +6,17 @@ class CLIHandler
 	{
 		RootCommand rootCommand = new("Bison.CLI");
 
-
 		Option<string> pathOption = new("--path", "-p")
 		{
 			Description = "Set root path containing \"data\" folder",
 			Recursive = true,
-			Arity = ArgumentArity.ExactlyOne
+			Arity = ArgumentArity.ExactlyOne,
 		};
-
-
 
 		var readCommand = new Command("--read", "Prints out entire contents of CSV to the console");
 
 		readCommand.SetAction(parseResult => Program.read(parseResult.GetValue(pathOption))); //TODO: Add path option to rest of relevant Actions
 		readCommand.Aliases.Add("-r");
-
-
-
 
 		var discTarg = new Argument<long>("ObservationId");
 		var discCommand = new Command(
@@ -63,10 +57,7 @@ class CLIHandler
 		var commTarg = new Argument<string>("Comment");
 		var idTarg = new Argument<long>("Id"); //TODO: change this to long
 
-		var commCommand = new Command(
-				"--comment", 
-				"Add comment to observation based on id"
-		)
+		var commCommand = new Command("--comment", "Add comment to observation based on id")
 		{
 			commTarg,
 			idTarg,
@@ -74,14 +65,10 @@ class CLIHandler
 		commCommand.Aliases.Add("-c");
 
 		commCommand.SetAction(parseResult =>
-			Program.comment(
-				parseResult.GetValue(commTarg)!,
-				parseResult.GetValue(idTarg)!
-			)
+			Program.comment(parseResult.GetValue(commTarg)!, parseResult.GetValue(idTarg)!)
 		);
 
 		//rootCommand.Subcommands.Add(pathCommand);
-
 
 		rootCommand.Options.Add(pathOption);
 		//rootCommand.SetAction(parseResult => Program.setEnvPath(parseResult.GetValue(pathOption)!));

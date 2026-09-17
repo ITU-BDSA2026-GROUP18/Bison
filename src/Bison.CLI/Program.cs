@@ -10,15 +10,9 @@ public record Observation(
 	string Location
 );
 
-public record Comment(
-	long ParentId, 
-	string Author, 
-	string Description, 
-	long Timestamp
-);
+public record Comment(long ParentId, string Author, string Description, long Timestamp);
 
 //var names could be better for the above, might get around to changing it
-
 
 public class Program
 {
@@ -28,10 +22,9 @@ public class Program
 		if (!(Environment.CurrentDirectory.EndsWith("bison", 0)))
 		{
 			string temppath = Environment.CurrentDirectory;
-			int bisonIdx = temppath.IndexOf("bison",StringComparison.CurrentCultureIgnoreCase) + 5;
+			int bisonIdx = temppath.IndexOf("bison", StringComparison.CurrentCultureIgnoreCase) + 5;
 			Environment.CurrentDirectory = temppath.Substring(0, bisonIdx);
 		}
-
 
 		CLIHandler clh = new CLIHandler(args);
 #if FLAG_TEST
@@ -42,16 +35,15 @@ public class Program
 	public static void setEnvPath(string envPath)
 	{
 		if (envPath != null)
-		{	
+		{
 			Environment.CurrentDirectory = envPath;
 			Console.WriteLine(Environment.CurrentDirectory);
 		}
 	}
 
-	public static void read(string? pathOption = null) 
+	public static void read(string? pathOption = null)
 	{
 		setEnvPath(pathOption);
-
 
 		var database = CSVDatabase<Observation>.getInstance();
 		database.setPath("data/bison_observe_cli_db.csv");
