@@ -18,6 +18,7 @@ public class Program
 {
 	public static void Main(string[] args)
 	{
+		//Environment.CurrentDirectory = "/Users/sproede/Projects/Bison/iosafnea/bison/sdoabw/bison/oidfaboea";
 		// hacky way to do path normalization, but for now it'll work.
 		if (!(Environment.CurrentDirectory.EndsWith("bison", 0)))
 		{
@@ -29,7 +30,11 @@ public class Program
 			{
 				innerIdx = temppath.LastIndexOf("/bison", StringComparison.CurrentCultureIgnoreCase) + 6;
 				totalIdx += innerIdx;
+				//Console.WriteLine(innerIdx);
+				//Console.WriteLine(totalIdx);
+				//Console.WriteLine(temppath);
 				temppath = temppath.Substring(innerIdx);
+				//Console.WriteLine(temppath);
 			}
 				Environment.CurrentDirectory = Environment.CurrentDirectory.Substring(0, totalIdx);
 		}
