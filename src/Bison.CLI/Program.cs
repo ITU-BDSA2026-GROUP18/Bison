@@ -1,3 +1,4 @@
+using System;
 using System.Globalization;
 using SimpleDB;
 
@@ -9,29 +10,53 @@ public record Observation(
 	string Location
 );
 
-public record Comment(
-		long ParentId, 
-		string Author, 
-		string Description, 
-		long Timestamp);
+public record Comment(long ParentId, string Author, string Description, long Timestamp);
 
 //var names could be better for the above, might get around to changing it
-
 
 public class Program
 {
 	public static void Main(string[] args)
 	{
+		// hacky way to do path normalization, but for now it'll work.
+
+		if (
+			!(
+				Environment.CurrentDirectory.EndsWith(
+					"bison",
+					StringComparison.CurrentCultureIgnoreCase
+				)
+			)
+		)
+		{
+			Console.WriteLine("TRIMMING!!!!!!!!");
+			string temppath = Environment.CurrentDirectory;
+			int bisonIdx =
+				temppath.LastIndexOf("bison", StringComparison.CurrentCultureIgnoreCase) + 5;
+			Environment.CurrentDirectory = temppath.Substring(0, bisonIdx);
+		}
+
 		CLIHandler clh = new CLIHandler(args);
 #if FLAG_TEST
 		Console.WriteLine("omg my flag works");
 #endif
 	}
 
-	public static void read()
+	public static void setEnvPath(string envPath)
 	{
+		if (envPath != null)
+		{
+			Environment.CurrentDirectory = envPath;
+			Console.WriteLine(Environment.CurrentDirectory);
+		}
+	}
+
+	public static void read(string? pathOption = null)
+	{
+		setEnvPath(pathOption);
+
 		var database = CSVDatabase<Observation>.getInstance();
-		database.setPath("src/SimpleDB/bison_observe_cli_db.csv");
+		database.setPath("data/bison_observe_cli_db.csv");
 		var records = database.read();
 		foreach (var record in records)
 		{
@@ -45,7 +70,7 @@ public class Program
 	public static void discussion(long observationId) // very similar to the above, could be refactored to be cleaner
 	{
 		var database = CSVDatabase<Comment>.getInstance();
-		database.setPath("src/SimpleDB/bison_comment_cli_db.csv");
+		database.setPath("data/bison_comment_cli_db.csv");
 		var records = database.read();
 		foreach (var record in records)
 		{
@@ -62,7 +87,7 @@ public class Program
 	public static void location(string location) // very similar to the above, could be refactored to be cleaner
 	{
 		var database = CSVDatabase<Observation>.getInstance();
-		database.setPath("src/SimpleDB/bison_observe_cli_db.csv");
+		database.setPath("data/bison_observe_cli_db.csv");
 		var records = database.read();
 		foreach (var record in records)
 		{
@@ -79,7 +104,7 @@ public class Program
 	public static void observe(string observation, string location)
 	{
 		var database = CSVDatabase<Observation>.getInstance();
-		database.setPath("src/SimpleDB/bison_observe_cli_db.csv");
+		database.setPath("data/bison_observe_cli_db.csv");
 		string author = Environment.UserName;
 		long timeStamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 		var rec = new Observation(
@@ -90,7 +115,7 @@ public class Program
 			location
 		);
 		// Pulling a random value here is also not great, throwing Ids into a set to check against
-		// or hashing contents of Observation would be ideal
+		// or potentially hashing contents of Observation would be more ideal
 
 		database.store(rec);
 	}
@@ -120,7 +145,7 @@ public class Program
 		}
 
 		var database = CSVDatabase<Comment>.getInstance();
-		database.setPath("src/SimpleDB/bison_comment_cli_db.csv");
+		database.setPath("data/bison_comment_cli_db.csv");
 		string author = Environment.UserName;
 		long timeStamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 		var rec = new Comment(Id, author, comment, timeStamp);

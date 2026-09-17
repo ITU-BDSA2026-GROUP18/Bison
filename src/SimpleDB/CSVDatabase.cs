@@ -3,10 +3,9 @@ namespace SimpleDB;
 using System.Globalization;
 using CsvHelper;
 
-
 public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 {
-	private string dbpath = "src/SimpleDB/bison_observe_cli_db.csv";
+	private string dbpath = "/data/bison_observe_cli_db.csv";
 
 	private CSVDatabase() { }
 

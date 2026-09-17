@@ -9,16 +9,17 @@ public class SimpleDBReadTests
 	public SimpleDBReadTests()
 	{
 		database = CSVDatabase<Observation>.getInstance();
-		this.database.setPath("../../../");
+		this.database.setPath("../../../bison_observe_cli_db.csv");
 	}
 
 	[Fact]
 	public void ReadGetsAllLines()
 	{
 		//arrange in constructor
+		this.database.setPath("../../../bison_observe_cli_db.csv");
 
 		// act
-		var records = database.read(CheepType.Observation);
+		var records = database.read();
 		var list = records.ToList();
 		// assert
 		Assert.Equal(3, list.Count);
@@ -33,7 +34,7 @@ public class SimpleDBReadTests
 		//arrange in constructor
 
 		// act
-		var records = database.read(CheepType.Observation);
+		var records = database.read();
 		var list = records.ToList();
 		// assert
 		Assert.Equal(author, list.First(o => o.Id == id).Author);
