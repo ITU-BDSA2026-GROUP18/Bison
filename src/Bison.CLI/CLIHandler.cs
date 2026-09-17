@@ -6,24 +6,23 @@ class CLIHandler
 	{
 		RootCommand rootCommand = new("Bison.CLI");
 
+
+		Option<string> pathOption = new("--path", "-p")
+		{
+			Description = "Set root path containing \"data\" folder",
+			Recursive = true,
+			Arity = ArgumentArity.ExactlyOne
+		};
+
+
+
 		var readCommand = new Command("--read", "Prints out entire contents of CSV to the console");
 
-		readCommand.SetAction(parseResult => Program.read());
+		readCommand.SetAction(parseResult => Program.read(parseResult.GetValue(pathOption))); //TODO: Add path option to rest of relevant Actions
 		readCommand.Aliases.Add("-r");
 
-		// terrible, terrible name. root path should be set by separate (optional) parameter, 
-		// exists for now to deal with testing.
-		var readPathTarg = new Argument<string>("RootPath"); 
-		var readPathCommand = new Command(
-			"--ReadWithRootPath",
-			"Prints out comments to Observation in the CSV database based on Manually set Root Path"
-		)
-		{
-			readPathTarg,
-		};
-		readPathCommand.Aliases.Add("-rwrp");
 
-		readPathCommand.SetAction(parseResult => Program.read(parseResult.GetValue(readPathTarg)!));
+
 
 		var discTarg = new Argument<long>("ObservationId");
 		var discCommand = new Command(
@@ -62,7 +61,7 @@ class CLIHandler
 		);
 
 		var commTarg = new Argument<string>("Comment");
-		var idTarg = new Argument<string>("Id"); //TODO: change this to long
+		var idTarg = new Argument<long>("Id"); //TODO: change this to long
 
 		var commCommand = new Command(
 				"--comment", 
@@ -77,11 +76,16 @@ class CLIHandler
 		commCommand.SetAction(parseResult =>
 			Program.comment(
 				parseResult.GetValue(commTarg)!,
-				Int64.Parse(parseResult.GetValue(idTarg)!)
+				parseResult.GetValue(idTarg)!
 			)
 		);
 
-		rootCommand.Subcommands.Add(readPathCommand);
+		//rootCommand.Subcommands.Add(pathCommand);
+
+
+		rootCommand.Options.Add(pathOption);
+		//rootCommand.SetAction(parseResult => Program.setEnvPath(parseResult.GetValue(pathOption)!));
+
 		rootCommand.Subcommands.Add(discCommand);
 		rootCommand.Subcommands.Add(readCommand);
 		rootCommand.Subcommands.Add(obsCommand);

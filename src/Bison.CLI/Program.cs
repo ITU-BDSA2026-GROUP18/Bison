@@ -11,10 +11,11 @@ public record Observation(
 );
 
 public record Comment(
-		long ParentId, 
-		string Author, 
-		string Description, 
-		long Timestamp);
+	long ParentId, 
+	string Author, 
+	string Description, 
+	long Timestamp
+);
 
 //var names could be better for the above, might get around to changing it
 
@@ -38,12 +39,19 @@ public class Program
 #endif
 	}
 
-	public static void read(string rootPath = null)
+	public static void setEnvPath(string envPath)
 	{
-		if (rootPath != null)
-		{
-			Environment.CurrentDirectory = rootPath;
+		if (envPath != null)
+		{	
+			Environment.CurrentDirectory = envPath;
+			Console.WriteLine(Environment.CurrentDirectory);
 		}
+	}
+
+	public static void read(string? pathOption = null) 
+	{
+		setEnvPath(pathOption);
+
 
 		var database = CSVDatabase<Observation>.getInstance();
 		database.setPath("data/bison_observe_cli_db.csv");
@@ -105,7 +113,7 @@ public class Program
 			location
 		);
 		// Pulling a random value here is also not great, throwing Ids into a set to check against
-		// or hashing contents of Observation would be ideal
+		// or potentially hashing contents of Observation would be more ideal
 
 		database.store(rec);
 	}
