@@ -18,23 +18,22 @@ public class Program
 {
 	public static void Main(string[] args)
 	{
-		//Environment.CurrentDirectory = "/Users/sproede/Projects/Bison/iosafnea/bison/sdoabw/bison/oidfaboea";
 		// hacky way to do path normalization, but for now it'll work.
-		if (!(Environment.CurrentDirectory.EndsWith("bison", 0)))
+		if ( !(Environment.CurrentDirectory.EndsWith("bison", 0)) && !(Environment.CurrentDirectory.EndsWith("Bison", 0)) )
 		{
 			//TODO: don't do weird path handling like this
 			int innerIdx = 0;
 			int totalIdx = 0;
 			string temppath = Environment.CurrentDirectory;
-			while ( temppath.LastIndexOf("/bison", StringComparison.CurrentCultureIgnoreCase) != -1 )
+			while ( temppath.LastIndexOf("/bison/", StringComparison.CurrentCultureIgnoreCase) != -1 )
 			{
-				innerIdx = temppath.LastIndexOf("/bison", StringComparison.CurrentCultureIgnoreCase) + 6;
+				innerIdx = temppath.LastIndexOf("/bison/", StringComparison.CurrentCultureIgnoreCase) + 6;
 				totalIdx += innerIdx;
-				//Console.WriteLine(innerIdx);
-				//Console.WriteLine(totalIdx);
-				//Console.WriteLine(temppath);
+				Console.WriteLine(innerIdx);
+				Console.WriteLine(totalIdx);
+				Console.WriteLine(temppath);
 				temppath = temppath.Substring(innerIdx);
-				//Console.WriteLine(temppath);
+				Console.WriteLine(temppath);
 			}
 				Environment.CurrentDirectory = Environment.CurrentDirectory.Substring(0, totalIdx);
 		}
