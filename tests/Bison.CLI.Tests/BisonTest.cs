@@ -1,4 +1,5 @@
-﻿using System;
+using System.ComponentModel.Design;
+using System.Data.Common;
 using System.Globalization;
 using SimpleDB;
 
@@ -8,25 +9,12 @@ public class BisonTest
 {
 	public BisonTest()
 	{
-		if (
-			!(
-				Environment.CurrentDirectory.EndsWith(
-					"bison",
-					StringComparison.CurrentCultureIgnoreCase
-				)
-			)
-		)
-		{
-			string temppath = Environment.CurrentDirectory;
-			int bisonIdx =
-				temppath.LastIndexOf("bison/", StringComparison.CurrentCultureIgnoreCase) + 5;
-			Environment.CurrentDirectory = temppath.Substring(0, bisonIdx);
-		}
-
+		Program.ObserveDatabasePath = Path.Combine(
+			AppContext.BaseDirectory,
+			"bison_observe_cli_db.csv"
+		);
 		var db = CSVDatabase<Observation>.getInstance();
-
-		db.setPath(Environment.CurrentDirectory + "/tests/data/bison_observe_cli_db.csv");
-
+		db.setPath(Program.ObserveDatabasePath);
 		Observation rec = new Observation(1, "tuff", "cat at home", 1789151813, "Vestamager");
 
 		db.storeNoAppend(rec); // reset the db
@@ -48,7 +36,7 @@ public class BisonTest
 		Console.WriteLine(Environment.CurrentDirectory);
 		var sw = new StringWriter();
 		Console.WriteLine(Environment.CurrentDirectory);
-		string[] args = ["-r", "-p", (Environment.CurrentDirectory + "/tests/")];
+		string[] args = ["-r"];
 		Console.SetOut(sw); // steal console output
 		// act
 		Program.Main(args);
@@ -80,5 +68,40 @@ public class BisonTest
 		// assert
 		Assert.Contains(Environment.UserName, sw.ToString()); // easier than full string cmp
 		Assert.Contains(observation, sw.ToString());
+	}
+
+	[Theory]
+	[InlineData("ITU")]
+	[InlineData("Vestamager")]
+	public void LocationOutputsCorrectRecords(string location)
+	{
+		// arrange
+		var sw = new StringWriter();
+		var db = CSVDatabase<Observation>.getInstance();
+		db.setPath(Program.ObserveDatabasePath);
+		var records = db.read();
+		string[] args = ["-l", location];
+		List<Observation> relevantRecords = new List<Observation>();
+		// act
+		foreach (var record in records)
+		{
+			if (record.Location == location)
+			{
+				relevantRecords.Add(record);
+			}
+		}
+		Console.SetOut(sw);
+		Program.Main(args);
+		// assert
+		string[] result = sw.ToString()
+			.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+		for (int i = 0; i < relevantRecords.Count; i++)
+		{
+			Assert.Contains(relevantRecords[i].Id.ToString(), result[i]);
+			Assert.Contains(relevantRecords[i].Author, result[i]);
+			Assert.Contains(relevantRecords[i].Description, result[i]);
+			Assert.Contains(relevantRecords[i].Location, result[i]);
+		}
+		Assert.Equal(relevantRecords.Count, result.Length);
 	}
 }

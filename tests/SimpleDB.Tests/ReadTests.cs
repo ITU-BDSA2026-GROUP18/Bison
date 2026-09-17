@@ -1,4 +1,6 @@
-﻿namespace SimpleDB.Tests;
+﻿using Microsoft.VisualStudio.TestPlatform.TestHost;
+
+namespace SimpleDB.Tests;
 
 public class SimpleDBReadTests
 {
@@ -8,6 +10,8 @@ public class SimpleDBReadTests
 
 	public SimpleDBReadTests()
 	{
+		var dbPath = Path.Combine(AppContext.BaseDirectory, "bison_observe_cli_db.csv");
+		database.setPath(dbPath);
 		database = CSVDatabase<Observation>.getInstance();
 		this.database.setPath("../../../bison_observe_cli_db.csv");
 	}

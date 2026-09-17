@@ -16,8 +16,12 @@ public record Comment(long ParentId, string Author, string Description, long Tim
 
 public class Program
 {
+	public static string ObserveDatabasePath { get; set; } = "./data/bison_observe_cli_db.csv";
+	public static string CommentDatabasePath { get; set; } = "./data/bison_comment_cli_db.csv";
+
 	public static void Main(string[] args)
 	{
+		/*
 		// hacky way to do path normalization, but for now it'll work.
 
 		if (
@@ -35,6 +39,7 @@ public class Program
 				temppath.LastIndexOf("bison", StringComparison.CurrentCultureIgnoreCase) + 5;
 			Environment.CurrentDirectory = temppath.Substring(0, bisonIdx);
 		}
+		*/
 
 		CLIHandler clh = new CLIHandler(args);
 #if FLAG_TEST
@@ -56,7 +61,7 @@ public class Program
 		setEnvPath(pathOption);
 
 		var database = CSVDatabase<Observation>.getInstance();
-		database.setPath("data/bison_observe_cli_db.csv");
+		database.setPath(ObserveDatabasePath);
 		var records = database.read();
 		foreach (var record in records)
 		{
@@ -70,7 +75,7 @@ public class Program
 	public static void discussion(long observationId) // very similar to the above, could be refactored to be cleaner
 	{
 		var database = CSVDatabase<Comment>.getInstance();
-		database.setPath("data/bison_comment_cli_db.csv");
+		database.setPath(CommentDatabasePath);
 		var records = database.read();
 		foreach (var record in records)
 		{
@@ -87,7 +92,7 @@ public class Program
 	public static void location(string location) // very similar to the above, could be refactored to be cleaner
 	{
 		var database = CSVDatabase<Observation>.getInstance();
-		database.setPath("data/bison_observe_cli_db.csv");
+		database.setPath(ObserveDatabasePath);
 		var records = database.read();
 		foreach (var record in records)
 		{
@@ -104,7 +109,7 @@ public class Program
 	public static void observe(string observation, string location)
 	{
 		var database = CSVDatabase<Observation>.getInstance();
-		database.setPath("data/bison_observe_cli_db.csv");
+		database.setPath(ObserveDatabasePath);
 		string author = Environment.UserName;
 		long timeStamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 		var rec = new Observation(
@@ -129,6 +134,7 @@ public class Program
 			bool idExists = false;
 
 			var csvData = CSVDatabase<Observation>.getInstance();
+			csvData.setPath(ObserveDatabasePath);
 			var csvRec = csvData.read();
 
 			foreach (var existingRecord in csvRec)
@@ -145,7 +151,7 @@ public class Program
 		}
 
 		var database = CSVDatabase<Comment>.getInstance();
-		database.setPath("data/bison_comment_cli_db.csv");
+		database.setPath(CommentDatabasePath);
 		string author = Environment.UserName;
 		long timeStamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 		var rec = new Comment(Id, author, comment, timeStamp);
