@@ -9,14 +9,14 @@ public class SimpleDBReadTests
 	public SimpleDBReadTests()
 	{
 		database = CSVDatabase<Observation>.getInstance();
-		this.database.setPath("../../../");
+		this.database.setPath("../../../bison_observe_cli_db.csv");
 	}
 
 	[Fact]
 	public void ReadGetsAllLines()
 	{
 		//arrange in constructor
-		this.database.setPath("../../../");
+		this.database.setPath("../../../bison_observe_cli_db.csv");
 
 		// act
 		var records = database.read();
