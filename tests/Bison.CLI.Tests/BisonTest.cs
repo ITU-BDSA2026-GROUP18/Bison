@@ -12,7 +12,7 @@ public class BisonTest
 	{
 		//this should be a publicly accessible path normalization function, for now it isn't.
 		string temppath = Environment.CurrentDirectory;
-		int bisonIdx = temppath.LastIndexOf("/bison", StringComparison.CurrentCultureIgnoreCase) + 6;
+		int bisonIdx = temppath.LastIndexOf("/bison/", StringComparison.CurrentCultureIgnoreCase) + 6;
 		Environment.CurrentDirectory = temppath.Substring(0, bisonIdx);
 
 		var db = CSVDatabase<Observation>.getInstance();
@@ -30,7 +30,7 @@ public class BisonTest
 			$"{expectedTime.LocalDateTime.ToString("d/M/yyyy HH:mm:ss", CultureInfo.InvariantCulture)}";
 
 		string temppath = Environment.CurrentDirectory;
-		int bisonIdx = temppath.LastIndexOf("/bison", StringComparison.CurrentCultureIgnoreCase) + 6;
+		int bisonIdx = temppath.LastIndexOf("/bison/", StringComparison.CurrentCultureIgnoreCase) + 6;
 		Environment.CurrentDirectory = temppath.Substring(0, bisonIdx);
 
 		CSVDatabase<Observation>
@@ -58,7 +58,7 @@ public class BisonTest
 		// arrange
 		var sw = new StringWriter();
 		string temppath = Environment.CurrentDirectory;
-		int bisonIdx = temppath.LastIndexOf("/bison", StringComparison.CurrentCultureIgnoreCase) + 6;
+		int bisonIdx = temppath.LastIndexOf("/bison/", StringComparison.CurrentCultureIgnoreCase) + 6;
 		Environment.CurrentDirectory = temppath.Substring(0, bisonIdx);
 
 		CSVDatabase<Observation>
