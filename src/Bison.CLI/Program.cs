@@ -58,7 +58,7 @@ public class Program
 		app.MapGet("/observations", () => records);
 		app.Run();
 #else
-		
+
 		foreach (var record in records)
 		{
 			DateTimeOffset utcTime = DateTimeOffset.FromUnixTimeSeconds(record.Timestamp);

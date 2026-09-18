@@ -18,8 +18,6 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 
 #if WEBSERVER
 
-
-
 	public IEnumerable<T> read(int? limit = null)
 	{
 		using var reader = new StreamReader(dbpath);
@@ -83,5 +81,4 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 		csv.WriteRecord(record);
 	}
 #endif
-
 }
