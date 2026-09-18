@@ -67,25 +67,48 @@ public class Program
 #endif
 	}
 
-	public static void discussion(long observationId) // very similar to the above, could be refactored to be cleaner
+	private static IEnumerable<Comment> getMatchingId(long Id)
 	{
+		List<Comment> filteredRecords = new List<Comment>();
+
 		var database = CSVDatabase<Comment>.getInstance();
 		database.setPath(CommentDatabasePath);
 		var records = database.read();
 
-#if WEBSERVER
-		app.MapGet("/discussion", () => records);
-		app.Run();
-#else
 		foreach (var record in records)
 		{
-			if (record.ParentId == observationId)
+			if (record.ParentId == Id)
 			{
-				DateTimeOffset utcTime = DateTimeOffset.FromUnixTimeSeconds(record.Timestamp);
-				Console.WriteLine(
-					$"{record.ParentId} - {record.Author} @ {utcTime.LocalDateTime.ToString("d/M/yyyy HH:mm:ss", CultureInfo.InvariantCulture)}: {record.Description}"
-				);
+				filteredRecords.Add(record);
 			}
+		}
+		return filteredRecords;
+	}
+
+#if WEBSERVER
+	public static void discussion() // very similar to the above, could be refactored to be cleaner
+#else
+	public static void discussion(long observationId)
+#endif
+	{
+#if WEBSERVER
+		app.MapPost(
+			"/comments",
+			(long netId) =>
+			{
+				var filtered = getMatchingId(netId);
+				Results.Created($"Comments to request:\n {filtered}", filtered);
+			}
+		);
+		app.Run();
+#else
+		var filtered = getMatchingId(observationId);
+		foreach (var record in filtered)
+		{
+			DateTimeOffset utcTime = DateTimeOffset.FromUnixTimeSeconds(record.Timestamp);
+			Console.WriteLine(
+				$"{record.ParentId} - {record.Author} @ {utcTime.LocalDateTime.ToString("d/M/yyyy HH:mm:ss", CultureInfo.InvariantCulture)}: {record.Description}"
+			);
 		}
 
 #endif
@@ -108,10 +131,25 @@ public class Program
 		}
 	}
 
+#if WEBSERVER //TODO: make this more boring
+	public static void observe()
+#else
 	public static void observe(string observation, string location)
+#endif
 	{
 		var database = CSVDatabase<Observation>.getInstance();
 		database.setPath(ObserveDatabasePath);
+
+#if WEBSERVER
+		app.MapPost(
+			"/observation",
+			(Observation netObservation) =>
+			{
+				database.store(netObservation);
+			}
+		);
+		app.Run(); // unfortunately the endpoint client has to supply their own ID here.
+#else
 		string author = Environment.UserName;
 		long timeStamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 		var rec = new Observation(
@@ -125,31 +163,55 @@ public class Program
 		// or potentially hashing contents of Observation would be more ideal
 
 		database.store(rec);
+#endif
 	}
 
-	public static void comment(string comment, long Id)
+	private static bool doesIdExist(long Id)
 	{
-		// below is scope limited given it's just a routine for checking if ID exists.
-		// Ideally down the line we want to store this as a Set to avoid slowdown
-		// checking against larger databases
+		var csvData = CSVDatabase<Observation>.getInstance();
+		csvData.setPath(ObserveDatabasePath);
+		var csvRec = csvData.read();
+		foreach (var existingRecord in csvRec)
 		{
-			bool idExists = false;
+			if (existingRecord.Id == Id)
+				return true;
+		}
 
-			var csvData = CSVDatabase<Observation>.getInstance();
-			csvData.setPath(ObserveDatabasePath);
-			var csvRec = csvData.read();
+		return false;
+	}
 
-			foreach (var existingRecord in csvRec)
+#if WEBSERVER
+	public static void comment()
+#else
+	public static void comment(string comment, long Id)
+#endif
+	{
+#if WEBSERVER
+
+		app.MapPost(
+			"/comment",
+			(Comment netComment) =>
 			{
-				if (existingRecord.Id == Id)
-					idExists = true;
+				if (doesIdExist(netComment.ParentId))
+				{
+					var database = CSVDatabase<Comment>.getInstance();
+					database.setPath(CommentDatabasePath);
+					database.store(netComment);
+					return Results.Created($"created {netComment}", netComment);
+				}
+				else
+				{
+					return Results.BadRequest(netComment);
+				}
 			}
+		);
+		app.Run();
+#else
 
-			if (!idExists) // ID not found!
-			{
-				Console.WriteLine("Observation ID not found!");
-				return;
-			}
+		if (!(doesIdExist(Id))) // ID not found!
+		{
+			Console.WriteLine("Observation ID not found!");
+			return;
 		}
 
 		var database = CSVDatabase<Comment>.getInstance();
@@ -159,5 +221,6 @@ public class Program
 		var rec = new Comment(Id, author, comment, timeStamp);
 
 		database.store(rec);
+#endif
 	}
 }
