@@ -14,6 +14,8 @@ public record Comment(long ParentId, string Author, string Description, long Tim
 
 //var names could be better for the above, might get around to changing it
 
+public record ObservationTest(string Author, string Message, long Timestamp); //TODO: REMOVE
+
 public class Program
 {
 	public static string ObserveDatabasePath { get; set; } = "./data/bison_observe_cli_db.csv";
@@ -21,27 +23,13 @@ public class Program
 
 	public static void Main(string[] args)
 	{
-		/*
-		// hacky way to do path normalization, but for now it'll work.
+#if WEBSERVER
+		Console.WriteLine("------- WEB SERVER BUILD -------");
 
-		if (
-			!(
-				Environment.CurrentDirectory.EndsWith(
-					"bison",
-					StringComparison.CurrentCultureIgnoreCase
-				)
-			)
-		)
-		{
-			Console.WriteLine("TRIMMING!!!!!!!!");
-			string temppath = Environment.CurrentDirectory;
-			int bisonIdx =
-				temppath.LastIndexOf("bison", StringComparison.CurrentCultureIgnoreCase) + 5;
-			Environment.CurrentDirectory = temppath.Substring(0, bisonIdx);
-		}
-		*/
+#endif
 
 		CLIHandler clh = new CLIHandler(args);
+
 #if FLAG_TEST
 		Console.WriteLine("omg my flag works");
 #endif
@@ -63,6 +51,14 @@ public class Program
 		var database = CSVDatabase<Observation>.getInstance();
 		database.setPath(ObserveDatabasePath);
 		var records = database.read();
+
+#if WEBSERVER
+		var builder = WebApplication.CreateBuilder();
+		var app = builder.Build();
+		app.MapGet("/observations", () => records);
+		app.Run();
+#else
+		
 		foreach (var record in records)
 		{
 			DateTimeOffset utcTime = DateTimeOffset.FromUnixTimeSeconds(record.Timestamp);
@@ -70,6 +66,7 @@ public class Program
 				$"{record.Id} - {record.Author} @ {utcTime.LocalDateTime.ToString("d/M/yyyy HH:mm:ss", CultureInfo.InvariantCulture)}, {record.Location}: {record.Description}"
 			);
 		}
+#endif
 	}
 
 	public static void discussion(long observationId) // very similar to the above, could be refactored to be cleaner
@@ -77,6 +74,13 @@ public class Program
 		var database = CSVDatabase<Comment>.getInstance();
 		database.setPath(CommentDatabasePath);
 		var records = database.read();
+
+#if WEBSERVER
+		var builder = WebApplication.CreateBuilder();
+		var app = builder.Build();
+		app.MapGet("/discussion", () => records);
+		app.Run();
+#else
 		foreach (var record in records)
 		{
 			if (record.ParentId == observationId)
@@ -87,6 +91,8 @@ public class Program
 				);
 			}
 		}
+
+#endif
 	}
 
 	public static void location(string location) // very similar to the above, could be refactored to be cleaner
