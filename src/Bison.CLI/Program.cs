@@ -14,12 +14,12 @@ public record Comment(long ParentId, string Author, string Description, long Tim
 
 //var names could be better for the above, might get around to changing it
 
-
 public class Program
 {
 	public static string ObserveDatabasePath { get; set; } = "./data/bison_observe_cli_db.csv";
 	public static string CommentDatabasePath { get; set; } = "./data/bison_comment_cli_db.csv";
-	public static Microsoft.AspNetCore.Builder.WebApplicationBuilder builder = WebApplication.CreateBuilder();
+	public static Microsoft.AspNetCore.Builder.WebApplicationBuilder builder =
+		WebApplication.CreateBuilder();
 	public static Microsoft.AspNetCore.Builder.WebApplication app = builder.Build();
 
 	public static void Main(string[] args)
