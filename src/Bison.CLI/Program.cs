@@ -19,12 +19,13 @@ public class Program
 {
 	public static string ObserveDatabasePath { get; set; } = "./data/bison_observe_cli_db.csv";
 	public static string CommentDatabasePath { get; set; } = "./data/bison_comment_cli_db.csv";
+	public static Microsoft.AspNetCore.Builder.WebApplicationBuilder builder = WebApplication.CreateBuilder();
+	public static Microsoft.AspNetCore.Builder.WebApplication app = builder.Build();
 
 	public static void Main(string[] args)
 	{
 #if WEBSERVER
 		Console.WriteLine("------- WEB SERVER BUILD -------");
-
 #endif
 
 		CLIHandler clh = new CLIHandler(args);
@@ -52,8 +53,6 @@ public class Program
 		var records = database.read();
 
 #if WEBSERVER
-		var builder = WebApplication.CreateBuilder();
-		var app = builder.Build();
 		app.MapGet("/observations", () => records);
 		app.Run();
 #else
@@ -75,8 +74,6 @@ public class Program
 		var records = database.read();
 
 #if WEBSERVER
-		var builder = WebApplication.CreateBuilder();
-		var app = builder.Build();
 		app.MapGet("/discussion", () => records);
 		app.Run();
 #else
