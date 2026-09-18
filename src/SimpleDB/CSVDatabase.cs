@@ -5,6 +5,7 @@ using CsvHelper;
 
 public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 {
+
 	private string dbpath = "/data/bison_observe_cli_db.csv";
 
 	private CSVDatabase() { }
@@ -15,6 +16,22 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 	{
 		return instance;
 	}
+
+#if WEBSERVER
+
+	public void start(){
+		// her sætter du alt server shit op
+	}
+
+	public async Task<IEnumerable<T>> read(){ 
+		// async metode til at få data tilbage
+	};
+
+	public async void store(){
+		// same same til at store
+	};
+
+#else
 
 	public IEnumerable<T> read(int? limit = null)
 	{
@@ -46,4 +63,6 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 		csv.NextRecord();
 		csv.WriteRecord(record);
 	}
+#endif
+
 }
