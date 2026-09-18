@@ -14,7 +14,6 @@ public record Comment(long ParentId, string Author, string Description, long Tim
 
 //var names could be better for the above, might get around to changing it
 
-public record ObservationTest(string Author, string Message, long Timestamp); //TODO: REMOVE
 
 public class Program
 {
