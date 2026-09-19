@@ -9,12 +9,12 @@ public class BisonTest
 {
 	public BisonTest()
 	{
-		CSVDatabase<Observe>.ObserveDatabasePath = Path.Combine(
+		CSVDatabase<Observation>.ObserveDatabasePath = Path.Combine(
 			AppContext.BaseDirectory,
 			"bison_observe_cli_db.csv"
 		);
 		var db = CSVDatabase<Observation>.getInstance();
-		db.setPath(CSVDatabase<Observe>.ObserveDatabasePath);
+		db.setPath(CSVDatabase<Observation>.ObserveDatabasePath);
 		Observation rec = new Observation(1, "tuff", "cat at home", 1789151813, "Vestamager");
 
 		db.storeNoAppend(rec); // reset the db
