@@ -27,7 +27,6 @@ public class Program
 
 	public static void Main(string[] args)
 	{
-		//CLIHandler clh = new CLIHandler(args);
 
 #if WEBSERVER
 		Console.WriteLine("------- WEB SERVER BUILD -------");
@@ -38,6 +37,7 @@ public class Program
 #endif
 	}
 #else
+		CLIHandler clh = new CLIHandler(args);
 	}
 	public static void setEnvPath(string envPath)
 	{

@@ -31,7 +31,7 @@ public class BisonTest
 
 		CSVDatabase<Observation>
 			.getInstance()
-			.setPath(Environment.CurrentDirectory + "tests/data/bison_observe_cli_db.csv");
+			.setPath(Environment.CurrentDirectory + "tests/bison_observe_cli_db.csv");
 
 		Console.WriteLine(Environment.CurrentDirectory);
 		var sw = new StringWriter();
@@ -58,7 +58,7 @@ public class BisonTest
 
 		CSVDatabase<Observation>
 			.getInstance()
-			.setPath(Environment.CurrentDirectory + "tests/data/bison_observe_cli_db.csv");
+			.setPath(Environment.CurrentDirectory + "tests/bison_observe_cli_db.csv");
 		string[] args = ["-o", observation, location];
 		string[] args2 = ["-r"];
 		// act
