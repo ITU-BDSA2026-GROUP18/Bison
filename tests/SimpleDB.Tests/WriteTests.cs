@@ -1,4 +1,5 @@
 namespace SimpleDB.Tests;
+
 using SimpleDB;
 
 public class SimpleDBWriteTests
@@ -12,7 +13,6 @@ public class SimpleDBWriteTests
 		this.database = CSVDatabase<Observation>.getInstance();
 		this.database.setPath(CommentDatabasePath);
 	}
-
 
 	[Fact]
 	public void WriteInputsDataToDB()
@@ -39,7 +39,7 @@ public class SimpleDBWriteTests
 		// this test somehow reads, and writes to different dbs???
 		// honestly these tests are also useless, since we no longer
 		// use these methods
-		return; 
+		return;
 		// arrange
 		var rec = new Observation(0, author, observation, timeStamp, "here");
 		database.setPath(CommentDatabasePath);

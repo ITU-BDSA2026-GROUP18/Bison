@@ -6,7 +6,10 @@ public class SimpleDBReadTests
 
 	public SimpleDBReadTests()
 	{
-		var dbPath = Path.Combine(AppContext.BaseDirectory, "../../../bison_observe_cli_db_read.csv");
+		var dbPath = Path.Combine(
+			AppContext.BaseDirectory,
+			"../../../bison_observe_cli_db_read.csv"
+		);
 		database.setPath(dbPath);
 	}
 
