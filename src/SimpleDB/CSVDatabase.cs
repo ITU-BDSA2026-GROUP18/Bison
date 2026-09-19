@@ -15,12 +15,14 @@ public record Observation(
 
 public record Comment(long ParentId, string Author, string Description, long Timestamp);
 
-public sealed class CSVDatabase<T> : IDatabaseRepository<T>
+public sealed class CSVDatabase<T>
 {
 	public static string ObserveDatabasePath { get; set; } = "./data/bison_observe_cli_db.csv";
 	public static string CommentDatabasePath { get; set; } = "./data/bison_comment_cli_db.csv";
 
 	private string dbpath = "/data/bison_observe_cli_db.csv";
+
+	private Microsoft.AspNetCore.Builder.WebApplication? app;
 
 	private CSVDatabase() { }
 
@@ -31,23 +33,14 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 		return instance;
 	}
 
-	public void setPath(string path) // set custom path, used for tests
-	{
-		dbpath = path;
-	}
-
-#if WEBSERVER
-
-	Microsoft.AspNetCore.Builder.WebApplication app;
-
 	public void start(Microsoft.AspNetCore.Builder.WebApplication app_)
 	{
 		app = app_;
 		Console.WriteLine("TEST");
 		// her sætter du alt server shit op
 
-		read();
-		store();
+		setReadEndpoints();
+		setStoreEndpoints();
 
 		app.Run();
 	}
@@ -101,16 +94,15 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 		return false;
 	}
 
-	public void read()
+	public void setReadEndpoints()
 	{
 		var observationsDB = CSVDatabase<Observation>.getInstance();
 		var commentsDB = CSVDatabase<Comment>.getInstance();
 		observationsDB.setPath(ObserveDatabasePath);
 		commentsDB.setPath(CommentDatabasePath);
-		var observationRec = observationsDB.internalRead();
-		var commentRec = commentsDB.internalRead();
+		var commentRec = commentsDB.internalRead(); // its never used?
 
-		app.MapGet("/observations", () => commentRec);
+		app.MapGet("/observations", () => observationsDB.internalRead());
 
 		app.MapPost(
 			"/comments",
@@ -122,9 +114,8 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 		);
 	}
 
-	public void store()
+	public void setStoreEndpoints()
 	{
-		// same same til at store
 		var observationsDB = CSVDatabase<Observation>.getInstance();
 		var commentsDB = CSVDatabase<Comment>.getInstance();
 		observationsDB.setPath(ObserveDatabasePath);
@@ -156,32 +147,8 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 		);
 	}
 
-#else
-
-	public IEnumerable<T> read(int? limit = null)
+	public void setPath(string path)
 	{
-		using var reader = new StreamReader(dbpath);
-		var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
-		var records = csv.GetRecords<T>().ToList();
-		return records;
+		dbpath = path;
 	}
-
-	public void store(T record)
-	{
-		using var writer = new StreamWriter(dbpath, append: true);
-		using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
-
-		csv.NextRecord();
-		csv.WriteRecord(record);
-	}
-
-	public void storeNoAppend(T record) // will write to the database as if its empty, aka overwrite
-	{
-		using var writer = new StreamWriter(dbpath);
-		using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
-		csv.WriteHeader<T>();
-		csv.NextRecord();
-		csv.WriteRecord(record);
-	}
-#endif
 }
