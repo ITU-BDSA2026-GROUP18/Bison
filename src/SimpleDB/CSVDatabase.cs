@@ -39,6 +39,7 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 #if WEBSERVER
 
 	Microsoft.AspNetCore.Builder.WebApplication app;
+
 	public void start(Microsoft.AspNetCore.Builder.WebApplication app_)
 	{
 		app = app_;
@@ -119,7 +120,6 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 				Results.Created($"Comments to request:\n {filtered}", filtered);
 			}
 		);
-
 	}
 
 	public void store()

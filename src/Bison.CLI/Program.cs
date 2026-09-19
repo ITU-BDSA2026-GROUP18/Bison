@@ -27,7 +27,6 @@ public class Program
 
 	public static void Main(string[] args)
 	{
-
 #if WEBSERVER
 		Console.WriteLine("------- WEB SERVER BUILD -------");
 		CSVDatabase<Comment>.getInstance().start(app);
@@ -39,6 +38,7 @@ public class Program
 #else
 		CLIHandler clh = new CLIHandler(args);
 	}
+
 	public static void setEnvPath(string envPath)
 	{
 		if (envPath != null)
@@ -163,5 +163,5 @@ public class Program
 
 		database.store(rec);
 	}
-	#endif
+#endif
 }
