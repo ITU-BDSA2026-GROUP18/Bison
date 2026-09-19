@@ -2,6 +2,8 @@ namespace SimpleDB;
 
 using System.Globalization;
 using CsvHelper;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 
 public record Observation(
 	long Id,
@@ -36,10 +38,13 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 
 #if WEBSERVER
 
-	public void start()
+	Microsoft.AspNetCore.Builder.WebApplication app;
+	public void start(Microsoft.AspNetCore.Builder.WebApplication app_)
 	{
+		app = app_;
 		Console.WriteLine("TEST");
 		// her sætter du alt server shit op
+
 		read();
 		store();
 
@@ -95,10 +100,10 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 		return false;
 	}
 
-	public async Task<IEnumerable<T>> read()
+	public void read()
 	{
 		var observationsDB = CSVDatabase<Observation>.getInstance();
-		var commentsDB = CSVDatabase<Comments>.getInstance();
+		var commentsDB = CSVDatabase<Comment>.getInstance();
 		observationsDB.setPath(ObserveDatabasePath);
 		commentsDB.setPath(CommentDatabasePath);
 		var observationRec = observationsDB.internalRead();
@@ -115,23 +120,21 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 			}
 		);
 
-		var mylist = new List<T>();
-		// async metode til at få data tilbage
 	}
 
-	public async void store(T Obj)
+	public void store()
 	{
 		// same same til at store
 		var observationsDB = CSVDatabase<Observation>.getInstance();
 		var commentsDB = CSVDatabase<Comment>.getInstance();
 		observationsDB.setPath(ObserveDatabasePath);
-		comments.setPath(CommentDatabasePath);
+		commentsDB.setPath(CommentDatabasePath);
 
 		app.MapPost(
 			"/observation",
 			(Observation netObservation) =>
 			{
-				database.internalStore(netObservation);
+				observationsDB.internalStore(netObservation);
 			}
 		);
 
@@ -141,8 +144,8 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 			{
 				if (doesIdExist(netComment.ParentId))
 				{
-					database.setPath(CommentDatabasePath);
-					database.internalStore(netComment);
+					commentsDB.setPath(CommentDatabasePath);
+					commentsDB.internalStore(netComment);
 					return Results.Created($"created {netComment}", netComment);
 				}
 				else

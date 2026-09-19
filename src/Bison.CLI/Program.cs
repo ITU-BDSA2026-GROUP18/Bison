@@ -27,18 +27,18 @@ public class Program
 
 	public static void Main(string[] args)
 	{
-		CLIHandler clh = new CLIHandler(args);
+		//CLIHandler clh = new CLIHandler(args);
 
 #if WEBSERVER
 		Console.WriteLine("------- WEB SERVER BUILD -------");
-		CSVDatabase.start();
-#endif
+		CSVDatabase<Comment>.getInstance().start(app);
 
 #if FLAG_TEST
 		Console.WriteLine("omg my flag works");
 #endif
 	}
-
+#else
+	}
 	public static void setEnvPath(string envPath)
 	{
 		if (envPath != null)
@@ -163,4 +163,5 @@ public class Program
 
 		database.store(rec);
 	}
+	#endif
 }
