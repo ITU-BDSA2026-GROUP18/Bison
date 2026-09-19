@@ -9,12 +9,12 @@ public class BisonTest
 {
 	public BisonTest()
 	{
-		Program.ObserveDatabasePath = Path.Combine(
+		CSVDatabase<Observe>.ObserveDatabasePath = Path.Combine(
 			AppContext.BaseDirectory,
 			"bison_observe_cli_db.csv"
 		);
 		var db = CSVDatabase<Observation>.getInstance();
-		db.setPath(Program.ObserveDatabasePath);
+		db.setPath(CSVDatabase<Observe>.ObserveDatabasePath);
 		Observation rec = new Observation(1, "tuff", "cat at home", 1789151813, "Vestamager");
 
 		db.storeNoAppend(rec); // reset the db
@@ -78,7 +78,7 @@ public class BisonTest
 		// arrange
 		var sw = new StringWriter();
 		var db = CSVDatabase<Observation>.getInstance();
-		db.setPath(Program.ObserveDatabasePath);
+		db.setPath(CSVDatabase<Observation>.ObserveDatabasePath);
 		var records = db.read();
 		string[] args = ["-l", location];
 		List<Observation> relevantRecords = new List<Observation>();
