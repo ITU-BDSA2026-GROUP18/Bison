@@ -3,6 +3,7 @@ namespace SimpleDB;
 using System.Globalization;
 using System.Linq;
 using CsvHelper;
+using CsvHelper.Configuration.Attributes;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 
@@ -16,10 +17,31 @@ public record Observation(
 
 public record Comment(long ParentId, string Author, string Description, long Timestamp);
 
+//Most relevant fields from joined.csv added. More exist.
+public record Taxon
+{
+    [Name("dwc:taxonID")]
+    public string? TaxonId;
+
+    [Name("dwc:parentNameUsageID")]
+    public string? ParentId;
+
+    [Name("dwc:taxonRank")]
+    public string? TaxonRank;
+
+    [Name("dwc:scientificName")]
+    public string? ScientificName;
+
+    [Name("dwc:vernacularName")]
+    public string? VernacularName;
+}
+
 public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 {
 	public static string ObserveDatabasePath { get; set; } = "./data/bison_observe_cli_db.csv";
 	public static string CommentDatabasePath { get; set; } = "./data/bison_comment_cli_db.csv";
+
+	public static string TaxonDatabasePath { get; set; } = "./data/taxon.csv";
 
 	private string dbpath = "/data/bison_observe_cli_db.csv";
 
@@ -167,6 +189,39 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 
 		csv.NextRecord();
 		csv.WriteRecord(r);
+	}
+
+	//retrieves the direct parent of a taxon. If no parent exist null is returned. Hence the taxon is the root
+	public Taxon getTaxonParent(Taxon t)
+	{
+		var database = CSVDatabase<Taxon>.getInstance();
+		database.setPath(TaxonDatabasePath);
+		var records = database.internalRead();
+		foreach (var rec in records)
+		{
+			if (rec.TaxonId == t.ParentId) return rec;
+		}
+		return null;
+	}
+
+	//returns a list of all the direct children of a taxon.
+	public IEnumerable<Taxon> getTaxonChildren(Taxon t)
+	{
+		string Id = t.TaxonId;
+		List<Taxon> children = new List<Taxon>();
+
+		var database = CSVDatabase<Taxon>.getInstance();
+		database.setPath(TaxonDatabasePath);
+		var records = database.internalRead();
+
+		foreach (var record in records)
+		{
+			if (record.ParentId == Id)
+			{
+				children.Add(record);
+			}
+		}
+		return children;
 	}
 
 	public void storeNoAppend(Observation r)
