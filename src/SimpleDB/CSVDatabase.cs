@@ -16,7 +16,7 @@ public record Observation(
 
 public record Comment(long ParentId, string Author, string Description, long Timestamp);
 
-public sealed class CSVDatabase<T>
+public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 {
 	public static string ObserveDatabasePath { get; set; } = "./data/bison_observe_cli_db.csv";
 	public static string CommentDatabasePath { get; set; } = "./data/bison_comment_cli_db.csv";
@@ -153,6 +153,28 @@ public sealed class CSVDatabase<T>
 				}
 			}
 		);
+	}
+	public IEnumerable<T> read()
+	{
+		return internalRead();
+	}
+
+	public void store(Observation r)
+	{
+		using var writer = new StreamWriter(dbpath, append: true);
+		using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
+
+		csv.NextRecord();
+		csv.WriteRecord(r);
+	}
+
+	public void storeNoAppend(Observation r)
+	{
+		using var writer = new StreamWriter(dbpath);
+		using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
+		csv.WriteHeader<T>();
+		csv.NextRecord();
+		csv.WriteRecord(r);
 	}
 
 	public void setPath(string path)

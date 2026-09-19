@@ -2,6 +2,6 @@
 
 public interface IDatabaseRepository<T>
 {
-	public void read();
-	public void store();
+	public IEnumerable<T> read();
+	public void store(Observation r);
 }
