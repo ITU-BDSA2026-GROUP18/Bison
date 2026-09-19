@@ -1,7 +1,5 @@
 using System;
 using System.Globalization;
-using System.Net.Http.Json;
-using Microsoft.VisualBasic;
 using SimpleDB;
 
 public class Program
@@ -37,10 +35,21 @@ public class Program
 		}
 	}
 
-	public static async Task discussion(long l) { }
+	public static async Task discussion(long obsID)
+	{
+		var comments = await Client.GetFromJsonAsync<List<Comment>>($"/comments/{obsID}");
+		foreach (Comment c in comments)
+		{
+			DateTimeOffset utcTime = DateTimeOffset.FromUnixTimeSeconds(c.Timestamp);
+			Console.WriteLine(
+				$"{c.ParentId} - {c.Author} @ {utcTime.LocalDateTime.ToString("d/M/yyyy HH:mm:ss", CultureInfo.InvariantCulture)}, {c.Description}"
+			);
+		}
+	}
 
 	public static async Task location(string location)
 	{
+		// should prolly move the filter logic into the db
 		var observation = await Client.GetFromJsonAsync<List<Observation>>("/observations");
 		foreach (Observation o in observation)
 		{
@@ -54,7 +63,14 @@ public class Program
 		}
 	}
 
-	public static async Task comment(string comment, long id) { }
+	public static async Task comment(string comment, long id)
+	{
+		string author = Environment.UserName;
+		long timeStamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+		var rec = new Comment(id, author, comment, timeStamp);
+		var response = await Client.PostAsJsonAsync("/comment", rec);
+		response.EnsureSuccessStatusCode();
+	}
 
 	public static async Task observe(string obs, string loc)
 	{

@@ -1,6 +1,7 @@
 namespace SimpleDB;
 
 using System.Globalization;
+using System.Linq;
 using CsvHelper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -22,7 +23,7 @@ public sealed class CSVDatabase<T>
 
 	private string dbpath = "/data/bison_observe_cli_db.csv";
 
-	private Microsoft.AspNetCore.Builder.WebApplication? app;
+	private WebApplication? app;
 
 	private CSVDatabase() { }
 
@@ -33,11 +34,10 @@ public sealed class CSVDatabase<T>
 		return instance;
 	}
 
-	public void start(Microsoft.AspNetCore.Builder.WebApplication app_)
+	public void start(WebApplication app_)
 	{
 		app = app_;
 		Console.WriteLine("TEST");
-		// her sætter du alt server shit op
 
 		setReadEndpoints();
 		setStoreEndpoints();
@@ -104,12 +104,20 @@ public sealed class CSVDatabase<T>
 
 		app.MapGet("/observations", () => observationsDB.internalRead());
 
-		app.MapPost(
-			"/comments",
+		app.MapGet(
+			"/comments/{netId}",
 			(long netId) =>
 			{
-				var filtered = getMatchingId(netId);
-				Results.Created($"Comments to request:\n {filtered}", filtered);
+				var list = commentsDB.internalRead();
+				var res = new List<Comment>();
+				foreach (Comment c in list)
+				{
+					if (c.ParentId == netId)
+					{
+						res.Add(c);
+					}
+				}
+				return res;
 			}
 		);
 	}
