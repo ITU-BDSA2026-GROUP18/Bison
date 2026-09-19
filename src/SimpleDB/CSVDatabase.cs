@@ -1,6 +1,7 @@
 namespace SimpleDB;
 
 using System.Globalization;
+using System.Linq;
 using CsvHelper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -22,6 +23,8 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 
 	private string dbpath = "/data/bison_observe_cli_db.csv";
 
+	private WebApplication? app;
+
 	private CSVDatabase() { }
 
 	private static CSVDatabase<T> instance = new();
@@ -31,23 +34,13 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 		return instance;
 	}
 
-	public void setPath(string path) // set custom path, used for tests
-	{
-		dbpath = path;
-	}
-
-#if WEBSERVER
-
-	Microsoft.AspNetCore.Builder.WebApplication app;
-
-	public void start(Microsoft.AspNetCore.Builder.WebApplication app_)
+	public void start(WebApplication app_)
 	{
 		app = app_;
 		Console.WriteLine("TEST");
-		// her sætter du alt server shit op
 
-		read();
-		store();
+		setReadEndpoints();
+		setStoreEndpoints();
 
 		app.Run();
 	}
@@ -101,30 +94,36 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 		return false;
 	}
 
-	public void read()
+	public void setReadEndpoints()
 	{
 		var observationsDB = CSVDatabase<Observation>.getInstance();
 		var commentsDB = CSVDatabase<Comment>.getInstance();
 		observationsDB.setPath(ObserveDatabasePath);
 		commentsDB.setPath(CommentDatabasePath);
-		var observationRec = observationsDB.internalRead();
-		var commentRec = commentsDB.internalRead();
+		var commentRec = commentsDB.internalRead(); // its never used?
 
-		app.MapGet("/observations", () => commentRec);
+		app.MapGet("/observations", () => observationsDB.internalRead());
 
-		app.MapPost(
-			"/comments",
+		app.MapGet(
+			"/comments/{netId}",
 			(long netId) =>
 			{
-				var filtered = getMatchingId(netId);
-				Results.Created($"Comments to request:\n {filtered}", filtered);
+				var list = commentsDB.internalRead();
+				var res = new List<Comment>();
+				foreach (Comment c in list)
+				{
+					if (c.ParentId == netId)
+					{
+						res.Add(c);
+					}
+				}
+				return res;
 			}
 		);
 	}
 
-	public void store()
+	public void setStoreEndpoints()
 	{
-		// same same til at store
 		var observationsDB = CSVDatabase<Observation>.getInstance();
 		var commentsDB = CSVDatabase<Comment>.getInstance();
 		observationsDB.setPath(ObserveDatabasePath);
@@ -156,32 +155,31 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 		);
 	}
 
-#else
-
-	public IEnumerable<T> read(int? limit = null)
+	public IEnumerable<T> read()
 	{
-		using var reader = new StreamReader(dbpath);
-		var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
-		var records = csv.GetRecords<T>().ToList();
-		return records;
+		return internalRead();
 	}
 
-	public void store(T record)
+	public void store(Observation r)
 	{
 		using var writer = new StreamWriter(dbpath, append: true);
 		using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
 
 		csv.NextRecord();
-		csv.WriteRecord(record);
+		csv.WriteRecord(r);
 	}
 
-	public void storeNoAppend(T record) // will write to the database as if its empty, aka overwrite
+	public void storeNoAppend(Observation r)
 	{
 		using var writer = new StreamWriter(dbpath);
 		using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
 		csv.WriteHeader<T>();
 		csv.NextRecord();
-		csv.WriteRecord(record);
+		csv.WriteRecord(r);
 	}
-#endif
+
+	public void setPath(string path)
+	{
+		dbpath = path;
+	}
 }

@@ -1,13 +1,26 @@
 using System.CommandLine;
+using SimpleDB;
 
 class CLIHandler
 {
+	Microsoft.AspNetCore.Builder.WebApplication? app;
+
+	private void startWebServer()
+	{
+		Microsoft.AspNetCore.Builder.WebApplicationBuilder builder = WebApplication.CreateBuilder();
+		app = builder.Build();
+		Console.WriteLine("------- WEB SERVER BUILD -------");
+		CSVDatabase<Comment>.getInstance().start(app);
+	}
+
+	private void stopWebServer()
+	{
+		// work in progress
+	}
+
 	public CLIHandler(string[] args)
 	{
 		RootCommand rootCommand = new("Bison.CLI");
-
-#if !WEBSERVER // For now webserver has no cmdline args
-
 		Option<string> pathOption = new("--path", "-p")
 		{
 			Description = "Set root path containing \"data\" folder",
@@ -15,8 +28,13 @@ class CLIHandler
 			Arity = ArgumentArity.ExactlyOne,
 		};
 
-		var readCommand = new Command("--read", "Prints out entire contents of CSV to the console");
+		var startCommand = new Command("--start", "starts the db endpoints");
+		startCommand.SetAction(ParseResult => startWebServer());
 
+		var stopCommand = new Command("--stop", "stops the db webserver, and closes endpoints");
+		stopCommand.SetAction(ParseResult => stopWebServer());
+
+		var readCommand = new Command("--read", "Prints out entire contents of CSV to the console");
 		readCommand.SetAction(parseResult => Program.read(parseResult.GetValue(pathOption))); //TODO: Add path option to rest of relevant Actions
 		readCommand.Aliases.Add("-r");
 
@@ -77,12 +95,13 @@ class CLIHandler
 		rootCommand.Options.Add(pathOption);
 		//rootCommand.SetAction(parseResult => Program.setEnvPath(parseResult.GetValue(pathOption)!));
 
+		rootCommand.Subcommands.Add(stopCommand);
+		rootCommand.Subcommands.Add(startCommand);
 		rootCommand.Subcommands.Add(discCommand);
 		rootCommand.Subcommands.Add(readCommand);
 		rootCommand.Subcommands.Add(obsCommand);
 		rootCommand.Subcommands.Add(commCommand);
 		rootCommand.Subcommands.Add(locCommand);
-#endif
 
 		rootCommand.Parse(args).Invoke();
 	}
