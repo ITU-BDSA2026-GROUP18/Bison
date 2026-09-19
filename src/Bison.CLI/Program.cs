@@ -2,6 +2,7 @@ using System;
 using System.Globalization;
 using SimpleDB;
 
+/*
 public record Observation(
 	long Id,
 	string Author,
@@ -11,24 +12,28 @@ public record Observation(
 );
 
 public record Comment(long ParentId, string Author, string Description, long Timestamp);
+*/ 
 
 //var names could be better for the above, might get around to changing it
 
 public class Program
 {
-	public static string ObserveDatabasePath { get; set; } = "./data/bison_observe_cli_db.csv";
-	public static string CommentDatabasePath { get; set; } = "./data/bison_comment_cli_db.csv";
+	//public static string ObserveDatabasePath { get; set; } = "./data/bison_observe_cli_db.csv";
+	//public static string CommentDatabasePath { get; set; } = "./data/bison_comment_cli_db.csv";
+
 	public static Microsoft.AspNetCore.Builder.WebApplicationBuilder builder =
 		WebApplication.CreateBuilder();
 	public static Microsoft.AspNetCore.Builder.WebApplication app = builder.Build();
 
 	public static void Main(string[] args)
 	{
-#if WEBSERVER
-		Console.WriteLine("------- WEB SERVER BUILD -------");
-#endif
 
 		CLIHandler clh = new CLIHandler(args);
+
+#if WEBSERVER
+		Console.WriteLine("------- WEB SERVER BUILD -------");
+		CSVDatabase.start();
+#endif	
 
 #if FLAG_TEST
 		Console.WriteLine("omg my flag works");
@@ -52,11 +57,6 @@ public class Program
 		database.setPath(ObserveDatabasePath);
 		var records = database.read();
 
-#if WEBSERVER
-		app.MapGet("/observations", () => records);
-		app.Run();
-#else
-
 		foreach (var record in records)
 		{
 			DateTimeOffset utcTime = DateTimeOffset.FromUnixTimeSeconds(record.Timestamp);
@@ -64,7 +64,6 @@ public class Program
 				$"{record.Id} - {record.Author} @ {utcTime.LocalDateTime.ToString("d/M/yyyy HH:mm:ss", CultureInfo.InvariantCulture)}, {record.Location}: {record.Description}"
 			);
 		}
-#endif
 	}
 
 	private static IEnumerable<Comment> getMatchingId(long Id)
@@ -85,23 +84,10 @@ public class Program
 		return filteredRecords;
 	}
 
-#if WEBSERVER
-	public static void discussion() // very similar to the above, could be refactored to be cleaner
-#else
-	public static void discussion(long observationId)
-#endif
+
+	// very similar to the above, could be refactored to be cleaner
+	public static void discussion(long observationId) 
 	{
-#if WEBSERVER
-		app.MapPost(
-			"/comments",
-			(long netId) =>
-			{
-				var filtered = getMatchingId(netId);
-				Results.Created($"Comments to request:\n {filtered}", filtered);
-			}
-		);
-		app.Run();
-#else
 		var filtered = getMatchingId(observationId);
 		foreach (var record in filtered)
 		{
@@ -110,8 +96,6 @@ public class Program
 				$"{record.ParentId} - {record.Author} @ {utcTime.LocalDateTime.ToString("d/M/yyyy HH:mm:ss", CultureInfo.InvariantCulture)}: {record.Description}"
 			);
 		}
-
-#endif
 	}
 
 	public static void location(string location) // very similar to the above, could be refactored to be cleaner
@@ -131,25 +115,11 @@ public class Program
 		}
 	}
 
-#if WEBSERVER //TODO: make this more boring
-	public static void observe()
-#else
-	public static void observe(string observation, string location)
-#endif
+	public static void observe(string observation, string location) 
 	{
 		var database = CSVDatabase<Observation>.getInstance();
 		database.setPath(ObserveDatabasePath);
 
-#if WEBSERVER
-		app.MapPost(
-			"/observation",
-			(Observation netObservation) =>
-			{
-				database.store(netObservation);
-			}
-		);
-		app.Run(); // unfortunately the endpoint client has to supply their own ID here.
-#else
 		string author = Environment.UserName;
 		long timeStamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 		var rec = new Observation(
@@ -163,7 +133,6 @@ public class Program
 		// or potentially hashing contents of Observation would be more ideal
 
 		database.store(rec);
-#endif
 	}
 
 	private static bool doesIdExist(long Id)
@@ -180,33 +149,8 @@ public class Program
 		return false;
 	}
 
-#if WEBSERVER
-	public static void comment()
-#else
 	public static void comment(string comment, long Id)
-#endif
 	{
-#if WEBSERVER
-
-		app.MapPost(
-			"/comment",
-			(Comment netComment) =>
-			{
-				if (doesIdExist(netComment.ParentId))
-				{
-					var database = CSVDatabase<Comment>.getInstance();
-					database.setPath(CommentDatabasePath);
-					database.store(netComment);
-					return Results.Created($"created {netComment}", netComment);
-				}
-				else
-				{
-					return Results.BadRequest(netComment);
-				}
-			}
-		);
-		app.Run();
-#else
 
 		if (!(doesIdExist(Id))) // ID not found!
 		{
@@ -221,6 +165,6 @@ public class Program
 		var rec = new Comment(Id, author, comment, timeStamp);
 
 		database.store(rec);
-#endif
 	}
+
 }
