@@ -6,6 +6,8 @@ class CLIHandler
 	{
 		RootCommand rootCommand = new("Bison.CLI");
 
+#if !WEBSERVER // For now webserver has no cmdline args
+
 		Option<string> pathOption = new("--path", "-p")
 		{
 			Description = "Set root path containing \"data\" folder",
@@ -19,6 +21,7 @@ class CLIHandler
 		readCommand.Aliases.Add("-r");
 
 		var discTarg = new Argument<long>("ObservationId");
+
 		var discCommand = new Command(
 			"--discussion",
 			"Prints out comments to Observation in the CSV database"
@@ -43,6 +46,7 @@ class CLIHandler
 
 		var obsTarg = new Argument<string>("Description");
 		var locationTarg = new Argument<string>("Location");
+
 		var obsCommand = new Command("--observe", "Add observation to the CSV database")
 		{
 			obsTarg,
@@ -78,6 +82,7 @@ class CLIHandler
 		rootCommand.Subcommands.Add(obsCommand);
 		rootCommand.Subcommands.Add(commCommand);
 		rootCommand.Subcommands.Add(locCommand);
+#endif
 
 		rootCommand.Parse(args).Invoke();
 	}

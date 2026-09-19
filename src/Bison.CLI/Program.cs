@@ -2,6 +2,7 @@ using System;
 using System.Globalization;
 using SimpleDB;
 
+/*
 public record Observation(
 	long Id,
 	string Author,
@@ -11,40 +12,31 @@ public record Observation(
 );
 
 public record Comment(long ParentId, string Author, string Description, long Timestamp);
+*/
 
 //var names could be better for the above, might get around to changing it
 
 public class Program
 {
-	public static string ObserveDatabasePath { get; set; } = "./data/bison_observe_cli_db.csv";
-	public static string CommentDatabasePath { get; set; } = "./data/bison_comment_cli_db.csv";
+	//public static string ObserveDatabasePath { get; set; } = "./data/bison_observe_cli_db.csv";
+	//public static string CommentDatabasePath { get; set; } = "./data/bison_comment_cli_db.csv";
+
+	public static Microsoft.AspNetCore.Builder.WebApplicationBuilder builder =
+		WebApplication.CreateBuilder();
+	public static Microsoft.AspNetCore.Builder.WebApplication app = builder.Build();
 
 	public static void Main(string[] args)
 	{
-		/*
-		// hacky way to do path normalization, but for now it'll work.
+#if WEBSERVER
+		Console.WriteLine("------- WEB SERVER BUILD -------");
+		CSVDatabase<Comment>.getInstance().start(app);
 
-		if (
-			!(
-				Environment.CurrentDirectory.EndsWith(
-					"bison",
-					StringComparison.CurrentCultureIgnoreCase
-				)
-			)
-		)
-		{
-			Console.WriteLine("TRIMMING!!!!!!!!");
-			string temppath = Environment.CurrentDirectory;
-			int bisonIdx =
-				temppath.LastIndexOf("bison", StringComparison.CurrentCultureIgnoreCase) + 5;
-			Environment.CurrentDirectory = temppath.Substring(0, bisonIdx);
-		}
-		*/
-
-		CLIHandler clh = new CLIHandler(args);
 #if FLAG_TEST
 		Console.WriteLine("omg my flag works");
 #endif
+	}
+#else
+		CLIHandler clh = new CLIHandler(args);
 	}
 
 	public static void setEnvPath(string envPath)
@@ -61,8 +53,9 @@ public class Program
 		setEnvPath(pathOption);
 
 		var database = CSVDatabase<Observation>.getInstance();
-		database.setPath(ObserveDatabasePath);
+		database.setPath(CSVDatabase<Observation>.ObserveDatabasePath);
 		var records = database.read();
+
 		foreach (var record in records)
 		{
 			DateTimeOffset utcTime = DateTimeOffset.FromUnixTimeSeconds(record.Timestamp);
@@ -72,27 +65,41 @@ public class Program
 		}
 	}
 
-	public static void discussion(long observationId) // very similar to the above, could be refactored to be cleaner
+	private static IEnumerable<Comment> getMatchingId(long Id)
 	{
+		List<Comment> filteredRecords = new List<Comment>();
+
 		var database = CSVDatabase<Comment>.getInstance();
-		database.setPath(CommentDatabasePath);
+		database.setPath(CSVDatabase<Comment>.CommentDatabasePath);
 		var records = database.read();
+
 		foreach (var record in records)
 		{
-			if (record.ParentId == observationId)
+			if (record.ParentId == Id)
 			{
-				DateTimeOffset utcTime = DateTimeOffset.FromUnixTimeSeconds(record.Timestamp);
-				Console.WriteLine(
-					$"{record.ParentId} - {record.Author} @ {utcTime.LocalDateTime.ToString("d/M/yyyy HH:mm:ss", CultureInfo.InvariantCulture)}: {record.Description}"
-				);
+				filteredRecords.Add(record);
 			}
+		}
+		return filteredRecords;
+	}
+
+	// very similar to the above, could be refactored to be cleaner
+	public static void discussion(long observationId)
+	{
+		var filtered = getMatchingId(observationId);
+		foreach (var record in filtered)
+		{
+			DateTimeOffset utcTime = DateTimeOffset.FromUnixTimeSeconds(record.Timestamp);
+			Console.WriteLine(
+				$"{record.ParentId} - {record.Author} @ {utcTime.LocalDateTime.ToString("d/M/yyyy HH:mm:ss", CultureInfo.InvariantCulture)}: {record.Description}"
+			);
 		}
 	}
 
 	public static void location(string location) // very similar to the above, could be refactored to be cleaner
 	{
 		var database = CSVDatabase<Observation>.getInstance();
-		database.setPath(ObserveDatabasePath);
+		database.setPath(CSVDatabase<Observation>.ObserveDatabasePath);
 		var records = database.read();
 		foreach (var record in records)
 		{
@@ -109,7 +116,8 @@ public class Program
 	public static void observe(string observation, string location)
 	{
 		var database = CSVDatabase<Observation>.getInstance();
-		database.setPath(ObserveDatabasePath);
+		database.setPath(CSVDatabase<Observation>.ObserveDatabasePath);
+
 		string author = Environment.UserName;
 		long timeStamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 		var rec = new Observation(
@@ -125,37 +133,35 @@ public class Program
 		database.store(rec);
 	}
 
+	private static bool doesIdExist(long Id)
+	{
+		var csvData = CSVDatabase<Observation>.getInstance();
+		csvData.setPath(CSVDatabase<Observation>.ObserveDatabasePath);
+		var csvRec = csvData.read();
+		foreach (var existingRecord in csvRec)
+		{
+			if (existingRecord.Id == Id)
+				return true;
+		}
+
+		return false;
+	}
+
 	public static void comment(string comment, long Id)
 	{
-		// below is scope limited given it's just a routine for checking if ID exists.
-		// Ideally down the line we want to store this as a Set to avoid slowdown
-		// checking against larger databases
+		if (!(doesIdExist(Id))) // ID not found!
 		{
-			bool idExists = false;
-
-			var csvData = CSVDatabase<Observation>.getInstance();
-			csvData.setPath(ObserveDatabasePath);
-			var csvRec = csvData.read();
-
-			foreach (var existingRecord in csvRec)
-			{
-				if (existingRecord.Id == Id)
-					idExists = true;
-			}
-
-			if (!idExists) // ID not found!
-			{
-				Console.WriteLine("Observation ID not found!");
-				return;
-			}
+			Console.WriteLine("Observation ID not found!");
+			return;
 		}
 
 		var database = CSVDatabase<Comment>.getInstance();
-		database.setPath(CommentDatabasePath);
+		database.setPath(CSVDatabase<Comment>.CommentDatabasePath);
 		string author = Environment.UserName;
 		long timeStamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 		var rec = new Comment(Id, author, comment, timeStamp);
 
 		database.store(rec);
 	}
+#endif
 }
