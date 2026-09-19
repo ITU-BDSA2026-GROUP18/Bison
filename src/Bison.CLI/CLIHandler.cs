@@ -31,10 +31,7 @@ class CLIHandler
 		};
 		discCommand.Aliases.Add("-d");
 
-		discCommand.SetAction(parseResult =>
-			Program.discussion(parseResult.GetValue(discTarg)!)
-		);
-
+		discCommand.SetAction(parseResult => Program.discussion(parseResult.GetValue(discTarg)!));
 
 		var locTarg = new Argument<string>("Location");
 		var locCommand = new Command(
@@ -46,7 +43,6 @@ class CLIHandler
 		};
 		locCommand.Aliases.Add("-l");
 		locCommand.SetAction(parseResult => Program.location(parseResult.GetValue(locTarg)!));
-
 
 		var obsTarg = new Argument<string>("Description");
 		var locationTarg = new Argument<string>("Location");
