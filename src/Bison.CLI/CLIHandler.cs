@@ -6,7 +6,7 @@ class CLIHandler
 	{
 		RootCommand rootCommand = new("Bison.CLI");
 
-#if !WEBSERVER
+#if !WEBSERVER // For now webserver has no cmdline args
 
 		Option<string> pathOption = new("--path", "-p")
 		{

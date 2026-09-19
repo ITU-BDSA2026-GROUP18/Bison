@@ -43,7 +43,8 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 	{
 		Console.WriteLine("TEST");
 		// her sætter du alt server shit op
-	
+		read();
+		store();
 
         app.Run();
 
@@ -101,7 +102,7 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
     }
 
 
-	public async Task<IEnumerable<T>> read(Object obj)
+	public async Task<IEnumerable<T>> read()
 	{ 
 
         var observationsDB = CSVDatabase<Observation>.getInstance();
