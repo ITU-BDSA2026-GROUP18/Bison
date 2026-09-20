@@ -22,22 +22,21 @@ public record Comment(long ParentId, string Author, string Description, long Tim
 //Most relevant fields from joined.csv added. More exist.
 public record Taxon
 {
-    [Name("dwc:taxonID")]
-    public required string TaxonId;
+	[Name("dwc:taxonID")]
+	public required string TaxonId;
 
-    [Name("dwc:parentNameUsageID")]
-    public string? ParentId;
+	[Name("dwc:parentNameUsageID")]
+	public string? ParentId;
 
-    [Name("dwc:taxonRank")]
-    public string? TaxonRank;
+	[Name("dwc:taxonRank")]
+	public string? TaxonRank;
 
-    [Name("dwc:scientificName")]
-    public string? ScientificName;
+	[Name("dwc:scientificName")]
+	public string? ScientificName;
 
-    [Name("dwc:vernacularName")]
-    public string? VernacularName;
+	[Name("dwc:vernacularName")]
+	public string? VernacularName;
 }
-
 
 public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 {
@@ -213,7 +212,8 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 		var records = database.internalRead();
 		foreach (var rec in records)
 		{
-			if (rec.TaxonId == t.ParentId) return rec;
+			if (rec.TaxonId == t.ParentId)
+				return rec;
 		}
 		return null;
 	}
