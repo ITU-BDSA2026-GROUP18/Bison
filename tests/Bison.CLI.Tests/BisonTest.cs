@@ -11,7 +11,7 @@ public class BisonTest
 	{
 		CSVDatabase<Observation>.ObserveDatabasePath = Path.Combine(
 			AppContext.BaseDirectory,
-			"bison_observe_cli_db.csv"
+			"../../../../data/bison_observe_cli_db.csv"
 		);
 		var db = CSVDatabase<Observation>.getInstance();
 		db.setPath(CSVDatabase<Observation>.ObserveDatabasePath);
@@ -30,7 +30,7 @@ public class BisonTest
 
 		CSVDatabase<Observation>
 			.getInstance()
-			.setPath(Environment.CurrentDirectory + "tests/bison_observe_cli_db.csv");
+			.setPath(Path.Combine(AppContext.BaseDirectory, "../../../../data/bison_observe_cli_db.csv"));
 
 		Console.WriteLine(Environment.CurrentDirectory);
 		var sw = new StringWriter();
@@ -57,7 +57,7 @@ public class BisonTest
 
 		CSVDatabase<Observation>
 			.getInstance()
-			.setPath(Environment.CurrentDirectory + "tests/bison_observe_cli_db.csv");
+			.setPath(Path.Combine(AppContext.BaseDirectory,"../../../../data/bison_observe_cli_db.csv"));
 		string[] args = ["-o", observation, location];
 		string[] args2 = ["-r"];
 		// act
