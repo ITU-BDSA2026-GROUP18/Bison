@@ -2,10 +2,12 @@ namespace SimpleDB;
 
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using CsvHelper;
 using CsvHelper.Configuration.Attributes;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.FileProviders;
 
 public record Observation(
 	long Id,
@@ -21,7 +23,7 @@ public record Comment(long ParentId, string Author, string Description, long Tim
 public record Taxon
 {
     [Name("dwc:taxonID")]
-    public string? TaxonId;
+    public required string TaxonId;
 
     [Name("dwc:parentNameUsageID")]
     public string? ParentId;
@@ -36,6 +38,7 @@ public record Taxon
     public string? VernacularName;
 }
 
+
 public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 {
 	public static string ObserveDatabasePath { get; set; } = "./data/bison_observe_cli_db.csv";
@@ -44,6 +47,17 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 	public static string TaxonDatabasePath { get; set; } = "./data/taxon.csv";
 
 	private string dbpath = "/data/bison_observe_cli_db.csv";
+
+	public StreamReader Reader()
+	{
+		if (dbpath == TaxonDatabasePath)
+		{
+			var embeddedProvider = new EmbeddedFileProvider(Assembly.GetExecutingAssembly());
+			using var reader = embeddedProvider.GetFileInfo("./data/taxon.csv").CreateReadStream();
+			return new StreamReader(reader);
+		}
+		return new StreamReader(dbpath);
+	}
 
 	private WebApplication? app;
 
@@ -69,7 +83,7 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 
 	private IEnumerable<T> internalRead(int? limit = null)
 	{
-		using var reader = new StreamReader(dbpath);
+		using var reader = Reader();
 		var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
 		var records = csv.GetRecords<T>().ToList();
 		return records;
