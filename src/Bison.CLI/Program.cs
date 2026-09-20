@@ -47,6 +47,18 @@ public class Program
 		}
 	}
 
+	public static async Task proposals(long obsID)
+	{
+		var proposals = await Client.GetFromJsonAsync<List<Proposal>>($"/proposals/{obsID}");
+		foreach (Proposal p in proposals)
+		{
+			DateTimeOffset utcTime = DateTimeOffset.FromUnixTimeSeconds(p.Timestamp);
+			Console.WriteLine(
+				$"{p.ParentId} - {p.Author} @ {utcTime.LocalDateTime.ToString("d/M/yyyy HH:mm:ss", CultureInfo.InvariantCulture)}, {p.TaxonId}"
+			);
+		}
+	}
+
 	public static async Task location(string location)
 	{
 		// should prolly move the filter logic into the db
@@ -84,6 +96,15 @@ public class Program
 			loc
 		);
 		var response = await Client.PostAsJsonAsync("/observation", rec);
+		response.EnsureSuccessStatusCode();
+	}
+
+	public static async Task propose(string taxonId, long id)
+	{
+		string author = Environment.UserName;
+		long timeStamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+		var rec = new Proposal(id, author, taxonId, timeStamp);
+		var response = await Client.PostAsJsonAsync("/proposal", rec);
 		response.EnsureSuccessStatusCode();
 	}
 }

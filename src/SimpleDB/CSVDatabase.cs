@@ -17,7 +17,19 @@ public record Observation(
 	string Location
 );
 
-public record Comment(long ParentId, string Author, string Description, long Timestamp);
+public record Comment(
+	long ParentId, 
+	string Author, 
+	string Description, 
+	long Timestamp
+);
+
+public record Proposal(
+    long ParentId,
+    string Author,
+    string TaxonId,
+    long Timestamp
+);
 
 //Most relevant fields from joined.csv added. More exist.
 public record Taxon
@@ -41,7 +53,10 @@ public record Taxon
 public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 {
 	public static string ObserveDatabasePath { get; set; } = "./data/bison_observe_cli_db.csv";
+	
 	public static string CommentDatabasePath { get; set; } = "./data/bison_comment_cli_db.csv";
+
+	public static string ProposalDatabasePath { get; set; } = "./data/bison_proposal_cli_db.csv";
 
 	public static string TaxonDatabasePath { get; set; } = "./data/taxon.csv";
 
@@ -52,7 +67,7 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 		if (dbpath == TaxonDatabasePath)
 		{
 			var embeddedProvider = new EmbeddedFileProvider(Assembly.GetExecutingAssembly());
-			using var reader = embeddedProvider.GetFileInfo("./data/taxon.csv").CreateReadStream();
+			var reader = embeddedProvider.GetFileInfo("./data/taxon.csv").CreateReadStream();
 			return new StreamReader(reader);
 		}
 		return new StreamReader(dbpath);
@@ -133,8 +148,10 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 	{
 		var observationsDB = CSVDatabase<Observation>.getInstance();
 		var commentsDB = CSVDatabase<Comment>.getInstance();
+		var proposalsDB = CSVDatabase<Proposal>.getInstance();
 		observationsDB.setPath(ObserveDatabasePath);
 		commentsDB.setPath(CommentDatabasePath);
+		proposalsDB.setPath(ProposalDatabasePath);
 		var commentRec = commentsDB.internalRead(); // its never used?
 
 		app.MapGet("/observations", () => observationsDB.internalRead());
@@ -155,14 +172,33 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 				return res;
 			}
 		);
+
+		app.MapGet(
+			"/proposals/{netId}",
+			(long netId) =>
+			{
+				var list = proposalsDB.internalRead();
+				var res = new List<Proposal>();
+				foreach (Proposal p in list)
+				{
+					if (p.ParentId == netId)
+					{
+						res.Add(p);
+					}
+				}
+				return res;
+			}
+		);
 	}
 
 	public void setStoreEndpoints()
 	{
 		var observationsDB = CSVDatabase<Observation>.getInstance();
 		var commentsDB = CSVDatabase<Comment>.getInstance();
+		var proposalsDB = CSVDatabase<Proposal>.getInstance();
 		observationsDB.setPath(ObserveDatabasePath);
 		commentsDB.setPath(CommentDatabasePath);
+		proposalsDB.setPath(ProposalDatabasePath);
 
 		app.MapPost(
 			"/observation",
@@ -188,6 +224,23 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 				}
 			}
 		);
+
+		app.MapPost(
+			"/proposal",
+			(Proposal netProposal) =>
+			{
+				if (doesIdExist(netProposal.ParentId))
+				{
+					proposalsDB.setPath(ProposalDatabasePath);
+					proposalsDB.internalStore(netProposal);
+					return Results.Created($"created {netProposal}", netProposal);
+				}
+				else
+				{
+					return Results.BadRequest(netProposal);
+				}
+			}
+		);
 	}
 
 	public IEnumerable<T> read()
@@ -204,18 +257,29 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 		csv.WriteRecord(r);
 	}
 
-	//retrieves the direct parent of a taxon. If no parent exist null is returned. Hence the taxon is the root
-	public Taxon getTaxonParent(Taxon t)
+	//returns the first taxon that matches the given taxon. If no match is found null is returned.
+	public Taxon? findTaxon(Taxon t)
 	{
 		var database = CSVDatabase<Taxon>.getInstance();
 		database.setPath(TaxonDatabasePath);
 		var records = database.internalRead();
 		foreach (var rec in records)
 		{
-			if (rec.TaxonId == t.ParentId)
+			if (rec.TaxonId == t.TaxonId || rec.VernacularName == t.VernacularName)
 				return rec;
 		}
 		return null;
+	}
+
+	//retrieves the direct parent of a taxon. If no parent exist null is returned. Hence the taxon is the root
+	public Taxon? getTaxonParent(Taxon t)
+	{
+        return findTaxon(new Taxon { TaxonId = t.ParentId });
+	}
+
+	public Taxon? findTaxonByVenicularName(string name)
+	{
+		return findTaxon(new Taxon { TaxonId = "", VernacularName = name });
 	}
 
 	//returns a list of all the direct children of a taxon.

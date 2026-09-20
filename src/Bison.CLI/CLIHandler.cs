@@ -35,21 +35,34 @@ class CLIHandler
 		stopCommand.SetAction(ParseResult => stopWebServer());
 
 		var readCommand = new Command("--read", "Prints out entire contents of CSV to the console");
-		readCommand.SetAction(parseResult => Program.read(parseResult.GetValue(pathOption))); //TODO: Add path option to rest of relevant Actions
+		readCommand.SetAction(async parseResult => await Program.read(parseResult.GetValue(pathOption))); //TODO: Add path option to rest of relevant Actions
 		readCommand.Aliases.Add("-r");
 
 		var discTarg = new Argument<long>("ObservationId");
 
 		var discCommand = new Command(
 			"--discussion",
-			"Prints out comments to Observation in the CSV database"
+			"Prints out comments to an Observation in the CSV database"
 		)
 		{
 			discTarg,
 		};
 		discCommand.Aliases.Add("-d");
 
-		discCommand.SetAction(parseResult => Program.discussion(parseResult.GetValue(discTarg)!));
+		discCommand.SetAction(async parseResult => await Program.discussion(parseResult.GetValue(discTarg)!));
+
+		var propsTarg = new Argument<long>("ObservationId");
+
+		var propsCommand = new Command(
+			"--proposals",
+			"Prints out taxon proposals to an Observation in the CSV database"
+		)
+		{
+			propsTarg,
+		};
+		propsCommand.Aliases.Add("-ps");
+
+		propsCommand.SetAction(async parseResult => await Program.proposals(parseResult.GetValue(propsTarg)!));
 
 		var locTarg = new Argument<string>("Location");
 		var locCommand = new Command(
@@ -60,7 +73,7 @@ class CLIHandler
 			locTarg,
 		};
 		locCommand.Aliases.Add("-l");
-		locCommand.SetAction(parseResult => Program.location(parseResult.GetValue(locTarg)!));
+		locCommand.SetAction(async parseResult => await Program.location(parseResult.GetValue(locTarg)!));
 
 		var obsTarg = new Argument<string>("Description");
 		var locationTarg = new Argument<string>("Location");
@@ -72,22 +85,42 @@ class CLIHandler
 		};
 		obsCommand.Aliases.Add("-o");
 
-		obsCommand.SetAction(parseResult =>
-			Program.observe(parseResult.GetValue(obsTarg)!, parseResult.GetValue(locationTarg)!)
+		obsCommand.SetAction(async parseResult =>
+			await Program.observe(parseResult.GetValue(obsTarg)!, parseResult.GetValue(locationTarg)!)
 		);
 
 		var commTarg = new Argument<string>("Comment");
-		var idTarg = new Argument<long>("Id"); //TODO: change this to long
+		var commParentIdTarg = new Argument<long>("Id");
 
 		var commCommand = new Command("--comment", "Add comment to observation based on id")
 		{
 			commTarg,
-			idTarg,
+			commParentIdTarg,
 		};
 		commCommand.Aliases.Add("-c");
 
-		commCommand.SetAction(parseResult =>
-			Program.comment(parseResult.GetValue(commTarg)!, parseResult.GetValue(idTarg)!)
+		commCommand.SetAction(async parseResult =>
+			await Program.comment(
+				parseResult.GetValue(commTarg)!,
+				parseResult.GetValue(commParentIdTarg)!
+			)
+		);
+
+		var propTarg = new Argument<string>("TaxonId");
+		var propParentIdTarg = new Argument<long>("Id");
+
+		var propCommand = new Command("--propose", "Add taxon proposal to observation based on id")
+		{
+			propTarg,
+			propParentIdTarg,
+		};
+		propCommand.Aliases.Add("-pr");
+
+		propCommand.SetAction(async parseResult =>
+			await Program.propose(
+				parseResult.GetValue(propTarg)!,
+				parseResult.GetValue(propParentIdTarg)!
+			)
 		);
 
 		//rootCommand.Subcommands.Add(pathCommand);
@@ -102,6 +135,8 @@ class CLIHandler
 		rootCommand.Subcommands.Add(obsCommand);
 		rootCommand.Subcommands.Add(commCommand);
 		rootCommand.Subcommands.Add(locCommand);
+		rootCommand.Subcommands.Add(propCommand);
+		rootCommand.Subcommands.Add(propsCommand);
 
 		rootCommand.Parse(args).Invoke();
 	}
