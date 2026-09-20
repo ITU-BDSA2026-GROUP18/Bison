@@ -35,7 +35,9 @@ class CLIHandler
 		stopCommand.SetAction(ParseResult => stopWebServer());
 
 		var readCommand = new Command("--read", "Prints out entire contents of CSV to the console");
-		readCommand.SetAction(async parseResult => await Program.read(parseResult.GetValue(pathOption))); //TODO: Add path option to rest of relevant Actions
+		readCommand.SetAction(async parseResult =>
+			await Program.read(parseResult.GetValue(pathOption))
+		); //TODO: Add path option to rest of relevant Actions
 		readCommand.Aliases.Add("-r");
 
 		var discTarg = new Argument<long>("ObservationId");
@@ -49,7 +51,9 @@ class CLIHandler
 		};
 		discCommand.Aliases.Add("-d");
 
-		discCommand.SetAction(async parseResult => await Program.discussion(parseResult.GetValue(discTarg)!));
+		discCommand.SetAction(async parseResult =>
+			await Program.discussion(parseResult.GetValue(discTarg)!)
+		);
 
 		var propsTarg = new Argument<long>("ObservationId");
 
@@ -62,7 +66,9 @@ class CLIHandler
 		};
 		propsCommand.Aliases.Add("-ps");
 
-		propsCommand.SetAction(async parseResult => await Program.proposals(parseResult.GetValue(propsTarg)!));
+		propsCommand.SetAction(async parseResult =>
+			await Program.proposals(parseResult.GetValue(propsTarg)!)
+		);
 
 		var locTarg = new Argument<string>("Location");
 		var locCommand = new Command(
@@ -73,7 +79,9 @@ class CLIHandler
 			locTarg,
 		};
 		locCommand.Aliases.Add("-l");
-		locCommand.SetAction(async parseResult => await Program.location(parseResult.GetValue(locTarg)!));
+		locCommand.SetAction(async parseResult =>
+			await Program.location(parseResult.GetValue(locTarg)!)
+		);
 
 		var obsTarg = new Argument<string>("Description");
 		var locationTarg = new Argument<string>("Location");
@@ -86,7 +94,10 @@ class CLIHandler
 		obsCommand.Aliases.Add("-o");
 
 		obsCommand.SetAction(async parseResult =>
-			await Program.observe(parseResult.GetValue(obsTarg)!, parseResult.GetValue(locationTarg)!)
+			await Program.observe(
+				parseResult.GetValue(obsTarg)!,
+				parseResult.GetValue(locationTarg)!
+			)
 		);
 
 		var commTarg = new Argument<string>("Comment");

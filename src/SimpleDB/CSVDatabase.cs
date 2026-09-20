@@ -17,19 +17,9 @@ public record Observation(
 	string Location
 );
 
-public record Comment(
-	long ParentId, 
-	string Author, 
-	string Description, 
-	long Timestamp
-);
+public record Comment(long ParentId, string Author, string Description, long Timestamp);
 
-public record Proposal(
-    long ParentId,
-    string Author,
-    string TaxonId,
-    long Timestamp
-);
+public record Proposal(long ParentId, string Author, string TaxonId, long Timestamp);
 
 //Most relevant fields from joined.csv added. More exist.
 public record Taxon
@@ -53,7 +43,7 @@ public record Taxon
 public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 {
 	public static string ObserveDatabasePath { get; set; } = "./data/bison_observe_cli_db.csv";
-	
+
 	public static string CommentDatabasePath { get; set; } = "./data/bison_comment_cli_db.csv";
 
 	public static string ProposalDatabasePath { get; set; } = "./data/bison_proposal_cli_db.csv";
@@ -274,7 +264,7 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 	//retrieves the direct parent of a taxon. If no parent exist null is returned. Hence the taxon is the root
 	public Taxon? getTaxonParent(Taxon t)
 	{
-        return findTaxon(new Taxon { TaxonId = t.ParentId });
+		return findTaxon(new Taxon { TaxonId = t.ParentId });
 	}
 
 	public Taxon? findTaxonByVenicularName(string name)
