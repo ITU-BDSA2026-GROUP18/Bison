@@ -10,7 +10,7 @@ class CLIHandler
 		Microsoft.AspNetCore.Builder.WebApplicationBuilder builder = WebApplication.CreateBuilder();
 		app = builder.Build();
 		Console.WriteLine("------- WEB SERVER BUILD -------");
-		CSVDatabase<Comment>.getInstance().start(app);
+		CSVDatabase<Observation>.getInstance().start(app);
 	}
 
 	private void stopWebServer()

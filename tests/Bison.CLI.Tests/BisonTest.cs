@@ -53,8 +53,8 @@ public class BisonTest
 		string[] args = ["-o", observation, location];
 		string[] args2 = ["-r"];
 		// act
-		Program.Main(args);
 		Console.SetOut(sw); // steal console output
+		Program.Main(args);
 		Program.Main(args2);
 		// assert
 		Assert.Contains(Environment.UserName, sw.ToString()); // easier than full string cmp
