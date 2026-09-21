@@ -56,6 +56,9 @@ CodeCoverage/
 TestResult.xml
 nunit-*.xml
 
+#Vim stuff
+.swp
+.swo
 
 #MacOS
 .DS_Store
