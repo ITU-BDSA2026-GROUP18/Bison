@@ -6,7 +6,7 @@ public class SimpleDBWriteTests
 {
 	private CSVDatabase<Observation> database;
 	private static string databasepath =>
-		Path.Combine(AppContext.BaseDirectory, "bison_writetest_db.csv");
+		Path.Combine(AppContext.BaseDirectory, "testdata/bison_writetest_db.csv");
 
 	public SimpleDBWriteTests()
 	{

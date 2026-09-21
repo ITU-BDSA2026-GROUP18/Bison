@@ -5,7 +5,7 @@ public class SimpleDBReadTests
 	private CSVDatabase<Observation> database;
 
 	private static string dbPath =>
-		Path.Combine(AppContext.BaseDirectory, "bison_observe_cli_db_read.csv");
+		Path.Combine(AppContext.BaseDirectory, "testdata/bison_observe_cli_db_read.csv");
 
 	public SimpleDBReadTests()
 	{
