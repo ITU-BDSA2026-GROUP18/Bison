@@ -81,7 +81,8 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 		setReadEndpoints();
 		setStoreEndpoints();
 
-		if (!testing) app.Run();
+		if (!testing)
+			app.Run();
 	}
 
 	private IEnumerable<T> internalRead(int? limit = null)
