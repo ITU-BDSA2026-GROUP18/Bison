@@ -2,14 +2,14 @@
 
 public class SimpleDBReadTests
 {
-	private CSVDatabase<Observation> database = CSVDatabase<Observation>.getInstance();
+	private CSVDatabase<Observation> database;
+
+	private static string dbPath =>
+		Path.Combine(AppContext.BaseDirectory, "bison_observe_cli_db_read.csv");
 
 	public SimpleDBReadTests()
 	{
-		var dbPath = Path.Combine(
-			AppContext.BaseDirectory,
-			"../../../bison_observe_cli_db_read.csv"
-		);
+		database = CSVDatabase<Observation>.getInstance();
 		database.setPath(dbPath);
 	}
 
