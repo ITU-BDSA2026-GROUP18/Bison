@@ -31,10 +31,9 @@ public class BisonTest : IDisposable
 		app.StartAsync().GetAwaiter().GetResult();
 
 		var db = CSVDatabase<Observation>.getInstance();
-		db.setPath(dbPath);
+		db.setPath(CSVDatabase<Observation>.ObserveDatabasePath);
 		Observation rec = new Observation(1, "tuff", "cat at home", 1789151813, "Vestamager");
 		db.storeNoAppend(rec); // reset the db
-		Program.Main(["--start"]);
 	}
 
 	public void Dispose()
@@ -51,6 +50,12 @@ public class BisonTest : IDisposable
 		var expectedTime = DateTimeOffset.FromUnixTimeSeconds(1789151813);
 		string expected =
 			$"{expectedTime.LocalDateTime.ToString("d/M/yyyy HH:mm:ss", CultureInfo.InvariantCulture)}";
+
+		CSVDatabase<Observation>
+			.getInstance()
+			.setPath(
+				Path.Combine(AppContext.BaseDirectory, "../../../../data/bison_observe_cli_db.csv")
+			);
 
 		Console.WriteLine(Environment.CurrentDirectory);
 		var sw = new StringWriter();
@@ -74,11 +79,17 @@ public class BisonTest : IDisposable
 	{
 		// arrange
 		var sw = new StringWriter();
+
+		CSVDatabase<Observation>
+			.getInstance()
+			.setPath(
+				Path.Combine(AppContext.BaseDirectory, "../../../../data/bison_observe_cli_db.csv")
+			);
 		string[] args = ["-o", observation, location];
 		string[] args2 = ["-r"];
 		// act
-		Console.SetOut(sw); // steal console output
 		Program.Main(args);
+		Console.SetOut(sw); // steal console output
 		Program.Main(args2);
 		// assert
 		Assert.Contains(Environment.UserName, sw.ToString()); // easier than full string cmp
