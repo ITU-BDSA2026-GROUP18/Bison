@@ -7,16 +7,16 @@ namespace Bison.CLI.Tests;
 
 public class BisonTest
 {
+	private static string dbPath =>
+	Path.Combine(AppContext.BaseDirectory, "../../../../data/bison_observe_cli_db.csv");
+
 	public BisonTest()
 	{
-		CSVDatabase<Observation>.ObserveDatabasePath = Path.Combine(
-			AppContext.BaseDirectory,
-			"../../../../data/bison_observe_cli_db.csv"
-		);
 		var db = CSVDatabase<Observation>.getInstance();
-		db.setPath(CSVDatabase<Observation>.ObserveDatabasePath);
+		db.setPath(dbPath);
 		Observation rec = new Observation(1, "tuff", "cat at home", 1789151813, "Vestamager");
 		db.storeNoAppend(rec); // reset the db
+		Program.Main(["--start"]);
 	}
 
 	[Fact]
@@ -27,12 +27,6 @@ public class BisonTest
 		var expectedTime = DateTimeOffset.FromUnixTimeSeconds(1789151813);
 		string expected =
 			$"{expectedTime.LocalDateTime.ToString("d/M/yyyy HH:mm:ss", CultureInfo.InvariantCulture)}";
-
-		CSVDatabase<Observation>
-			.getInstance()
-			.setPath(
-				Path.Combine(AppContext.BaseDirectory, "../../../../data/bison_observe_cli_db.csv")
-			);
 
 		Console.WriteLine(Environment.CurrentDirectory);
 		var sw = new StringWriter();
@@ -56,12 +50,6 @@ public class BisonTest
 	{
 		// arrange
 		var sw = new StringWriter();
-
-		CSVDatabase<Observation>
-			.getInstance()
-			.setPath(
-				Path.Combine(AppContext.BaseDirectory, "../../../../data/bison_observe_cli_db.csv")
-			);
 		string[] args = ["-o", observation, location];
 		string[] args2 = ["-r"];
 		// act
