@@ -1,22 +1,45 @@
 using System.ComponentModel.Design;
 using System.Data.Common;
 using System.Globalization;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using SimpleDB;
 
 namespace Bison.CLI.Tests;
 
-public class BisonTest
+public class BisonTest : IDisposable
 {
+	private readonly WebApplication app;
+
 	public BisonTest()
 	{
 		CSVDatabase<Observation>.ObserveDatabasePath = Path.Combine(
 			AppContext.BaseDirectory,
 			"../../../../data/bison_observe_cli_db.csv"
 		);
+
+		CSVDatabase<Comment>.CommentDatabasePath = Path.Combine(
+			AppContext.BaseDirectory,
+			"../../../../data/bison_comment_cli_db.csv"
+		);
+
+		var builder = WebApplication.CreateBuilder();
+		builder.WebHost.UseUrls("http://localhost:5000");
+		app = builder.Build();
+
+		CSVDatabase<Comment>.getInstance().Configure(app, true);
+		app.StartAsync().GetAwaiter().GetResult();
+
 		var db = CSVDatabase<Observation>.getInstance();
 		db.setPath(CSVDatabase<Observation>.ObserveDatabasePath);
 		Observation rec = new Observation(1, "tuff", "cat at home", 1789151813, "Vestamager");
 		db.storeNoAppend(rec); // reset the db
+	}
+
+	public void Dispose()
+	{
+		app.StopAsync().GetAwaiter().GetResult();
+		app.DisposeAsync().AsTask().GetAwaiter().GetResult();
 	}
 
 	[Fact]

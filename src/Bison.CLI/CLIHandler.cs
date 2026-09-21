@@ -10,7 +10,7 @@ class CLIHandler
 		Microsoft.AspNetCore.Builder.WebApplicationBuilder builder = WebApplication.CreateBuilder();
 		app = builder.Build();
 		Console.WriteLine("------- WEB SERVER BUILD -------");
-		CSVDatabase<Comment>.getInstance().start(app);
+		CSVDatabase<Comment>.getInstance().Configure(app, false);
 	}
 
 	private void stopWebServer()
@@ -149,6 +149,6 @@ class CLIHandler
 		rootCommand.Subcommands.Add(propCommand);
 		rootCommand.Subcommands.Add(propsCommand);
 
-		rootCommand.Parse(args).Invoke();
+		rootCommand.Parse(args).InvokeAsync().GetAwaiter().GetResult();
 	}
 }

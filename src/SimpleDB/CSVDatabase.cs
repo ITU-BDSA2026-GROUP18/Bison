@@ -74,15 +74,14 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 		return instance;
 	}
 
-	public void start(WebApplication app_)
+	public void Configure(WebApplication app_, bool testing)
 	{
 		app = app_;
-		Console.WriteLine("TEST");
 
 		setReadEndpoints();
 		setStoreEndpoints();
 
-		app.Run();
+		if (!testing) app.Run();
 	}
 
 	private IEnumerable<T> internalRead(int? limit = null)
