@@ -14,9 +14,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	<None Include="testdata\**\*.csv"
+		<None
+			Include="testdata\**\*.csv"
 			LinkBase="testdata"
-			CopyToOutputDirectory="PreserveNewest" />
+			CopyToOutputDirectory="PreserveNewest"
+		/>
 	</ItemGroup>
 
 	<ItemGroup>
