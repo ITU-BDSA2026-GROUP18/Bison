@@ -14,6 +14,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<None
+			Include="testdata\**\*.csv"
+			LinkBase="testdata"
+			CopyToOutputDirectory="PreserveNewest"
+		/>
+	</ItemGroup>
+
+	<ItemGroup>
 		<Using Include="Xunit" />
 	</ItemGroup>
 	<ItemGroup>
