@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.FileProviders;
 
-public record Observation(
+/*public record Observationn(
 	long Id,
 	string Author,
 	string Description,
@@ -305,4 +305,4 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 	{
 		dbpath = path;
 	}
-}
+}*/
