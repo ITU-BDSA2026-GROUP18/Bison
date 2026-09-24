@@ -2,11 +2,13 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-string? dbPath = Environment.GetEnvironmentVariable("BISONDBPATH");
-if(string.IsNullOrWhiteSpace(dbPath))
+string? envPath = Environment.GetEnvironmentVariable("BISONDBPATH");
+string dbPath = "../Database/";
+if (string.IsNullOrWhiteSpace(envPath))
 {
     dbPath = Path.Combine(Path.GetTempPath(), "bison.db");
 }
+else dbPath += envPath;
 Console.WriteLine($"Using database: {Path.GetFullPath(dbPath)}");
 // Load database connection via configuration
 string connectionString = $"Data Source={dbPath}";
