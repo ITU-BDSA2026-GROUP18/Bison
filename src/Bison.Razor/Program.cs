@@ -2,16 +2,29 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+string? dbPath = Environment.GetEnvironmentVariable("BISONDBPATH");
+if(string.IsNullOrWhiteSpace(dbPath))
+{
+    dbPath = Path.Combine(Path.GetTempPath(), "bison.db");
+}
+Console.WriteLine($"Using database: {Path.GetFullPath(dbPath)}");
 // Load database connection via configuration
-string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<BisonDbContext>(options => options.UseSqlite(connectionString));
+string connectionString = $"Data Source={dbPath}";
 
 // Add services to the container.
+builder.Services.AddDbContext<BisonDbContext>(options => options.UseSqlite(connectionString));
 builder.Services.AddRazorPages();
-builder.Services.AddSingleton<IObservationService, ObservationService>();
+builder.Services.AddScoped<DBFacade>();
+builder.Services.AddScoped<IObservationService, ObservationService>();
 
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<BisonDbContext>();
+    dbContext.Database.Migrate();
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
