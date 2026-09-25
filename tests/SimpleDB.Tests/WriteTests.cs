@@ -1,6 +1,7 @@
 namespace SimpleDB.Tests;
 
 using SimpleDB;
+using CsCheck;
 
 public class SimpleDBWriteTests
 {
@@ -46,5 +47,31 @@ public class SimpleDBWriteTests
 		Assert.Equal(author, list[0].Author);
 		Assert.Equal(observation, list[0].Description);
 		Assert.Equal(timeStamp, list[0].Timestamp);
+	}
+
+	// Tests that the write and read functions work together correctly for any valid observation
+	// Does so by feeding random valid observations to the write function and checking that the read function returns the same data
+	[Fact]
+	public void WriteRead_roundtrips_any_valid_observation()
+	{
+		database.setPath(databasepath);
+
+		Gen.Select(Gen.String, Gen.String, Gen.Long, Gen.String)
+			.Sample(
+				t =>
+				{
+					var (author, description, timestamp, location) = t;
+
+					var rec = new Observation(0, author, description, timestamp, location);
+					database.storeNoAppend(rec);
+					var stored = database.read().Single();
+
+					Assert.Equal(author, stored.Author);
+					Assert.Equal(description, stored.Description);
+					Assert.Equal(timestamp, stored.Timestamp);
+					Assert.Equal(location, stored.Location);
+				},
+				threads: 1 // CsCheck library runs multi-threaded. This conflicts with file reading and writing. Ensure single thread!
+			);
 	}
 }
