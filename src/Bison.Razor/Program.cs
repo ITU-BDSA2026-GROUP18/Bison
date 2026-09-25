@@ -8,8 +8,7 @@ if (string.IsNullOrWhiteSpace(envPath))
 {
 	dbPath = Path.Combine(Path.GetTempPath(), "bison.db");
 }
-else
-	dbPath += envPath;
+else dbPath += envPath;
 Console.WriteLine($"Using database: {Path.GetFullPath(dbPath)}");
 
 // Load database connection via configuration
