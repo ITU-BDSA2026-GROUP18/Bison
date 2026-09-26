@@ -1,4 +1,4 @@
-﻿@page "/{author}"
+﻿@page "/obs/{author}"
 @model Bison.Razor.Pages.UserTimelineModel
 @{
     ViewData["Title"] = "Bison";
@@ -7,7 +7,8 @@
 }
 
 <div>
-    <h2> @routeName's Observations </h2>
+    <h2> @routeName's Observations &mdash; page @Model.PageNr </h2>
+    <small>Showing @Model.NrOfObservations observations</small>
 
     @if (Model.Observations.Any())
     {
