@@ -54,6 +54,10 @@ namespace Bison.Razor.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnName("email");
 
+                    b.Property<int>("PwHash")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("pw_hash");
+
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("TEXT")

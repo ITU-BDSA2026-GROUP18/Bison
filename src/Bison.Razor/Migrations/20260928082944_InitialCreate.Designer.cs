@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bison.Razor.Migrations
 {
     [DbContext(typeof(BisonDbContext))]
-    [Migration("20260924140628_InitialDBSchema")]
-    partial class InitialDBSchema
+    [Migration("20260928082944_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -56,6 +56,10 @@ namespace Bison.Razor.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT")
                         .HasColumnName("email");
+
+                    b.Property<int>("PwHash")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("pw_hash");
 
                     b.Property<string>("Username")
                         .IsRequired()
