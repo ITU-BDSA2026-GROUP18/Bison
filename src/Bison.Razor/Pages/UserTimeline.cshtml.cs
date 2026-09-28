@@ -17,7 +17,8 @@ public class UserTimelineModel : PageModel
 
 	public ActionResult OnGet(string author, [FromQuery] int page = 1)
 	{
-		if (page < 1) page = 1;
+		if (page < 1)
+			page = 1;
 		PageNr = page;
 		Observations = _service.GetObservationsFromAuthor(author, PageNr);
 		NrOfObservations = Observations.Count;

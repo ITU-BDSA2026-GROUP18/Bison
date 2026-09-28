@@ -16,9 +16,10 @@ public class DBFacade
 			from Observation in _context.Observations
 			orderby Observation.PubDate descending
 			select Observation
-		).Include(c => c.Author)
-		.Skip((page - 1) * pageSize)
-		.Take(pageSize);
+		)
+			.Include(c => c.Author)
+			.Skip((page - 1) * pageSize)
+			.Take(pageSize);
 		result = query.ToList();
 		return result;
 	}
@@ -31,9 +32,10 @@ public class DBFacade
 			where Observation.Author.Username == username
 			orderby Observation.PubDate descending
 			select Observation
-		).Include(c => c.Author)
-		.Skip((page - 1) * pageSize)
-		.Take(pageSize);
+		)
+			.Include(c => c.Author)
+			.Skip((page - 1) * pageSize)
+			.Take(pageSize);
 		result = query.ToList();
 		return result;
 	}

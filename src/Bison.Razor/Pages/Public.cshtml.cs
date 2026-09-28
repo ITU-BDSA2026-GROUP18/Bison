@@ -17,7 +17,8 @@ public class PublicModel : PageModel
 
 	public ActionResult OnGet([FromQuery] int page = 1)
 	{
-		if (page < 1) page = 1;
+		if (page < 1)
+			page = 1;
 		PageNr = page;
 		Observations = _service.GetObservations(PageNr);
 		NrOfObservations = Observations.Count;

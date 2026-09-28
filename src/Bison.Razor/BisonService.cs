@@ -3,7 +3,11 @@ public record ObservationViewModel(string Author, string Message, string Timesta
 public interface IObservationService
 {
 	public List<ObservationViewModel> GetObservations(int page, int pageSize = 32);
-	public List<ObservationViewModel> GetObservationsFromAuthor(string author, int page, int pageSize = 32);
+	public List<ObservationViewModel> GetObservationsFromAuthor(
+		string author,
+		int page,
+		int pageSize = 32
+	);
 }
 
 public class ObservationService : IObservationService
@@ -27,7 +31,11 @@ public class ObservationService : IObservationService
 		return result;
 	}
 
-	public List<ObservationViewModel> GetObservationsFromAuthor(string author, int page, int pageSize = 32)
+	public List<ObservationViewModel> GetObservationsFromAuthor(
+		string author,
+		int page,
+		int pageSize = 32
+	)
 	{
 		var result = new List<ObservationViewModel>();
 
@@ -47,8 +55,6 @@ public class ObservationService : IObservationService
 			UnixTime.UnixTimeStampToDateTimeString(o.PubDate)
 		);
 	}
-
-
 }
 
 public class UnixTime
