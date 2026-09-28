@@ -2,8 +2,12 @@ public record ObservationViewModel(string Author, string Message, string Timesta
 
 public interface IObservationService
 {
-	public List<ObservationViewModel> GetObservations();
-	public List<ObservationViewModel> GetObservationsFromAuthor(string author);
+	public List<ObservationViewModel> GetObservations(int page, int pageSize = 32);
+	public List<ObservationViewModel> GetObservationsFromAuthor(
+		string author,
+		int page,
+		int pageSize = 32
+	);
 }
 
 public class ObservationService : IObservationService
@@ -16,25 +20,30 @@ public class ObservationService : IObservationService
 		_db = db;
 	}
 
-	public List<ObservationViewModel> GetObservations()
+	public List<ObservationViewModel> GetObservations(int page, int pageSize = 32)
 	{
 		var result = new List<ObservationViewModel>();
 
-		foreach (var observation in _db.getObservations())
+		foreach (var observation in _db.getObservations(page, pageSize))
 		{
 			result.Add(ToViewModel(observation));
 		}
 		return result;
 	}
 
-	public List<ObservationViewModel> GetObservationsFromAuthor(string author)
+	public List<ObservationViewModel> GetObservationsFromAuthor(
+		string author,
+		int page,
+		int pageSize = 32
+	)
 	{
 		var result = new List<ObservationViewModel>();
 
-		foreach (var observation in _db.getObservationsByAuthor(author))
+		foreach (var observation in _db.getObservationsByAuthor(author, page, pageSize))
 		{
 			result.Add(ToViewModel(observation));
 		}
+
 		return result;
 	}
 

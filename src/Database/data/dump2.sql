@@ -1,0 +1,2 @@
+INSERT INTO observation VALUES(3,1,'A horse',1690892209);
+INSERT INTO observation VALUES(4,1,'A bird',1690892207);
