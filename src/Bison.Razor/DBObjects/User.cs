@@ -15,4 +15,8 @@ public class User
 	[Column("email")]
 	[Required]
 	public required string Email { get; set; } = "";
+
+	[Column("pw_hash")]
+	[Required]
+	public int PwHash { get; set; }
 }

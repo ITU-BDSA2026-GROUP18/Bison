@@ -17,6 +17,7 @@ public class BisonDbContext : DbContext
 			e.Property(u => u.UserId).HasColumnName("user_id");
 			e.Property(u => u.Username).HasColumnName("username");
 			e.Property(u => u.Email).HasColumnName("email");
+			e.Property(o => o.PwHash).HasColumnName("pw_hash");
 		});
 
 		modelBuilder.Entity<Observation>(e =>
