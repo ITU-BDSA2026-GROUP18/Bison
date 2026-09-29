@@ -25,10 +25,13 @@ builder.Services.AddScoped<IObservationService, ObservationService>();
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
+if (!app.Environment.IsEnvironment("Testing"))
 {
-	var dbContext = scope.ServiceProvider.GetRequiredService<BisonDbContext>();
-	dbContext.Database.Migrate();
+	using (var scope = app.Services.CreateScope())
+	{
+		var dbContext = scope.ServiceProvider.GetRequiredService<BisonDbContext>();
+		dbContext.Database.Migrate();
+	}
 }
 
 // Configure the HTTP request pipeline.
@@ -47,3 +50,5 @@ app.UseRouting();
 app.MapRazorPages();
 
 app.Run();
+
+public partial class Program { }
