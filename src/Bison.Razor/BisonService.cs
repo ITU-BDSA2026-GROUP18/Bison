@@ -8,6 +8,7 @@ public interface IObservationService
 		int page,
 		int pageSize = 32
 	);
+	public ObservationViewModel GetObservationById(int observationId);
 }
 
 public class ObservationService : IObservationService
@@ -45,6 +46,12 @@ public class ObservationService : IObservationService
 		}
 
 		return result;
+	}
+
+	public ObservationViewModel GetObservationById(int observationId)
+	{
+    var observation = _db.getObservationById(observationId) ?? throw new Exception($"Observation with ID {observationId} not found.");
+    return ToViewModel(observation);
 	}
 
 	private static ObservationViewModel ToViewModel(Observation o)

@@ -39,4 +39,14 @@ public class DBFacade
 		result = query.ToList();
 		return result;
 	}
+
+	public Observation? getObservationById(int observationId)
+	{
+		var query = (
+			from Observation in _context.Observations
+			where Observation.ObservationId == observationId
+			select Observation
+		);
+		return query.FirstOrDefault();
+	}
 }
