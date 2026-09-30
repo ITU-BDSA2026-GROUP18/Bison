@@ -47,8 +47,8 @@ public class APIUnitTest : IClassFixture<BisonFactory>
     }
 
     [Fact]
-    public async Task Test1()
-    {
+    public async Task ObsEndpointGetRequestTest()
+    { 
         var response = await _client.GetAsync("/obs");
         var body = await response.Content.ReadAsStringAsync();
 
@@ -56,5 +56,43 @@ public class APIUnitTest : IClassFixture<BisonFactory>
         _output.WriteLine(body);
 
         response.EnsureSuccessStatusCode();
+        Assert.Contains("Showing 3 observations", body);
+
+        Assert.Contains("Mette", body);
+        Assert.Contains("Found a Glossy Ibis in the marsh behind the dunes. Bare skin on the face and head.", body);
+        Assert.Contains("03/04/26 7.11.53", body);
+
+        Assert.Contains("Adrian", body);
+        Assert.Contains("A horse", body);
+        Assert.Contains("08/01/23 12.16.49", body);
+
+        Assert.Contains("Adrian", body);
+        Assert.Contains("A bird", body);
+        Assert.Contains("08/01/23 12.16.47", body);
+    }
+
+    [Fact]
+    public async Task AutherEndpointGetRequestTest()
+    { 
+        var response = await _client.GetAsync("/obs/Adrian");
+        var body = await response.Content.ReadAsStringAsync();
+
+        _output.WriteLine($"Status: {response.StatusCode}");
+        _output.WriteLine(body);
+
+        response.EnsureSuccessStatusCode();
+        Assert.Contains("Showing 2 observations", body);
+
+        Assert.DoesNotContain("Mette", body);
+        Assert.DoesNotContain("Found a Glossy Ibis in the marsh behind the dunes. Bare skin on the face and head.", body);
+        Assert.DoesNotContain("03/04/26 7.11.53", body);
+
+        Assert.Contains("Adrian", body);
+        Assert.Contains("A horse", body);
+        Assert.Contains("08/01/23 12.16.49", body);
+
+        Assert.Contains("Adrian", body);
+        Assert.Contains("A bird", body);
+        Assert.Contains("08/01/23 12.16.47", body);
     }
 }
