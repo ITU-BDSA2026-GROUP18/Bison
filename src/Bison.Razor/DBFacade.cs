@@ -14,7 +14,7 @@ public class DBFacade
 		var result = new List<Observation>();
 		var query = (
 			from Observation in _context.Observations
-			orderby Observation.PubDate descending
+			orderby Observation.TimeStamp descending
 			select Observation
 		)
 			.Include(c => c.Author)
@@ -30,7 +30,7 @@ public class DBFacade
 		var query = (
 			from Observation in _context.Observations
 			where Observation.Author.Username == username
-			orderby Observation.PubDate descending
+			orderby Observation.TimeStamp descending
 			select Observation
 		)
 			.Include(c => c.Author)

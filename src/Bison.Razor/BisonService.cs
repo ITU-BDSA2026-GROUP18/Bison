@@ -52,7 +52,7 @@ public class ObservationService : IObservationService
 		return new ObservationViewModel(
 			o.Author.Username,
 			o.Text,
-			UnixTime.UnixTimeStampToDateTimeString(o.PubDate)
+			UnixTime.UnixTimeStampToDateTimeString(o.TimeStamp)
 		);
 	}
 }
