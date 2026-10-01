@@ -27,11 +27,11 @@ public class BisonDbContext : DbContext
 			e.ToTable("observation");
 			e.HasKey(o => o.Id);
 			e.Property(o => o.Id).HasColumnName("observation_id");
-			e.Property(o => o.Author.Id).HasColumnName("author_id");
 			e.Property(o => o.Text).HasColumnName("text");
-			e.Property(o => o.TimeStamp).HasColumnName("timestamp");
+			e.Property(o => o.TimeStamp).HasColumnName("timestamp");	
 
-			e.HasOne(o => o.Author).WithMany().HasForeignKey(o => o.Author.Id);
+			e.HasOne(o => o.Author).WithMany().HasForeignKey("author_id");
+			e.HasOne(o => o.Taxon).WithMany().HasForeignKey("taxon_id");
 		});
 
 		modelBuilder.Entity<Comment>(e =>
@@ -39,11 +39,11 @@ public class BisonDbContext : DbContext
 			e.ToTable("comment");
 			e.HasKey(c => c.Id);
 			e.Property(c => c.Id).HasColumnName("comment_id");
-			e.Property(c => c.Author.Id).HasColumnName("author_id");
 			e.Property(c => c.Text).HasColumnName("text");
 			e.Property(c => c.TimeStamp).HasColumnName("timestamp");
 
-			e.HasOne(c => c.Author).WithMany().HasForeignKey(c => c.Author.Id);
+			e.HasOne(c => c.Author).WithMany().HasForeignKey("author_id");
+			e.HasOne(c => c.observation).WithMany().HasForeignKey("observation_id");
 		});
 
 		modelBuilder.Entity<Taxon>(e =>
@@ -51,16 +51,20 @@ public class BisonDbContext : DbContext
 			e.ToTable("taxon");
 			e.HasKey(t => t.TaxonId);
 			e.Property(t => t.VernacularName).HasColumnName("vernacular_name");
-			e.Property(t => t.Parent.TaxonId).HasColumnName("parent_id");
+
+			e.HasOne(t => t.Parent).WithMany(t => t.Children).HasForeignKey("parent_id");
 		});
 
 		modelBuilder.Entity<Proposal>(e =>
 		{
 			e.ToTable("proposal");
 			e.HasKey(p => p.Id);
-			e.Property(p => p.observation.Id).HasColumnName("observation_id");
-			e.Property(p => p.Taxon.TaxonId).HasColumnName("taxon_id");
-			e.Property(p => p.Author.Id).HasColumnName("author_id");
+			e.Property(p => p.Text).HasColumnName("text");
+  			e.Property(p => p.TimeStamp).HasColumnName("timestamp");
+
+			e.HasOne(p => p.observation).WithMany().HasForeignKey("observation_id");
+    		e.HasOne(p => p.Taxon).WithMany().HasForeignKey("taxon_id");
+			e.HasOne(c => c.Author).WithMany().HasForeignKey("author_id");
 		});
 	}
 }

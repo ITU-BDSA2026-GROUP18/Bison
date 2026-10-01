@@ -8,7 +8,7 @@ public class Post
     [Required]
     public required string Text { get; set; }
 
-    public DateTime TimeStamp { get; set; }
+    public double TimeStamp { get; set; }
 
     [Required]
     public required User Author { get; set; } 

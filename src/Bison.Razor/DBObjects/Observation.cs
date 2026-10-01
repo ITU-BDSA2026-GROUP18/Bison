@@ -4,6 +4,5 @@ using SQLitePCL;
 
 public class Observation : Post
 {
-	[Required]
-	public required Taxon Taxon { get; set; }
+	public Taxon? Taxon { get; set; }
 }
