@@ -1,9 +1,10 @@
 using System.ComponentModel.DataAnnotations;
+
 public class Proposal : Post
 {
-    [Required]
+	[Required]
 	public required Observation observation { get; set; }
 
-    [Required]
+	[Required]
 	public required Taxon Taxon { get; set; }
 }

@@ -2,7 +2,8 @@ using Microsoft.EntityFrameworkCore;
 
 public class BisonDbContext : DbContext
 {
-	public BisonDbContext(DbContextOptions<BisonDbContext> options) : base(options) { }
+	public BisonDbContext(DbContextOptions<BisonDbContext> options)
+		: base(options) { }
 
 	public DbSet<User> Users => Set<User>();
 	public DbSet<Observation> Observations => Set<Observation>();
@@ -28,7 +29,7 @@ public class BisonDbContext : DbContext
 			e.HasKey(o => o.Id);
 			e.Property(o => o.Id).HasColumnName("observation_id");
 			e.Property(o => o.Text).HasColumnName("text");
-			e.Property(o => o.TimeStamp).HasColumnName("timestamp");	
+			e.Property(o => o.TimeStamp).HasColumnName("timestamp");
 
 			e.HasOne(o => o.Author).WithMany().HasForeignKey("author_id");
 			e.HasOne(o => o.Taxon).WithMany().HasForeignKey("taxon_id");
@@ -60,10 +61,10 @@ public class BisonDbContext : DbContext
 			e.ToTable("proposal");
 			e.HasKey(p => p.Id);
 			e.Property(p => p.Text).HasColumnName("text");
-  			e.Property(p => p.TimeStamp).HasColumnName("timestamp");
+			e.Property(p => p.TimeStamp).HasColumnName("timestamp");
 
 			e.HasOne(p => p.observation).WithMany().HasForeignKey("observation_id");
-    		e.HasOne(p => p.Taxon).WithMany().HasForeignKey("taxon_id");
+			e.HasOne(p => p.Taxon).WithMany().HasForeignKey("taxon_id");
 			e.HasOne(c => c.Author).WithMany().HasForeignKey("author_id");
 		});
 	}
