@@ -12,6 +12,9 @@ public class Observation
 	[Column("author_id")]
 	public int AuthorId { get; set; }
 
+	[Column("taxon_id")]
+	public int TaxonId { get; set; }
+
 	[Column("text")]
 	[Required]
 	public required string Text { get; set; } = "";
@@ -20,5 +23,7 @@ public class Observation
 	public double PubDate { get; set; }
 
 	public User Author { get; set; } = null;
+	public Taxon Taxon { get; set; } = null!;
 	public List<Comment> Comments { get; set; } = [];
+	public List<Proposal> Proposals { get; set; } = [];
 }

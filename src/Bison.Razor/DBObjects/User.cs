@@ -19,4 +19,6 @@ public class User
 	[Column("pw_hash")]
 	[Required]
 	public int PwHash { get; set; }
+
+	public List<Proposal> Proposals { get; set; } = [];
 }
