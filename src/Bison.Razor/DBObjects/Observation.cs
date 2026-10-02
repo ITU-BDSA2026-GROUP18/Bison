@@ -18,5 +18,7 @@ public class Observation
 
 	[Column("pub_date")]
 	public double PubDate { get; set; }
+
 	public User Author { get; set; } = null;
+	public List<Comment> Comments { get; set; } = [];
 }

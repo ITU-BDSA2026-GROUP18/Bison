@@ -4,16 +4,23 @@ using System.ComponentModel.DataAnnotations.Schema;
 public class Comment
 {
 	[Key]
-	[Required]
-	public required int AuthorId { get; set; }
+	[Column("comment_id")]
+	public int CommentId { get; set; }
 
-	[Required]
-	public required int ObservationId { get; set; }
+	[Column("observation_id")]
+	public int ObservationId { get; set; }
 
-	[Required]
-	public required string comment { get; set; }
+	[Column("author_id")]
+	public int AuthorId { get; set; }
 
-	public User Author { get; set; }
+	[Column("comment")]
+	public string Message { get; set; } = "";
 
-	public Observation observation { get; set; }
+	[Column("pub_date")]
+	public long PubDate { get; set; }
+
+	/* Foreign keys should be figured out auto-magically :) */
+
+	public User Author { get; set; } = null;
+	public Observation observation { get; set; } = null;
 }

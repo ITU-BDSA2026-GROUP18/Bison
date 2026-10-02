@@ -16,7 +16,24 @@
 
         <hr />
 
-        <h3>Comments <small>(0)</small></h3>
+        <h3>Comments <small>(@Model.Comments.Count)</small></h3>
+        @if (Model.Comments.Any())
+        {
+            <ul id="commentslist" class="observations">
+                @foreach (CommentViewModel comment in Model.Comments)
+                {
+                    <li>
+                        <p>
+                            <strong>
+                                <a href="/obs/@comment.Author">@comment.Author</a>
+                            </strong>
+                            @comment.Message
+                            <small>&mdash; @comment.Timestamp</small>
+                        </p>
+                    </li>
+                }
+            </ul>
+        }
     }
     else if (Model.Observations.Any())
     {

@@ -1,5 +1,11 @@
 public record ObservationViewModel(string Author, string Message, string Timestamp, int Id = 0);
-public record CommentViewModel(string Author, string Message, string Timestamp, int ObservationId = 0);
+
+public record CommentViewModel(
+	string Author,
+	string Message,
+	string Timestamp,
+	int ObservationId = 0
+);
 
 public interface IObservationService
 {
@@ -52,9 +58,10 @@ public class ObservationService : IObservationService
 
 	public ObservationViewModel? GetObservationById(int observationId)
 	{
-    var observation = _db.getObservationById(observationId);
-		if (observation == null) return null;
-    return ToViewModel(observation);
+		var observation = _db.getObservationById(observationId);
+		if (observation == null)
+			return null;
+		return ToViewModel(observation);
 	}
 
 	public List<CommentViewModel> GetCommentsForObservation(int observationId)
@@ -83,8 +90,8 @@ public class ObservationService : IObservationService
 	{
 		return new CommentViewModel(
 			c.Author.Username,
-			c.comment,
-			UnixTime.UnixTimeStampToDateTimeString(c.observation.PubDate),
+			c.Message,
+			UnixTime.UnixTimeStampToDateTimeString(c.PubDate),
 			c.ObservationId
 		);
 	}

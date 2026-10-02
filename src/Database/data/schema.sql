@@ -1,3 +1,5 @@
+drop table if exists comment;
+
 drop table if exists user;
 create table user (
   user_id integer primary key autoincrement,
@@ -14,11 +16,10 @@ create table observation (
   pub_date integer
 );
 
-drop table if exists comment;
 create table comment (
   comment_id integer primary key autoincrement,
   observation_id integer not null references observation(observation_id) on delete cascade,
-  author_id integer not null,
+  author_id integer not null references user(user_id),
   comment string not null,
   pub_date integer
 );

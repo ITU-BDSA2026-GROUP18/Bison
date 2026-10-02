@@ -47,23 +47,21 @@ public class DBFacade
 			from Observation in _context.Observations
 			where Observation.ObservationId == observationId
 			select Observation
-		)
-			.Include(c => c.Author);
+		).Include(c => c.Author);
 		return query.ToList().FirstOrDefault();
 	}
 
 	public List<Comment> getCommentsForObservation(int observationId)
 	{
-		/* var result = new List<Comment>();
+		var result = new List<Comment>();
 		var query = (
-			from Comment in _context.Comments
+			from Comment in _context.Comment
 			where Comment.ObservationId == observationId
 			select Comment
 		)
 			.Include(c => c.Author)
 			.Include(c => c.observation);
 		result = query.ToList();
-		return result; */
-		return null;
+		return result;
 	}
 }
