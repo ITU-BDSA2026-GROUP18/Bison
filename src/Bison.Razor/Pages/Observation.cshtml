@@ -1,33 +1,48 @@
-@page "ob/{id}"
+@page "/ob/{id?}"
 @model Bison.Razor.Pages.ObservationModel
 @{
     ViewData["Title"] = "Bison";
     Layout = "Shared/_Layout";
-    var routeName = HttpContext.GetRouteValue("id")?.ToString() ?? null;
+    var routeName = HttpContext.GetRouteValue("id") ?? null;
 }
 
 <div>
-    <h2> @routeName's Observations </h2>
+    <button class="back_button" onclick="history.back()">&larr; Back</button>
 
-    @if (Model.Observations.Any())
+    @if (Model.Observations.Count == 1)
     {
+        <h2>@Model.Observations[0].Author's Observation <small>&mdash; @Model.Observations[0].Timestamp</small></h2>
+        <p>@Model.Observations[0].Message</p>
+
+        <hr />
+
+        <h3>Comments <small>(0)</small></h3>
+    }
+    else if (Model.Observations.Any())
+    {
+        <h2>Public Timeline &mdash; page @Model.PageNr</h2>
+        <small>Showing @Model.NrOfObservations observations</small>
+
         <ul id="messagelist" class="observations">
-            @foreach (var ob in Model.Observations)
+            @foreach (ObservationViewModel obs in Model.Observations)
             {
                 <li>
                     <p>
                         <strong>
-                            <a href="/@ob.Author">@ob.Author</a>
+                            <a href="/obs/@obs.Author">@obs.Author</a>
                         </strong>
-                        @ob.Message
-                        <small>&mdash; @ob.Timestamp</small>
+                        @obs.Message
+                        <small>&mdash; @obs.Timestamp</small>
                     </p>
+                    <hr />
+                    <a href="/ob/@obs.Id">View Details</a>
                 </li>
             }
         </ul>
-    }
+    } 
     else
     {
-        <em>There are no Observations so far.</em>
+        <br/>
+        <em>There are no observations so far.</em>
     }
 </div>

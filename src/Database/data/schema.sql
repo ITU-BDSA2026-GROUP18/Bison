@@ -13,3 +13,12 @@ create table observation (
   text string not null,
   pub_date integer
 );
+
+drop table if exists comment;
+create table comment (
+  comment_id integer primary key autoincrement,
+  observation_id integer not null references observation(observation_id) on delete cascade,
+  author_id integer not null,
+  comment string not null,
+  pub_date integer
+);

@@ -42,11 +42,28 @@ public class DBFacade
 
 	public Observation? getObservationById(int observationId)
 	{
+		Console.WriteLine($"Searching for observation with ID: {observationId}");
 		var query = (
 			from Observation in _context.Observations
 			where Observation.ObservationId == observationId
 			select Observation
-		);
-		return query.FirstOrDefault();
+		)
+			.Include(c => c.Author);
+		return query.ToList().FirstOrDefault();
+	}
+
+	public List<Comment> getCommentsForObservation(int observationId)
+	{
+		/* var result = new List<Comment>();
+		var query = (
+			from Comment in _context.Comments
+			where Comment.ObservationId == observationId
+			select Comment
+		)
+			.Include(c => c.Author)
+			.Include(c => c.observation);
+		result = query.ToList();
+		return result; */
+		return null;
 	}
 }

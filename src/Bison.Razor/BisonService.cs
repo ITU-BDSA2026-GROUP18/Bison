@@ -1,4 +1,5 @@
-public record ObservationViewModel(string Author, string Message, string Timestamp);
+public record ObservationViewModel(string Author, string Message, string Timestamp, int Id = 0);
+public record CommentViewModel(string Author, string Message, string Timestamp, int ObservationId = 0);
 
 public interface IObservationService
 {
@@ -9,6 +10,7 @@ public interface IObservationService
 		int pageSize = 32
 	);
 	public ObservationViewModel GetObservationById(int observationId);
+	public List<CommentViewModel> GetCommentsForObservation(int observationId);
 }
 
 public class ObservationService : IObservationService
@@ -48,10 +50,23 @@ public class ObservationService : IObservationService
 		return result;
 	}
 
-	public ObservationViewModel GetObservationById(int observationId)
+	public ObservationViewModel? GetObservationById(int observationId)
 	{
-    var observation = _db.getObservationById(observationId) ?? throw new Exception($"Observation with ID {observationId} not found.");
+    var observation = _db.getObservationById(observationId);
+		if (observation == null) return null;
     return ToViewModel(observation);
+	}
+
+	public List<CommentViewModel> GetCommentsForObservation(int observationId)
+	{
+		var result = new List<CommentViewModel>();
+
+		foreach (var comment in _db.getCommentsForObservation(observationId))
+		{
+			result.Add(ToViewModel(comment));
+		}
+
+		return result;
 	}
 
 	private static ObservationViewModel ToViewModel(Observation o)
@@ -59,7 +74,18 @@ public class ObservationService : IObservationService
 		return new ObservationViewModel(
 			o.Author.Username,
 			o.Text,
-			UnixTime.UnixTimeStampToDateTimeString(o.PubDate)
+			UnixTime.UnixTimeStampToDateTimeString(o.PubDate),
+			o.ObservationId
+		);
+	}
+
+	private static CommentViewModel ToViewModel(Comment c)
+	{
+		return new CommentViewModel(
+			c.Author.Username,
+			c.comment,
+			UnixTime.UnixTimeStampToDateTimeString(c.observation.PubDate),
+			c.ObservationId
 		);
 	}
 }
