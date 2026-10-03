@@ -5,19 +5,19 @@ using SQLitePCL;
 [Table("post")]
 public abstract class Post
 {
-    [Key]
-    [Column("post_id")]
-    [Required]
-    public int PostId { get; set; }
+	[Key]
+	[Column("post_id")]
+	[Required]
+	public int PostId { get; set; }
 
-    [Column("author_id")]
-    public int AuthorId { get; set; }
+	[Column("author_id")]
+	public int AuthorId { get; set; }
 
-    [Column("text")]
-    public string Text { get; set; } = "";
+	[Column("text")]
+	public string Text { get; set; } = "";
 
-    [Column("pub_date")]
-    public long PubDate { get; set; }
+	[Column("pub_date")]
+	public long PubDate { get; set; }
 
-    public User Author { get; set; } = null!;
+	public User Author { get; set; } = null!;
 }

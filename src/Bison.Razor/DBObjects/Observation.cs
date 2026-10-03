@@ -5,7 +5,6 @@ using SQLitePCL;
 [Table("observation")]
 public class Observation : Post
 {
-
 	[Column("taxon_id")]
 	public int TaxonId { get; set; }
 

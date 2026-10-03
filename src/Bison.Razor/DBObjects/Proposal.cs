@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 [Table("proposal")]
 public class Proposal : Post
 {
-
 	[Column("observation_id")]
 	public int ObservationId { get; set; }
 

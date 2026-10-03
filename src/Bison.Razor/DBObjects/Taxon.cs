@@ -20,5 +20,5 @@ public class Taxon
 	public Taxon? ParentTaxon { get; set; }
 	public List<Taxon> ChildTaxons { get; set; } = []; // just to navigate to children in "reverse" direction
 	public List<Proposal> Proposals { get; set; } = [];
-  public List<Observation> Observations { get; set; } = [];
+	public List<Observation> Observations { get; set; } = [];
 }
