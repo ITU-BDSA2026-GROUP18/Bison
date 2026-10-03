@@ -506,3 +506,14 @@ INSERT INTO observation VALUES(497,1,'One Great Blue Heron on the flooded field 
 INSERT INTO observation VALUES(498,2,'A Glossy Ibis wading through the reed bed. Bare skin on the face and head.',1790811961);
 INSERT INTO observation VALUES(499,3,'Several Grey Herons feeding together at the lagoon. Hunts alone along the edge of the water.',1790813500);
 INSERT INTO observation VALUES(500,3,'Great Egret on the pond at the edge of town. Nests in colonies, often in trees near water.',1790896667);
+
+INSERT INTO comment VALUES(1,1,2,'Nice! I saw one there yesterday too.',1690880400);
+INSERT INTO comment VALUES(2,2,5,'Great count. Any ringed birds?',1690884900);
+INSERT INTO comment VALUES(3,2,2,'None that I could read, sorry.',1690886400);
+INSERT INTO comment VALUES(4,3,1,'Do you have a photo? Size is hard to judge at distance.',1690963200);
+INSERT INTO comment VALUES(5,3,3,'Only a blurry one. It looked bigger than a grey heron.',1690964400);
+INSERT INTO comment VALUES(6,5,6,'Classic sound. Well heard!',1691100000);
+INSERT INTO comment VALUES(7,6,4,'Were they ringed? A colour-ringed pair was reported nearby.',1691143500);
+INSERT INTO comment VALUES(8,8,1,'Please report this to the rarities committee.',1691249400);
+INSERT INTO comment VALUES(9,8,6,'Will do, thanks.',1691251200);
+INSERT INTO comment VALUES(10,10,5,'Could you see the head pattern?',1691327400);

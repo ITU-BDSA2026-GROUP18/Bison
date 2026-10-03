@@ -1,14 +1,15 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using SQLitePCL;
 
-[Table("observation")]
-public class Observation : Post
+[Table("proposal")]
+public class Proposal : Post
 {
+	[Column("observation_id")]
+	public int ObservationId { get; set; }
+
 	[Column("taxon_id")]
 	public int TaxonId { get; set; }
 
 	public Taxon Taxon { get; set; } = null!;
-	public List<Comment> Comments { get; set; } = [];
-	public List<Proposal> Proposals { get; set; } = [];
+	public Observation Observation { get; set; } = null!;
 }
