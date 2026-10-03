@@ -82,7 +82,7 @@ public class ObservationService : IObservationService
 			o.Author.Username,
 			o.Text,
 			UnixTime.UnixTimeStampToDateTimeString(o.PubDate),
-			o.ObservationId
+			o.PostId
 		);
 	}
 
@@ -90,7 +90,7 @@ public class ObservationService : IObservationService
 	{
 		return new CommentViewModel(
 			c.Author.Username,
-			c.Message,
+			c.Text,
 			UnixTime.UnixTimeStampToDateTimeString(c.PubDate),
 			c.ObservationId
 		);

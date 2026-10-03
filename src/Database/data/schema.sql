@@ -11,20 +11,21 @@ create table user (
   pw_hash string not null
 );
 
+create table post (
+  post_id integer primary key autoincrement,
+  author_id integer not null references user(user_id) on delete cascade,
+  text text not null,
+  pub_date integer not null
+);
+
 create table observation (
-  observation_id integer primary key autoincrement,
-  author_id integer not null,
-  taxon_id integer not null references taxon(taxon_id),
-  text string not null,
-  pub_date integer
+  post_id integer primary key references post(post_id) on delete cascade,
+  taxon_id integer not null references taxon(taxon_id)
 );
 
 create table comment (
-  comment_id integer primary key autoincrement,
-  observation_id integer not null references observation(observation_id) on delete cascade,
-  author_id integer not null references user(user_id),
-  comment string not null,
-  pub_date integer
+  post_id integer primary key references post(post_id) on delete cascade,
+  observation_id integer not null references observation(post_id) on delete cascade
 );
 
 create table taxon (
@@ -35,10 +36,7 @@ create table taxon (
 );
 
 create table proposal (
-  proposal_id integer primary key autoincrement,
-  author_id integer not null references user(user_id) on delete cascade, -- a proposal is always tied to a user
-  observation_id integer not null references observation(observation_id) on delete cascade, -- a proposal is always tied to an observation
-  taxon_id integer not null references taxon(taxon_id) on delete cascade, -- a proposal is always tied to a taxon (debateable)
-  text string not null,
-  pub_date integer
+  post_id integer primary key references post(post_id) on delete cascade,
+  observation_id integer not null references observation(post_id) on delete cascade,
+  taxon_id integer not null references taxon(taxon_id)
 );

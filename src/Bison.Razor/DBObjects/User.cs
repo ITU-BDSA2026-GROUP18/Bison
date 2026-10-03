@@ -20,5 +20,5 @@ public class User
 	[Required]
 	public int PwHash { get; set; }
 
-	public List<Proposal> Proposals { get; set; } = [];
+	public List<Post> Posts { get; set; } = [];
 }

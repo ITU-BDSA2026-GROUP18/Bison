@@ -45,7 +45,7 @@ public class DBFacade
 		Console.WriteLine($"Searching for observation with ID: {observationId}");
 		var query = (
 			from Observation in _context.Observations
-			where Observation.ObservationId == observationId
+			where Observation.PostId == observationId
 			select Observation
 		).Include(c => c.Author);
 		return query.ToList().FirstOrDefault();
@@ -55,13 +55,14 @@ public class DBFacade
 	{
 		var result = new List<Comment>();
 		var query = (
-			from Comment in _context.Comment
+			from Comment in _context.Comments
 			where Comment.ObservationId == observationId
 			select Comment
 		)
 			.Include(c => c.Author)
-			.Include(c => c.observation);
-		result = query.ToList();
+			.Include(c => c.Observation);
+
+		result = [.. query];
 		return result;
 	}
 }
