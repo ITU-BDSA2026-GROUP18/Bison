@@ -17,7 +17,7 @@ public abstract class Post
 	public string Text { get; set; } = "";
 
 	[Column("pub_date")]
-	public long PubDate { get; set; }
+	public DateTime PubDate { get; set; }
 
 	public User Author { get; set; } = null!;
 }
