@@ -38,8 +38,12 @@ public class BisonDbContext : DbContext
 			e.Property(p => p.PubDate)
 				.HasColumnName("pub_date")
 				.HasConversion(
-					v => new DateTimeOffset(DateTime.SpecifyKind(v, DateTimeKind.Utc)).ToUnixTimeSeconds(),
-					v => DateTimeOffset.FromUnixTimeSeconds(v).UtcDateTime);
+					v =>
+						new DateTimeOffset(
+							DateTime.SpecifyKind(v, DateTimeKind.Utc)
+						).ToUnixTimeSeconds(),
+					v => DateTimeOffset.FromUnixTimeSeconds(v).UtcDateTime
+				);
 
 			e.HasOne(p => p.Author).WithMany(u => u.Posts).HasForeignKey(p => p.AuthorId);
 		});

@@ -30,7 +30,7 @@ if (!app.Environment.IsEnvironment("Testing"))
 	using (var scope = app.Services.CreateScope())
 	{
 		var dbContext = scope.ServiceProvider.GetRequiredService<BisonDbContext>();
-		
+
 		// In development we don't care about database persistence, so we just delete it on each run
 		// This allows us to make changes to the database schema without having to worry about migrations or data persistence.
 		if (app.Environment.IsDevelopment())
