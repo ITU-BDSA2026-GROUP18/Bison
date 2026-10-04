@@ -81,7 +81,7 @@ public class ObservationService : IObservationService
 		return new ObservationViewModel(
 			o.Author.Username,
 			o.Text,
-			UnixTime.UnixTimeStampToDateTimeString(o.PubDate),
+			o.PubDate.ToString("MM/dd/yy H:mm:ss"),
 			o.PostId
 		);
 	}
@@ -91,7 +91,7 @@ public class ObservationService : IObservationService
 		return new CommentViewModel(
 			c.Author.Username,
 			c.Text,
-			UnixTime.UnixTimeStampToDateTimeString(c.PubDate),
+			c.PubDate.ToString("MM/dd/yy H:mm:ss"),
 			c.ObservationId
 		);
 	}

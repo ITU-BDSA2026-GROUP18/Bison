@@ -35,7 +35,15 @@ public class BisonDbContext : DbContext
 			e.Property(p => p.PostId).HasColumnName("post_id");
 			e.Property(p => p.AuthorId).HasColumnName("author_id");
 			e.Property(p => p.Text).HasColumnName("text");
-			e.Property(p => p.PubDate).HasColumnName("pub_date");
+			e.Property(p => p.PubDate)
+				.HasColumnName("pub_date")
+				.HasConversion(
+					v =>
+						new DateTimeOffset(
+							DateTime.SpecifyKind(v, DateTimeKind.Utc)
+						).ToUnixTimeSeconds(),
+					v => DateTimeOffset.FromUnixTimeSeconds(v).UtcDateTime
+				);
 
 			e.HasOne(p => p.Author).WithMany(u => u.Posts).HasForeignKey(p => p.AuthorId);
 		});
