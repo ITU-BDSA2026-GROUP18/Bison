@@ -20,7 +20,7 @@ string connectionString = $"Data Source={dbPath}";
 // Add services to the container.
 builder.Services.AddDbContext<BisonDbContext>(options => options.UseSqlite(connectionString));
 builder.Services.AddRazorPages();
-builder.Services.AddScoped<DBFacade>();
+builder.Services.AddScoped<IPostRepository, PostRepository>();
 builder.Services.AddScoped<IObservationService, ObservationService>();
 
 var app = builder.Build();

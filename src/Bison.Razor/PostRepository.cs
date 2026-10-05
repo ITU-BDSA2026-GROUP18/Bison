@@ -1,15 +1,15 @@
 using Microsoft.EntityFrameworkCore;
 
-public class DBFacade
+public class PostRepository : IPostRepository
 {
 	private readonly BisonDbContext _context;
 
-	public DBFacade(BisonDbContext context)
+	public PostRepository(BisonDbContext context)
 	{
 		_context = context;
 	}
 
-	public List<Observation> getObservations(int page, int pageSize)
+	public List<Observation> GetObservations(int page, int pageSize)
 	{
 		var result = new List<Observation>();
 		var query = (
@@ -24,7 +24,7 @@ public class DBFacade
 		return result;
 	}
 
-	public List<Observation> getObservationsByAuthor(string username, int page, int pageSize)
+	public List<Observation> GetObservationsByAuthor(string username, int page, int pageSize)
 	{
 		var result = new List<Observation>();
 		var query = (
@@ -40,7 +40,7 @@ public class DBFacade
 		return result;
 	}
 
-	public Observation? getObservationById(int observationId)
+	public Observation? GetObservationById(int observationId)
 	{
 		Console.WriteLine($"Searching for observation with ID: {observationId}");
 		var query = (
@@ -51,7 +51,7 @@ public class DBFacade
 		return query.ToList().FirstOrDefault();
 	}
 
-	public List<Comment> getCommentsForObservation(int observationId)
+	public List<Comment> GetCommentsForObservation(int observationId)
 	{
 		var result = new List<Comment>();
 		var query = (
