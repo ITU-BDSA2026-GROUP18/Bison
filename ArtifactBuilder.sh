@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd ./src/Bison.CLI
+cd ./src/Bison.Razor
 
 printf "\n===========================\nBuilding for\nOS: Windows\nArchitecture: X86_64\n===========================\n\n" && dotnet publish -c Release --runtime win-x64 --self-contained
 
