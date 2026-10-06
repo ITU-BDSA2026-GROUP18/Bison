@@ -22,18 +22,18 @@ public interface IObservationService
 public class ObservationService : IObservationService
 {
 	// These would normally be loaded from a database for example
-	private readonly DBFacade _db;
+	private readonly IPostRepository _repository;
 
-	public ObservationService(DBFacade db)
+	public ObservationService(IPostRepository repository)
 	{
-		_db = db;
+		_repository = repository;
 	}
 
 	public List<ObservationViewModel> GetObservations(int page, int pageSize = 32)
 	{
 		var result = new List<ObservationViewModel>();
 
-		foreach (var observation in _db.getObservations(page, pageSize))
+		foreach (var observation in _repository.GetObservations(page, pageSize))
 		{
 			result.Add(ToViewModel(observation));
 		}
@@ -48,7 +48,7 @@ public class ObservationService : IObservationService
 	{
 		var result = new List<ObservationViewModel>();
 
-		foreach (var observation in _db.getObservationsByAuthor(author, page, pageSize))
+		foreach (var observation in _repository.GetObservationsByAuthor(author, page, pageSize))
 		{
 			result.Add(ToViewModel(observation));
 		}
@@ -58,7 +58,7 @@ public class ObservationService : IObservationService
 
 	public ObservationViewModel? GetObservationById(int observationId)
 	{
-		var observation = _db.getObservationById(observationId);
+		var observation = _repository.GetObservationById(observationId);
 		if (observation == null)
 			return null;
 		return ToViewModel(observation);
@@ -68,7 +68,7 @@ public class ObservationService : IObservationService
 	{
 		var result = new List<CommentViewModel>();
 
-		foreach (var comment in _db.getCommentsForObservation(observationId))
+		foreach (var comment in _repository.GetCommentsForObservation(observationId))
 		{
 			result.Add(ToViewModel(comment));
 		}
