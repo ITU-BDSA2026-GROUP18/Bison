@@ -1,63 +1,63 @@
 name: .NET Build and Test
 
 env:
- DOTNET_CLI_TELEMETRY_OPTOUT: "true"
+  DOTNET_CLI_TELEMETRY_OPTOUT: "true"
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 8.0.x
-    - name: Restore dependencies
-      run: cd src/Bison.CLI/ && dotnet restore
-    - name: Build
-      run: ./Build.sh
-    - name: Test
-      run: dotnet test tests/SimpleDB.Tests/ && dotnet test tests/Bison.CLI.Tests/
-    - name: Publish
-      run: ./ArtifactBuilder.sh 
-      
-    - name: Upload win-x64
-      uses: actions/upload-artifact@v7
-      with:
-        name: Windows-x86
-        path: src/Bison.CLI/bin/Release/net8.0/win-x64
+      - uses: actions/checkout@v3
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 8.0.x
+      - name: Restore dependencies
+        run: cd src/Bison.CLI/ && dotnet restore
+      - name: Build
+        run: ./Build.sh
+      - name: Test
+        run: dotnet test tests/API.Tests/
+      - name: Publish
+        run: ./ArtifactBuilder.sh
 
-    - name: Upload win-arm64
-      uses: actions/upload-artifact@v7
-      with:
-        name: Windows-Arm64
-        path: src/Bison.CLI/bin/Release/net8.0/win-arm64
+      - name: Upload win-x64
+        uses: actions/upload-artifact@v7
+        with:
+          name: Windows-x86
+          path: src/Bison.CLI/bin/Release/net8.0/win-x64
 
-    - name: Upload linux-x64
-      uses: actions/upload-artifact@v7
-      with:
-        name: Linux-x86
-        path: src/Bison.CLI/bin/Release/net8.0/linux-x64
+      - name: Upload win-arm64
+        uses: actions/upload-artifact@v7
+        with:
+          name: Windows-Arm64
+          path: src/Bison.CLI/bin/Release/net8.0/win-arm64
 
-    - name: Upload linux-arm64
-      uses: actions/upload-artifact@v7
-      with:
-        name: Linux-Arm64
-        path: src/Bison.CLI/bin/Release/net8.0/linux-arm64
+      - name: Upload linux-x64
+        uses: actions/upload-artifact@v7
+        with:
+          name: Linux-x86
+          path: src/Bison.CLI/bin/Release/net8.0/linux-x64
 
-    - name: Upload osx-x64
-      uses: actions/upload-artifact@v7
-      with:
-        name: MacOS-x86
-        path: src/Bison.CLI/bin/Release/net8.0/osx-x64
+      - name: Upload linux-arm64
+        uses: actions/upload-artifact@v7
+        with:
+          name: Linux-Arm64
+          path: src/Bison.CLI/bin/Release/net8.0/linux-arm64
 
-    - name: Upload osx-arm64
-      uses: actions/upload-artifact@v7
-      with:
-        name: MacOS-Arm64
-        path: src/Bison.CLI/bin/Release/net8.0/osx-arm64
+      - name: Upload osx-x64
+        uses: actions/upload-artifact@v7
+        with:
+          name: MacOS-x86
+          path: src/Bison.CLI/bin/Release/net8.0/osx-x64
+
+      - name: Upload osx-arm64
+        uses: actions/upload-artifact@v7
+        with:
+          name: MacOS-Arm64
+          path: src/Bison.CLI/bin/Release/net8.0/osx-arm64

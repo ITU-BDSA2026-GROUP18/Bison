@@ -14,11 +14,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None
-			Include="testdata\**\*.csv"
-			LinkBase="testdata"
-			CopyToOutputDirectory="PreserveNewest"
-		/>
+		<None Include="testdata\**\*.csv" LinkBase="testdata" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -35,8 +31,5 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\src\Bison.CLI\Bison.CLI.csproj" />
-	</ItemGroup>
-	<ItemGroup>
-		<ProjectReference Include="..\..\src\SimpleDB\SimpleDB.csproj" />
 	</ItemGroup>
 </Project>
