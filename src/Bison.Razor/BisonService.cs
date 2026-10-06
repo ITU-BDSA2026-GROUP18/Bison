@@ -3,9 +3,10 @@ public record ObservationViewModel(string Author, string Message, string Timesta
 public record CommentViewModel(
 	string Author,
 	string Message,
-	string Timestamp,
-	int ObservationId = 0
+	string Timestamp
 );
+
+public record ProposalViewModel(string Author, string Message, string DwcTaxonId, string VernacularName, string Timestamp);
 
 public interface IObservationService
 {
@@ -17,6 +18,7 @@ public interface IObservationService
 	);
 	public ObservationViewModel GetObservationById(int observationId);
 	public List<CommentViewModel> GetCommentsForObservation(int observationId);
+	public List<ProposalViewModel> GetProposalsForObservation(int observationId);
 }
 
 public class ObservationService : IObservationService
@@ -75,6 +77,17 @@ public class ObservationService : IObservationService
 
 		return result;
 	}
+	public List<ProposalViewModel> GetProposalsForObservation(int observationId)
+	{
+		var result = new List<ProposalViewModel>();
+
+		foreach (var proposal in _repository.GetProposalsForObservation(observationId))
+		{
+			result.Add(ToViewModel(proposal));
+		}
+
+		return result;
+	}
 
 	private static ObservationViewModel ToViewModel(Observation o)
 	{
@@ -91,8 +104,18 @@ public class ObservationService : IObservationService
 		return new CommentViewModel(
 			c.Author.Username,
 			c.Text,
-			c.PubDate.ToString("MM/dd/yy H:mm:ss"),
-			c.ObservationId
+			c.PubDate.ToString("MM/dd/yy H:mm:ss")
+		);
+	}
+
+	private static ProposalViewModel ToViewModel(Proposal p)
+	{
+		return new ProposalViewModel(
+			p.Author.Username,
+			p.Text,
+			p.Taxon.DwcTaxonId,
+			p.Taxon.VernacularName,
+			p.PubDate.ToString("MM/dd/yy H:mm:ss")
 		);
 	}
 }
