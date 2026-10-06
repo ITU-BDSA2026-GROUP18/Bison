@@ -1,12 +1,14 @@
 public record ObservationViewModel(string Author, string Message, string Timestamp, int Id = 0);
 
-public record CommentViewModel(
+public record CommentViewModel(string Author, string Message, string Timestamp);
+
+public record ProposalViewModel(
 	string Author,
 	string Message,
+	string DwcTaxonId,
+	string VernacularName,
 	string Timestamp
 );
-
-public record ProposalViewModel(string Author, string Message, string DwcTaxonId, string VernacularName, string Timestamp);
 
 public interface IObservationService
 {
@@ -77,6 +79,7 @@ public class ObservationService : IObservationService
 
 		return result;
 	}
+
 	public List<ProposalViewModel> GetProposalsForObservation(int observationId)
 	{
 		var result = new List<ProposalViewModel>();
