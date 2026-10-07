@@ -24,5 +24,12 @@ unset IFS
 flag_args=()
 [[ -n "$dc" ]] && flag_args=(-p:DefineConstants="$dc")
 
-[[ $debug -eq 1 ]] && echo "building debug" && dotnet build src/Bison.Razor  -c Debug "${flag_args[@]}"
-[[ $release -eq 1 ]] && echo "building release" && dotnet build src/Bison.Razor -c Release "${flag_args[@]}"
+if [[ $debug -eq 1 ]]; then
+  echo "building debug"
+  dotnet build src/Bison.Razor -c Debug "${flag_args[@]}"
+fi
+
+if [[ $release -eq 1 ]]; then
+  echo "building release"
+  dotnet build src/Bison.Razor -c Release "${flag_args[@]}"
+fi

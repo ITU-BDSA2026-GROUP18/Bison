@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,7 +17,6 @@ else
 }
 Console.WriteLine($"Using database: {Path.GetFullPath(dbPath)}");
 
-// Load database connection via configuration
 string connectionString = $"Data Source={dbPath}";
 
 // Add services to the container.
@@ -22,6 +24,44 @@ builder.Services.AddDbContext<BisonDbContext>(options => options.UseSqlite(conne
 builder.Services.AddRazorPages();
 builder.Services.AddScoped<IPostRepository, PostRepository>();
 builder.Services.AddScoped<IObservationService, ObservationService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+
+builder.Services.Configure<RouteOptions>(options =>
+{
+	options.LowercaseUrls = true;
+});
+
+builder
+	.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+	.AddCookie(options =>
+	{
+		options.LoginPath = "/login";
+		options.LogoutPath = "/logout";
+		options.Cookie.HttpOnly = true;
+		options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+		options.Cookie.SameSite = SameSiteMode.Strict;
+		options.ExpireTimeSpan = TimeSpan.FromDays(7);
+		options.SlidingExpiration = true;
+		options.Events = new CookieAuthenticationEvents
+		{
+			OnValidatePrincipal = async context =>
+			{
+				if (
+					context.Properties.Items.TryGetValue("AbsoluteExpiresUtc", out var absExpStr)
+					&& DateTimeOffset.TryParse(absExpStr, out var absExp)
+					&& DateTimeOffset.UtcNow > absExp
+				)
+				{
+					context.RejectPrincipal();
+					await context.HttpContext.SignOutAsync(
+						CookieAuthenticationDefaults.AuthenticationScheme
+					);
+				}
+			},
+		};
+	});
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -57,7 +97,12 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapRazorPages();
+app.MapGet("/", () => Results.Redirect("/obs"));
+app.MapGet("/public", () => Results.Redirect("/obs"));
 
 app.Run();
 

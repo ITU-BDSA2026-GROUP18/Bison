@@ -1,13 +1,12 @@
-﻿@page "/obs/{author}"
+@page "/obs/{author}"
 @model Bison.Razor.Pages.UserTimelineModel
 @{
     ViewData["Title"] = "Bison";
     Layout = "Shared/_Layout";
-    var routeName = HttpContext.GetRouteValue("author");
 }
 
 <div>
-    <h2> @routeName's Observations &mdash; page @Model.PageNr </h2>
+    <h2> @Model.Author's Observations &mdash; page @Model.PageNr </h2>
     <small>Showing @Model.NrOfObservations observations</small>
 
     @if (Model.Observations.Any())
@@ -18,11 +17,13 @@
                 <li>
                     <p>
                         <strong>
-                            <a href="/@ob.Author">@ob.Author</a>
+                            <a href="/obs/@ob.Author">@ob.Author</a>
                         </strong>
                         @ob.Message
                         <small>&mdash; @ob.Timestamp</small>
                     </p>
+                    <hr />
+                    <a href="/ob/@ob.Id">View Details</a>
                 </li>
             }
         </ul>

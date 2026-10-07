@@ -70,6 +70,11 @@ public static class DbInitializer
             var a10 = new User() { UserId = 10, Username = "Jacqualine Gilcoine", Email = "Jacqualine.Gilcoine@gmail.com", Posts = new List<Post>() };
 
             var users = new List<User>() { a1, a2, a3, a4, a5, a6, a7, a8, a9, a10 };
+            var hasher = new Microsoft.AspNetCore.Identity.PasswordHasher<User>();
+            foreach (var user in users)
+            {
+                user.PwHash = hasher.HashPassword(user, "password123");
+            }
 
             // Observations
             var o1 = new Observation() { PostId = 1, Author = a1, Taxon = tArdeaCinerea, Text = "Grey heron standing still in the reeds at the lake.", PubDate = DateTime.Parse("2023-08-01 07:12:00") };

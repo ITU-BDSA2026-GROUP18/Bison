@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <title>@ViewData["Title"]</title>
@@ -7,7 +7,31 @@
 </head>
 <body>
 <div class=page>
-    <h1><img src="/images/icon1.png" alt="Icon1"/>Bison</h1>
+    <h1><a href="/obs" style="color: inherit; text-decoration: none;"><img src="/images/icon1.png" alt="Icon1"/>Bison</a></h1>
+
+    <div class="navigation">
+        <div class="nav-links">
+            <a href="/obs">Public Timeline</a>
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <a href="/obs/@User.Identity.Name">My Timeline</a>
+            }
+        </div>
+        <div class="nav-auth">
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <span class="user-greeting">Signed in as <strong>@User.Identity.Name</strong></span>
+                <form method="post" action="/logout">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="nav-button">Sign Out</button>
+                </form>
+            }
+            else
+            {
+                <a href="/login" class="nav-button">Login</a>
+            }
+        </div>
+    </div>
 
     <div class=body>
             @RenderBody()

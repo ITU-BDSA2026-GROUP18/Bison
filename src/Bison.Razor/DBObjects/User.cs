@@ -1,6 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
+[Index(nameof(Username), IsUnique = true)]
+[Index(nameof(Email), IsUnique = true)]
 public class User
 {
 	[Key]
@@ -18,7 +21,7 @@ public class User
 
 	[Column("pw_hash")]
 	[Required]
-	public int PwHash { get; set; }
+	public string PwHash { get; set; } = "";
 
 	public List<Post> Posts { get; set; } = [];
 }

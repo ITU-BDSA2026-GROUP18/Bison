@@ -1,4 +1,4 @@
-﻿@page "/obs"
+@page "/obs"
 @model Bison.Razor.Pages.PublicModel
 @{
     ViewData["Title"] = "Bison";
@@ -8,6 +8,13 @@
 <div>
     <h2> Public Timeline &mdash; page @Model.PageNr</h2>
     <small>Showing @Model.NrOfObservations observations</small>
+
+    @if (User.Identity?.IsAuthenticated != true)
+    {
+        <p class="login-prompt">
+            <em>Want to share a sighting? <a href="/login?returnUrl=/obs">Log in</a> to record an observation.</em>
+        </p>
+    }
 
     @if (Model.Observations.Any())
     {

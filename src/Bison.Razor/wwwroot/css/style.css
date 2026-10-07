@@ -64,34 +64,74 @@ div.page h1 img {
 
 div.page div.navigation {
   background: #DEE9E8;
-  padding: 4px 10px;
+  padding: 6px 12px;
   border-top: 1px solid #ccc;
   border-bottom: 1px solid #eee;
-  color: #888;
-  font-size: 12px;
+  color: #555;
+  font-size: 13px;
   letter-spacing: 0.5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-div.page div.navigation a {
-  color: #444;
+div.page div.navigation .nav-links {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+div.page div.navigation .nav-links a {
+  color: #26776F;
   font-weight: bold;
+  text-decoration: none;
+  padding: 3px 6px;
+  border-radius: 3px;
+}
+
+div.page div.navigation .nav-links a:hover {
+  color: #164641;
+  background-color: #d1dedd;
+}
+
+div.page div.navigation .nav-auth {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+div.page div.navigation .user-greeting {
+  color: #555;
+  font-size: 12px;
+}
+
+div.page div.navigation .user-greeting strong {
+  color: #222;
 }
 
 div.page div.navigation form {
-    display: contents;
+  display: contents;
 }
 
-div.page div.navigation form button {
-    padding: unset;
-    background: unset;
-    color: #444;
-    font-weight: bold;
-    display: inline-block;
-    font-size: unset;
-    cursor: pointer;
-    text-decoration: underline;
-    font-family: unset;
-    letter-spacing: unset;
+div.page div.navigation .nav-button {
+  background: #cc6e6e;
+  border: 1px solid #b75c5c;
+  color: white;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  line-height: normal;
+  font-family: inherit;
+  transition: background-color 0.15s;
+}
+
+div.page div.navigation .nav-button:hover {
+  background: #8b4949;
+  color: white;
 }
 
 div.page h2 {
@@ -258,6 +298,7 @@ button {
     text-align: center;
     text-decoration: none;
     cursor: pointer;
+    border-radius: 4px;
 }
 
 button:hover {
@@ -290,4 +331,53 @@ ul.nav li a:hover {
 
 .back_button {
   margin-bottom: 24px;
+}
+
+div.auth-container {
+  max-width: 350px;
+  margin: 20px auto;
+}
+
+div.form-group {
+  margin-bottom: 12px;
+}
+
+div.form-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+div.form-group input.form-control {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+span.error-text {
+  color: #a00;
+  font-size: 12px;
+  display: block;
+}
+
+.login-prompt {
+  background: #F0FAF9;
+  border: 1px solid #DBF3F1;
+  padding: 8px 12px;
+  border-radius: 4px;
+  margin: 15px 0;
+}
+
+.auth-button {
+  border-radius: 4px;
+  background-color: #cc6e6e;
+  border: none;
+  color: white;
+  padding: 8px 18px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.auth-button:hover {
+  background-color: #8b4949;
 }

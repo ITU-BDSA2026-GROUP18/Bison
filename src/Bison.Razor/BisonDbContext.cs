@@ -19,9 +19,12 @@ public class BisonDbContext : DbContext
 			e.ToTable("user");
 			e.HasKey(u => u.UserId);
 			e.Property(u => u.UserId).HasColumnName("user_id");
-			e.Property(u => u.Username).HasColumnName("username");
-			e.Property(u => u.Email).HasColumnName("email");
+			e.Property(u => u.Username).HasColumnName("username").UseCollation("NOCASE");
+			e.Property(u => u.Email).HasColumnName("email").UseCollation("NOCASE");
 			e.Property(u => u.PwHash).HasColumnName("pw_hash");
+
+			e.HasIndex(u => u.Username).IsUnique();
+			e.HasIndex(u => u.Email).IsUnique();
 		});
 
 		modelBuilder.Entity<Post>(e =>

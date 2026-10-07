@@ -3,7 +3,6 @@
 @{
     ViewData["Title"] = "Bison";
     Layout = "Shared/_Layout";
-    var routeName = HttpContext.GetRouteValue("id") ?? null;
 }
 
 <div>
@@ -33,6 +32,13 @@
                     </li>
                 }
             </ul>
+        }
+
+        @if (User.Identity?.IsAuthenticated != true)
+        {
+            <p class="login-prompt">
+                <em>You must <a href="/login?returnUrl=/ob/@Model.Observations[0].Id">Log in</a> to comment on this observation.</em>
+            </p>
         }
     }
     else if (Model.Observations.Any())

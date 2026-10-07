@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Bison.Razor.Pages;
@@ -9,6 +9,7 @@ public class UserTimelineModel : PageModel
 	public List<ObservationViewModel> Observations { get; set; }
 	public int PageNr { get; set; }
 	public int NrOfObservations { get; set; }
+	public string Author { get; set; } = "";
 
 	public UserTimelineModel(IObservationService service)
 	{
@@ -19,8 +20,9 @@ public class UserTimelineModel : PageModel
 	{
 		if (page < 1)
 			page = 1;
+		Author = author ?? "";
 		PageNr = page;
-		Observations = _service.GetObservationsFromAuthor(author, PageNr);
+		Observations = _service.GetObservationsFromAuthor(Author, PageNr);
 		NrOfObservations = Observations.Count;
 		return Page();
 	}
