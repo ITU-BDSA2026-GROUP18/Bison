@@ -1,3 +1,5 @@
+using System.Globalization;
+
 public record ObservationViewModel(string Author, string Message, string Timestamp, int Id = 0);
 
 public record CommentViewModel(string Author, string Message, string Timestamp);
@@ -97,7 +99,7 @@ public class ObservationService : IObservationService
 		return new ObservationViewModel(
 			o.Author.Username,
 			o.Text,
-			o.PubDate.ToString("MM/dd/yy H:mm:ss"),
+			o.PubDate.ToString("MM/dd/yy H:mm:ss", CultureInfo.InvariantCulture),
 			o.PostId
 		);
 	}
@@ -107,7 +109,7 @@ public class ObservationService : IObservationService
 		return new CommentViewModel(
 			c.Author.Username,
 			c.Text,
-			c.PubDate.ToString("MM/dd/yy H:mm:ss")
+			c.PubDate.ToString("MM/dd/yy H:mm:ss", CultureInfo.InvariantCulture)
 		);
 	}
 
@@ -118,7 +120,7 @@ public class ObservationService : IObservationService
 			p.Text,
 			p.Taxon.DwcTaxonId,
 			p.Taxon.VernacularName,
-			p.PubDate.ToString("MM/dd/yy H:mm:ss")
+			p.PubDate.ToString("MM/dd/yy H:mm:ss", CultureInfo.InvariantCulture)
 		);
 	}
 }
