@@ -65,4 +65,19 @@ public class PostRepository : IPostRepository
 		result = [.. query];
 		return result;
 	}
+
+	public List<Proposal> GetProposalsForObservation(int observationId)
+	{
+		var result = new List<Proposal>();
+		var query = (
+			from Proposal in _context.Proposals
+			where Proposal.ObservationId == observationId
+			select Proposal
+		)
+			.Include(c => c.Author)
+			.Include(c => c.Taxon);
+
+		result = [.. query];
+		return result;
+	}
 }

@@ -34,6 +34,28 @@
                 }
             </ul>
         }
+        <hr />
+
+        <h3>Proposals <small>(@Model.Proposals.Count)</small></h3>
+        @if (Model.Proposals.Any())
+        {
+            <ul id="proposalslist" class="observations">
+                @foreach (ProposalViewModel proposal in Model.Proposals)
+                {
+                    <li>
+                        <p>
+                            <strong>
+                                <a href="/obs/@proposal.Author">@proposal.Author</a>
+                            </strong>
+                            Suggested Taxon: @(!string.IsNullOrEmpty(@proposal.VernacularName) ? @proposal.VernacularName : @proposal.DwcTaxonId)
+                            <small>&mdash; @proposal.Timestamp</small>
+                            <br />
+                            @proposal.Message
+                        </p>
+                    </li>
+                }
+            </ul>
+        }
     }
     else if (Model.Observations.Any())
     {

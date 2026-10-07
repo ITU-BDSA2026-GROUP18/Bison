@@ -8,6 +8,7 @@ public class ObservationModel : PageModel
 	private readonly IObservationService _service;
 	public List<ObservationViewModel> Observations { get; set; }
 	public List<CommentViewModel> Comments { get; set; }
+	public List<ProposalViewModel> Proposals { get; set; }
 	public int PageNr { get; set; }
 	public int NrOfObservations { get; set; }
 
@@ -44,6 +45,7 @@ public class ObservationModel : PageModel
 			NrOfObservations = 1;
 
 			Comments = _service.GetCommentsForObservation(observationId);
+			Proposals = _service.GetProposalsForObservation(observationId);
 
 			return Page();
 		}

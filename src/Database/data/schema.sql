@@ -3,6 +3,7 @@ drop table if exists comment;
 drop table if exists taxon;
 drop table if exists observation;
 drop table if exists user;
+drop table if exists post;
 
 create table user (
   user_id integer primary key autoincrement,

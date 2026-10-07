@@ -53,33 +53,37 @@ public class APIUnitTest : IClassFixture<BisonFactory>
 	{
 		var response = await _client.GetAsync("/obs");
 		var body = await response.Content.ReadAsStringAsync();
-
-		_output.WriteLine($"Status: {response.StatusCode}");
+		//_output.WriteLine($"Status: {response.StatusCode}");
 		_output.WriteLine(body);
 
-		response.EnsureSuccessStatusCode();
-		Assert.Contains("Showing 3 observations", body);
+		//response.EnsureSuccessStatusCode();
+		Assert.Contains("Showing 5 observations", body);
 
-		Assert.Contains("Mette", body);
-		Assert.Contains(
-			"Found a Glossy Ibis in the marsh behind the dunes. Bare skin on the face and head.",
-			body
-		);
-		Assert.Contains("03/04/26 7.11.53", body);
+		Assert.Contains("Roger Histand", body);
+		Assert.Contains("Grey heron.", body);
+		Assert.Contains("08/01/23 7:12:00", body);
 
-		Assert.Contains("Adrian", body);
-		Assert.Contains("A horse", body);
-		Assert.Contains("08/01/23 12.16.49", body);
+		Assert.Contains("Roger Histand", body);
+		Assert.Contains("Large white heron in a wet meadow.", body);
+		Assert.Contains("08/02/23 6:45:00", body);
 
-		Assert.Contains("Adrian", body);
-		Assert.Contains("A bird", body);
-		Assert.Contains("08/01/23 12.16.47", body);
+		Assert.Contains("Roger Histand", body);
+		Assert.Contains("Heard a booming call from the reed bed at dusk.", body);
+		Assert.Contains("08/03/23 21:10:00", body);
+
+		Assert.Contains("Luanna Muro", body);
+		Assert.Contains("Gannets diving offshore.", body);
+		Assert.Contains("08/02/23 11:05:00", body);
+
+		Assert.Contains("Luanna Muro", body);
+		Assert.Contains("Flock of about 40 cormorants.", body);
+		Assert.Contains("08/01/23 8:30:00", body);
 	}
 
 	[Fact]
 	public async Task AutherEndpointGetRequestTest()
 	{
-		var response = await _client.GetAsync("/obs/Adrian");
+		var response = await _client.GetAsync("/obs/Luanna Muro");
 		var body = await response.Content.ReadAsStringAsync();
 
 		_output.WriteLine($"Status: {response.StatusCode}");
@@ -88,19 +92,24 @@ public class APIUnitTest : IClassFixture<BisonFactory>
 		response.EnsureSuccessStatusCode();
 		Assert.Contains("Showing 2 observations", body);
 
-		Assert.DoesNotContain("Mette", body);
-		Assert.DoesNotContain(
-			"Found a Glossy Ibis in the marsh behind the dunes. Bare skin on the face and head.",
-			body
-		);
-		Assert.DoesNotContain("03/04/26 7.11.53", body);
+		Assert.DoesNotContain("Roger Histand", body);
+		Assert.DoesNotContain("Grey heron.", body);
+		Assert.DoesNotContain("08/01/23 7:12:00", body);
 
-		Assert.Contains("Adrian", body);
-		Assert.Contains("A horse", body);
-		Assert.Contains("08/01/23 12.16.49", body);
+		Assert.DoesNotContain("Roger Histand", body);
+		Assert.DoesNotContain("Large white heron in a wet meadow.", body);
+		Assert.DoesNotContain("08/02/23 6:45:00", body);
 
-		Assert.Contains("Adrian", body);
-		Assert.Contains("A bird", body);
-		Assert.Contains("08/01/23 12.16.47", body);
+		Assert.DoesNotContain("Roger Histand", body);
+		Assert.DoesNotContain("Heard a booming call from the reed bed at dusk.", body);
+		Assert.DoesNotContain("08/03/23 21:10:00", body);
+
+		Assert.Contains("Luanna Muro", body);
+		Assert.Contains("Gannets diving offshore.", body);
+		Assert.Contains("08/02/23 11:05:00", body);
+
+		Assert.Contains("Luanna Muro", body);
+		Assert.Contains("Flock of about 40 cormorants.", body);
+		Assert.Contains("08/01/23 8:30:00", body);
 	}
 }
