@@ -13,7 +13,7 @@ function FilterBy(root: Taxon, obs: seq<Observation>): seq<Observation>
     []
   else
     var o := obs[0];
-    if o.getTaxon().isSubTaxon(root) then
+    if o.getTaxon().isSubtaxon(root) then
       [o] + FilterBy(root, obs[1..])
     else
       FilterBy(root, obs[1..])

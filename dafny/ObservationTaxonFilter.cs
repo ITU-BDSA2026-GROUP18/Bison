@@ -18,11 +18,11 @@ function FilterBy(root: Taxon, obs: seq<Observation>): seq<Observation>
   if |obs| == 0 then
     []
   else
-    var o: Observation := obs[0]; if o.getTaxon().isSubTaxon(root) then [o] + FilterBy(root, obs[1..]) else FilterBy(root, obs[1..])
+    var o: Observation := obs[0]; if o.getTaxon().isSubtaxon(root) then [o] + FilterBy(root, obs[1..]) else FilterBy(root, obs[1..])
 }
 
 class {:extern} Taxon {
-  function {:extern} isSubTaxon(ancestor: Taxon): bool
+  function {:extern} isSubtaxon(ancestor: Taxon): bool
     decreases ancestor
 }
 
@@ -5715,7 +5715,7 @@ namespace _module {
         return Dafny.Sequence<Observation>.Concat(_0___accumulator, Dafny.Sequence<Observation>.FromElements());
       } else {
         Observation _1_o = (obs).Select(BigInteger.Zero);
-        if (((_1_o).getTaxon()).isSubTaxon(root)) {
+        if (((_1_o).getTaxon()).isSubtaxon(root)) {
           _0___accumulator = Dafny.Sequence<Observation>.Concat(_0___accumulator, Dafny.Sequence<Observation>.FromElements(_1_o));
           Taxon _in0 = root;
           Dafny.ISequence<Observation> _in1 = (obs).Drop(BigInteger.One);
