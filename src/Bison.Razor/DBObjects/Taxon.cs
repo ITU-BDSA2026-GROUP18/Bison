@@ -21,4 +21,20 @@ public class Taxon
 	public List<Taxon> ChildTaxons { get; set; } = []; // just to navigate to children in "reverse" direction
 	public List<Proposal> Proposals { get; set; } = [];
 	public List<Observation> Observations { get; set; } = [];
+
+	public bool isSubtaxon(Taxon ancestor)
+	{
+		if (this.TaxonId == ancestor.TaxonId)
+		{
+			return true;
+		}
+		else if (this.ParentTaxonId == null)
+		{
+			return false;
+		}
+		else
+		{
+			return this.ParentTaxon!.isSubtaxon(ancestor);
+		}
+	}
 }
