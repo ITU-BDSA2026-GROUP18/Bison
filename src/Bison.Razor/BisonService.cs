@@ -1,4 +1,5 @@
 using System.Globalization;
+using Microsoft.VisualBasic;
 
 public record ObservationViewModel(string Author, string Message, string Timestamp, int Id = 0);
 
@@ -23,6 +24,12 @@ public interface IObservationService
 	public ObservationViewModel GetObservationById(int observationId);
 	public List<CommentViewModel> GetCommentsForObservation(int observationId);
 	public List<ProposalViewModel> GetProposalsForObservation(int observationId);
+
+	public List<ObservationViewModel> GetObservationsByTaxon(
+		int taxonId,
+		int page,
+		int pageSize = 32
+	);
 }
 
 public class ObservationService : IObservationService
@@ -89,6 +96,33 @@ public class ObservationService : IObservationService
 		foreach (var proposal in _repository.GetProposalsForObservation(observationId))
 		{
 			result.Add(ToViewModel(proposal));
+		}
+
+		return result;
+	}
+
+	public List<ObservationViewModel> GetObservationsByTaxon(
+		int taxonId,
+		int page,
+		int pageSize = 32
+	)
+	{
+		Taxon taxon;
+		if (taxonId < 0 || (taxon = _repository.GetTaxonById(taxonId)) == null)
+		{
+			return GetObservations(page, pageSize);
+		}
+
+		var result = new List<ObservationViewModel>();
+
+		foreach (
+			var observation in ObservationFilter
+				.FilterBy(taxon, _repository.GetObservations())
+				.Skip((page - 1) * pageSize)
+				.Take(pageSize)
+		)
+		{
+			result.Add(ToViewModel(observation));
 		}
 
 		return result;

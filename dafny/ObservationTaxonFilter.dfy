@@ -1,5 +1,5 @@
 class {:extern} Taxon {
-  function {:extern} isSubTaxon(ancestor: Taxon): bool
+  function {:extern} isSubtaxon(ancestor: Taxon): bool
 }
 
 class {:extern} Observation {

@@ -8,6 +8,11 @@
 <div>
     <h2> Public Timeline &mdash; page @Model.PageNr</h2>
     <small>Showing @Model.NrOfObservations observations</small>
+    
+    <form method="get">
+    <input type="text" name="strTaxonId" placeholder="Filter By TaxonId" />
+    <button type="submit">Filter</button>
+    </form>
 
     @if (Model.Observations.Any())
     {

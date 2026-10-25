@@ -24,6 +24,20 @@ public class PostRepository : IPostRepository
 		return result;
 	}
 
+	public List<Observation> GetObservations()
+	{
+		var result = new List<Observation>();
+		var query = (
+			from Observation in _context.Observations
+			orderby Observation.PubDate descending
+			select Observation
+		)
+			.Include(c => c.Author)
+			.Include(c => c.Taxon);
+		result = query.ToList();
+		return result;
+	}
+
 	public List<Observation> GetObservationsByAuthor(string username, int page, int pageSize)
 	{
 		var result = new List<Observation>();
@@ -79,5 +93,12 @@ public class PostRepository : IPostRepository
 
 		result = [.. query];
 		return result;
+	}
+
+	public Taxon GetTaxonById(int taxonId)
+	{
+		var taxon = (from Taxon in _context.Taxons where Taxon.TaxonId == taxonId select Taxon);
+
+		return taxon.FirstOrDefault();
 	}
 }
