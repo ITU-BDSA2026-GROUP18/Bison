@@ -20,7 +20,7 @@ jobs:
       - name: Restore .NET tools
         run: dotnet tool restore
       - name: Compile Dafny filter
-        run: dotnet dafny -- translate cs ObservationTaxonFilter.dfy --allow-warnings --include-runtime && dotnet dafny verify ObservationTaxonFilter.dfy --allow-warnings
+        run: dotnet tool run dafny -- translate cs ObservationTaxonFilter.dfy --allow-warnings --include-runtime && dotnet tool run dafny -- verify ObservationTaxonFilter.dfy --allow-warnings
         working-directory: dafny
       - name: Restore dependencies
         run: cd src/Bison.Razor/ && dotnet restore

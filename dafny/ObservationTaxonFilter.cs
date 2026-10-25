@@ -9,7 +9,7 @@ using System;
 using System.Numerics;
 using System.Collections;
 [assembly: DafnyAssembly.DafnySourceAttribute(@"// dafny 4.11.0.0
-// Command-line arguments: translate cs .\dafny\ObservationTaxonFilter.dfy --allow-warnings --include-runtime
+// Command-line arguments: translate cs ObservationTaxonFilter.dfy --allow-warnings --include-runtime
 // ObservationTaxonFilter.dfy
 
 function FilterBy(root: Taxon, obs: seq<Observation>): seq<Observation>
