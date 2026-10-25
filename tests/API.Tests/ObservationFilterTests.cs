@@ -61,11 +61,13 @@ public class ObservationFilterTests
 		};
 	}
 
-	private sealed class FakePostRepository(Taxon root, List<Observation> observations) : IPostRepository
+	private sealed class FakePostRepository(Taxon root, List<Observation> observations)
+		: IPostRepository
 	{
 		public int GetAllObservationsCallCount { get; private set; }
 
-		public List<Observation> GetObservations(int page, int pageSize) => throw new NotSupportedException();
+		public List<Observation> GetObservations(int page, int pageSize) =>
+			throw new NotSupportedException();
 
 		public List<Observation> GetObservations()
 		{
@@ -73,13 +75,17 @@ public class ObservationFilterTests
 			return observations;
 		}
 
-		public List<Observation> GetObservationsByAuthor(string username, int page, int pageSize) => throw new NotSupportedException();
+		public List<Observation> GetObservationsByAuthor(string username, int page, int pageSize) =>
+			throw new NotSupportedException();
 
-		public Observation? GetObservationById(int observationId) => throw new NotSupportedException();
+		public Observation? GetObservationById(int observationId) =>
+			throw new NotSupportedException();
 
-		public List<Comment> GetCommentsForObservation(int observationId) => throw new NotSupportedException();
+		public List<Comment> GetCommentsForObservation(int observationId) =>
+			throw new NotSupportedException();
 
-		public List<Proposal> GetProposalsForObservation(int observationId) => throw new NotSupportedException();
+		public List<Proposal> GetProposalsForObservation(int observationId) =>
+			throw new NotSupportedException();
 
 		public Taxon GetTaxonById(int taxonId) => taxonId == root.TaxonId ? root : null!;
 	}
