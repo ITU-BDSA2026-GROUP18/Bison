@@ -17,6 +17,13 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 8.0.x
+      - name: Restore .NET tools
+        run: dotnet tool restore
+      - name: Install Z3
+        run: sudo apt-get update && sudo apt-get install -y z3
+      - name: Compile Dafny filter
+        run: dotnet tool run dafny -- translate cs ObservationTaxonFilter.dfy --allow-warnings --include-runtime --solver-path /usr/bin/z3 && dotnet tool run dafny -- verify ObservationTaxonFilter.dfy --allow-warnings --solver-path /usr/bin/z3
+        working-directory: dafny
       - name: Restore dependencies
         run: cd src/Bison.Razor/ && dotnet restore
       - name: Build

@@ -15,12 +15,15 @@ public class PublicModel : PageModel
 		_service = service;
 	}
 
-	public ActionResult OnGet([FromQuery] int page = 1)
+	public ActionResult OnGet([FromQuery] int page = 1, [FromQuery] string strTaxonId = "")
 	{
 		if (page < 1)
 			page = 1;
 		PageNr = page;
-		Observations = _service.GetObservations(PageNr);
+
+		int taxonid = int.TryParse(strTaxonId, out int parsedTaxonId) ? parsedTaxonId : -1;
+
+		Observations = _service.GetObservationsByTaxon(taxonid, PageNr);
 		NrOfObservations = Observations.Count;
 		return Page();
 	}

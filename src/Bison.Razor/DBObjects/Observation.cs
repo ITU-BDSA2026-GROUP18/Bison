@@ -9,6 +9,9 @@ public class Observation : Post
 	public int TaxonId { get; set; }
 
 	public Taxon Taxon { get; set; } = null!;
+
+	public Taxon getTaxon() => Taxon;
+
 	public List<Comment> Comments { get; set; } = [];
 	public List<Proposal> Proposals { get; set; } = [];
 }

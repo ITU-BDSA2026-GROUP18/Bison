@@ -112,4 +112,7 @@ public class APIUnitTest : IClassFixture<BisonFactory>
 		Assert.Contains("Flock of about 40 cormorants.", body);
 		Assert.Contains("08/01/23 8:30:00", body);
 	}
+
+	//TODO: Add test for /obs/{id} endpoint
+	//TODO: Add tests for /obs/?page={page}&taxonId={taxonId} endpoint
 }
