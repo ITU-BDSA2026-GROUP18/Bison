@@ -14,13 +14,46 @@ public class ObservationFilterTests
 	public void FilterBy_ReturnsMatchingObservationsInInputOrder()
 	{
 		var root = new Taxon { TaxonId = 1 };
-		var first = CreateObservation(1, 1);
-		var excluded = CreateObservation(2, 2);
-		var last = CreateObservation(3, 1);
+		var other = new Taxon { TaxonId = 2 };
+
+		var first = CreateObservation(1, root);
+		var excluded = CreateObservation(2, other);
+		var last = CreateObservation(3, root);
 
 		var result = ObservationFilter.FilterBy(root, [first, excluded, last]);
 
 		Assert.Equal([first, last], result);
+	}
+
+	[Fact]
+	public void FilterBy_ReturnsObservationsForSubTaxons()
+	{
+		var root = new Taxon { TaxonId = 1 };
+		var child = new Taxon { TaxonId = 2, ParentTaxon = root };
+		var grandchild = new Taxon { TaxonId = 3, ParentTaxon = child };
+		var other = new Taxon { TaxonId = 4 };
+		var first = CreateObservation(1, root);
+		var second = CreateObservation(2, child);
+		var third = CreateObservation(3, grandchild);
+		var excluded = CreateObservation(4, other);
+
+		var result = ObservationFilter.FilterBy(root, [first, second, third, excluded]);
+
+		Assert.Equal([first, second, third], result);
+	}
+
+	[Fact]
+	public void isSubtaxon_ReturnsTrueForSubtaxons()
+	{
+		var root = new Taxon { TaxonId = 1 };
+		var child = new Taxon { TaxonId = 2, ParentTaxon = root };
+		var grandchild = new Taxon { TaxonId = 3, ParentTaxon = child };
+		var random = new Taxon { TaxonId = 4 };
+
+		Assert.True(grandchild.isSubtaxon(root));
+		Assert.True(child.isSubtaxon(root));
+		Assert.True(root.isSubtaxon(root));
+		Assert.False(random.isSubtaxon(root));
 	}
 
 	[Fact]
@@ -29,11 +62,11 @@ public class ObservationFilterTests
 		var root = new Taxon { TaxonId = 1 };
 		var observations = new List<Observation>
 		{
-			CreateObservation(1, 1),
-			CreateObservation(2, 1),
-			CreateObservation(3, 1),
-			CreateObservation(4, 1),
-			CreateObservation(5, 2),
+			CreateObservation(1, root),
+			CreateObservation(2, root),
+			CreateObservation(3, root),
+			CreateObservation(4, root),
+			CreateObservation(5, root),
 		};
 		var repository = new FakePostRepository(root, observations);
 		var service = new ObservationService(repository);
@@ -44,12 +77,12 @@ public class ObservationFilterTests
 		Assert.Equal(1, repository.GetAllObservationsCallCount);
 	}
 
-	private static Observation CreateObservation(int postId, int taxonId)
+	private static Observation CreateObservation(int postId, Taxon taxon)
 	{
 		return new Observation
 		{
 			PostId = postId,
-			Taxon = new Taxon { TaxonId = taxonId },
+			Taxon = taxon,
 			Author = new User
 			{
 				UserId = 1,
