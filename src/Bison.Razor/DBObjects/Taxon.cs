@@ -28,13 +28,13 @@ public class Taxon
 		{
 			return true;
 		}
-		else if (this.ParentTaxonId == null)
-		{
-			return false;
-		}
-		else
+		try
 		{
 			return this.ParentTaxon!.isSubtaxon(ancestor);
+		}
+		catch (Exception)
+		{
+			return false;
 		}
 	}
 }
