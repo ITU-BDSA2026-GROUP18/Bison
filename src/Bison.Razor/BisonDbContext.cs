@@ -1,11 +1,12 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
-public class BisonDbContext : DbContext
+public class BisonDbContext : IdentityDbContext<User>
 {
 	public BisonDbContext(DbContextOptions<BisonDbContext> options)
 		: base(options) { }
 
-	public DbSet<User> Users => Set<User>();
 	public DbSet<Taxon> Taxons => Set<Taxon>();
 	public DbSet<Observation> Observations => Set<Observation>();
 	public DbSet<Comment> Comments => Set<Comment>();
@@ -14,20 +15,19 @@ public class BisonDbContext : DbContext
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
+		base.OnModelCreating(modelBuilder);
 		modelBuilder.Entity<User>(e =>
 		{
 			e.ToTable("user");
-			e.HasKey(u => u.UserId);
-			e.Property(u => u.UserId).HasColumnName("user_id");
-			e.Property(u => u.Username).HasColumnName("username");
+			e.Property(u => u.Id).HasColumnName("user_id");
+			e.Property(u => u.Name).HasColumnName("username");
 			e.Property(u => u.Email).HasColumnName("email");
-			e.Property(u => u.PwHash).HasColumnName("pw_hash");
 		});
 
 		modelBuilder.Entity<Post>(e =>
 		{
-			// This strategy forces EF Core to use a separate table for each derived type (Observation, Comment, Proposal) while still allowing queries against the base type (Post).
-			// Using the default strategy, (Table-per-Hierarchy (TPH)), would result in a single table for all derived types, which would force our relations to become nullable.
+			// Use one table for each derived type (Observation, Comment, Proposal),
+			// so their type-specific relationships are not nullable.
 			e.UseTptMappingStrategy();
 
 			e.ToTable("post");

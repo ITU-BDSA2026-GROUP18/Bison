@@ -85,8 +85,9 @@ public class ObservationFilterTests
 			Taxon = taxon,
 			Author = new User
 			{
-				UserId = 1,
-				Username = $"user-{postId}",
+				Id = "1",
+				Name = $"user-{postId}",
+				UserName = $"user-{postId}@example.test",
 				Email = $"user-{postId}@example.test",
 			},
 			Text = $"observation-{postId}",
