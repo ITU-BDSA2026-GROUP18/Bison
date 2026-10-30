@@ -44,9 +44,8 @@ if (!app.Environment.IsEnvironment("Testing"))
 			dbContext.Database.EnsureDeleted();
 		}
 
-		// EnsureCreated creates the complete schema, including Identity tables, for
-		// this project’s development database, which is recreated above.
-		dbContext.Database.EnsureCreated();
+		// Apply the full schema, including the Identity user and author key changes.
+		dbContext.Database.Migrate();
 		DbInitializer.SeedDatabase(dbContext);
 	}
 }

@@ -22,6 +22,7 @@ public class BisonDbContext : IdentityDbContext<User>
 			e.Property(u => u.Id).HasColumnName("user_id");
 			e.Property(u => u.Name).HasColumnName("username");
 			e.Property(u => u.Email).HasColumnName("email");
+			e.Property(u => u.UserName).HasColumnName("identity_user_name");
 		});
 
 		modelBuilder.Entity<Post>(e =>

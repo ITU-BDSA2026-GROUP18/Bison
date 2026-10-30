@@ -10,7 +10,7 @@
     <h1><img src="/images/icon1.png" alt="Icon1"/>Bison</h1>
 
     <div class=body>
-        <p><a href="/Identity/Account/Login">Log in</a></p>
+        @await Html.PartialAsync("_LoginPartial")
             @RenderBody()
     </div>
     <div class=footer>
