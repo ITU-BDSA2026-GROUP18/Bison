@@ -19,16 +19,17 @@ string connectionString = $"Data Source={dbPath}";
 
 // Add services to the container.
 builder.Services.AddDbContext<BisonDbContext>(options => options.UseSqlite(connectionString));
-builder.Services.AddDefaultIdentity<User>(options =>
-{
-	options.SignIn.RequireConfirmedAccount = false;
-	options.User.RequireUniqueEmail = true;
-	options.Password.RequiredLength = 6;
-	options.Password.RequireDigit = false;
-	options.Password.RequireLowercase = false;
-	options.Password.RequireUppercase = false;
-	options.Password.RequireNonAlphanumeric = false;
-})
+builder
+	.Services.AddDefaultIdentity<User>(options =>
+	{
+		options.SignIn.RequireConfirmedAccount = false;
+		options.User.RequireUniqueEmail = true;
+		options.Password.RequiredLength = 6;
+		options.Password.RequireDigit = false;
+		options.Password.RequireLowercase = false;
+		options.Password.RequireUppercase = false;
+		options.Password.RequireNonAlphanumeric = false;
+	})
 	.AddEntityFrameworkStores<BisonDbContext>();
 builder.Services.AddRazorPages();
 builder.Services.AddScoped<IPostRepository, PostRepository>();

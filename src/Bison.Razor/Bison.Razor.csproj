@@ -12,7 +12,10 @@
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.11" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.11" />
+		<PackageReference
+			Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore"
+			Version="8.0.11"
+		/>
 		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.11" />
 		<PackageReference Include="Microsoft.Z3" Version="4.12.2" />
 		<Compile Include="..\..\dafny\ObservationTaxonFilter.cs" />
