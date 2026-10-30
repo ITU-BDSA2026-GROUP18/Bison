@@ -58,18 +58,25 @@ public static class DbInitializer
             foreach (var	t in taxons)	t.ParentTaxon?.ChildTaxons.Add(t);
 
             // Users
-            var a1 = new User() { UserId = 1, Username = "Roger Histand", Email = "Roger+Histand@hotmail.com", Posts = new List<Post>() };
-            var a2 = new User() { UserId = 2, Username = "Luanna Muro", Email = "Luanna-Muro@ku.dk", Posts = new List<Post>() };
-            var a3 = new User() { UserId = 3, Username = "Wendell Ballan", Email = "Wendell-Ballan@gmail.com", Posts = new List<Post>() };
-            var a4 = new User() { UserId = 4, Username = "Nathan Sirmon", Email = "Nathan+Sirmon@dtu.dk", Posts = new List<Post>() };
-            var a5 = new User() { UserId = 5, Username = "Quintin Sitts", Email = "Quintin+Sitts@itu.dk", Posts = new List<Post>() };
-            var a6 = new User() { UserId = 6, Username = "Mellie Yost", Email = "Mellie+Yost@ku.dk", Posts = new List<Post>() };
-            var a7 = new User() { UserId = 7, Username = "Malcolm Janski", Email = "Malcolm-Janski@gmail.com", Posts = new List<Post>() };
-            var a8 = new User() { UserId = 8, Username = "Octavio Wagganer", Email = "Octavio.Wagganer@dtu.dk", Posts = new List<Post>() };
-            var a9 = new User() { UserId = 9, Username = "Johnnie Calixto", Email = "Johnnie+Calixto@itu.dk", Posts = new List<Post>() };
-            var a10 = new User() { UserId = 10, Username = "Jacqualine Gilcoine", Email = "Jacqualine.Gilcoine@gmail.com", Posts = new List<Post>() };
+            var a1 = new User() { Id = "1", Name = "Roger Histand", Email = "Roger+Histand@hotmail.com", Posts = new List<Post>() };
+            var a2 = new User() { Id = "2", Name = "Luanna Muro", Email = "Luanna-Muro@ku.dk", Posts = new List<Post>() };
+            var a3 = new User() { Id = "3", Name = "Wendell Ballan", Email = "Wendell-Ballan@gmail.com", Posts = new List<Post>() };
+            var a4 = new User() { Id = "4", Name = "Nathan Sirmon", Email = "Nathan+Sirmon@dtu.dk", Posts = new List<Post>() };
+            var a5 = new User() { Id = "5", Name = "Quintin Sitts", Email = "Quintin+Sitts@itu.dk", Posts = new List<Post>() };
+            var a6 = new User() { Id = "6", Name = "Mellie Yost", Email = "Mellie+Yost@ku.dk", Posts = new List<Post>() };
+            var a7 = new User() { Id = "7", Name = "Malcolm Janski", Email = "Malcolm-Janski@gmail.com", Posts = new List<Post>() };
+            var a8 = new User() { Id = "8", Name = "Octavio Wagganer", Email = "Octavio.Wagganer@dtu.dk", Posts = new List<Post>() };
+            var a9 = new User() { Id = "9", Name = "Johnnie Calixto", Email = "Johnnie+Calixto@itu.dk", Posts = new List<Post>() };
+            var a10 = new User() { Id = "10", Name = "Jacqualine Gilcoine", Email = "Jacqualine.Gilcoine@gmail.com", Posts = new List<Post>() };
 
             var users = new List<User>() { a1, a2, a3, a4, a5, a6, a7, a8, a9, a10 };
+			foreach (var user in users)
+			{
+				var email = user.Email!;
+				user.UserName = email;
+				user.NormalizedUserName = email.ToUpperInvariant();
+				user.NormalizedEmail = email.ToUpperInvariant();
+			}
 
             // Observations
             var o1 = new Observation() { PostId = 1, Author = a1, Taxon = tArdeaCinerea, Text = "Grey heron standing still in the reeds at the lake.", PubDate = DateTime.Parse("2023-08-01 07:12:00") };

@@ -19,6 +19,18 @@ string connectionString = $"Data Source={dbPath}";
 
 // Add services to the container.
 builder.Services.AddDbContext<BisonDbContext>(options => options.UseSqlite(connectionString));
+builder
+	.Services.AddDefaultIdentity<User>(options =>
+	{
+		options.SignIn.RequireConfirmedAccount = false;
+		options.User.RequireUniqueEmail = true;
+		options.Password.RequiredLength = 6;
+		options.Password.RequireDigit = false;
+		options.Password.RequireLowercase = false;
+		options.Password.RequireUppercase = false;
+		options.Password.RequireNonAlphanumeric = false;
+	})
+	.AddEntityFrameworkStores<BisonDbContext>();
 builder.Services.AddRazorPages();
 builder.Services.AddScoped<IPostRepository, PostRepository>();
 builder.Services.AddScoped<IObservationService, ObservationService>();
@@ -38,8 +50,8 @@ if (!app.Environment.IsEnvironment("Testing"))
 			dbContext.Database.EnsureDeleted();
 		}
 
-		// Ensure the database is created and apply any pending migrations
-		dbContext.Database.EnsureCreated();
+		// Apply the full schema, including the Identity user and author key changes.
+		dbContext.Database.Migrate();
 		DbInitializer.SeedDatabase(dbContext);
 	}
 }
@@ -56,6 +68,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapRazorPages();
 
