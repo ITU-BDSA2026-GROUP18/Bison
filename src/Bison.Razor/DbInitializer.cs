@@ -73,8 +73,9 @@ public static class DbInitializer
 			foreach (var user in users)
 			{
 				var email = user.Email!;
+                var name = user.Name!;
 				user.UserName = email;
-				user.NormalizedUserName = email.ToUpperInvariant();
+				user.NormalizedUserName = name.ToUpperInvariant();
 				user.NormalizedEmail = email.ToUpperInvariant();
 			}
 
