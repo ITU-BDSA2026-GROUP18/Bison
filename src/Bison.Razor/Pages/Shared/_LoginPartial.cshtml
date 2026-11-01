@@ -1,19 +1,19 @@
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<User> SignInManager
 
-<div class="identity-nav">
+<div class="navigation">
+    <a href="/obs">Public Observations</a>
     @if (SignInManager.IsSignedIn(User))
     {
+        <a href="/obs/@Uri.EscapeDataString(User.Identity?.Name ?? string.Empty)">My Observations</a>
         <span>Signed in as @User.Identity?.Name</span>
-        <form method="post" action="/Identity/Account/Logout?returnUrl=%2F" style="display:inline">
+        <form method="post" action="/Identity/Account/Logout?returnUrl=%2Fobs">
             @Html.AntiForgeryToken()
             <button type="submit">Log out</button>
         </form>
     }
     else
     {
-    <a href="/obs">Public Observations</a>
-        <a href="/obs">Public Observations</a>
         <a href="/Identity/Account/Register?returnUrl=%2Fobs">Register</a>
         <a href="/Identity/Account/Login?returnUrl=%2Fobs">Log in</a>
     }
