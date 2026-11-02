@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Xunit.Abstractions;
 
 public class BisonFactory : WebApplicationFactory<Program>
@@ -21,6 +22,8 @@ public class BisonFactory : WebApplicationFactory<Program>
 		builder.UseEnvironment("Testing");
 		builder.ConfigureServices(services =>
 		{
+			services.RemoveAll<BisonDbContext>();
+			services.RemoveAll<DbContextOptions<BisonDbContext>>();
 			services.AddDbContext<BisonDbContext>(o => o.UseSqlite($"Data Source={_dbPath}"));
 		});
 	}

@@ -131,7 +131,7 @@ public class ObservationService : IObservationService
 	private static ObservationViewModel ToViewModel(Observation o)
 	{
 		return new ObservationViewModel(
-			o.Author.Username,
+			o.Author.Name,
 			o.Text,
 			o.PubDate.ToString("MM/dd/yy H:mm:ss", CultureInfo.InvariantCulture),
 			o.PostId
@@ -141,7 +141,7 @@ public class ObservationService : IObservationService
 	private static CommentViewModel ToViewModel(Comment c)
 	{
 		return new CommentViewModel(
-			c.Author.Username,
+			c.Author.Name,
 			c.Text,
 			c.PubDate.ToString("MM/dd/yy H:mm:ss", CultureInfo.InvariantCulture)
 		);
@@ -150,7 +150,7 @@ public class ObservationService : IObservationService
 	private static ProposalViewModel ToViewModel(Proposal p)
 	{
 		return new ProposalViewModel(
-			p.Author.Username,
+			p.Author.Name,
 			p.Text,
 			p.Taxon.DwcTaxonId,
 			p.Taxon.VernacularName,

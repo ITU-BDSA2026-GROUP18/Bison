@@ -11,7 +11,7 @@ public abstract class Post
 	public int PostId { get; set; }
 
 	[Column("author_id")]
-	public int AuthorId { get; set; }
+	public string AuthorId { get; set; } = "";
 
 	[Column("text")]
 	public string Text { get; set; } = "";

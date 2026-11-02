@@ -43,7 +43,7 @@ public class PostRepository : IPostRepository
 		var result = new List<Observation>();
 		var query = (
 			from Observation in _context.Observations
-			where Observation.Author.Username == username
+			where Observation.Author.Name == username
 			orderby Observation.PubDate descending
 			select Observation
 		)
