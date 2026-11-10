@@ -31,6 +31,20 @@ builder
 		options.Password.RequireNonAlphanumeric = false;
 	})
 	.AddEntityFrameworkStores<BisonDbContext>();
+
+var githubId = builder.Configuration["authentication:github:clientId"];
+if (!string.IsNullOrEmpty(githubId))
+{
+	builder
+		.Services.AddAuthentication()
+		.AddGitHub(o =>
+		{
+			o.Scope.Add("user:email");
+			o.ClientId = builder.Configuration["authentication:github:clientId"]!;
+			o.ClientSecret = builder.Configuration["authentication:github:clientSecret"]!;
+		});
+}
+
 builder.Services.AddRazorPages();
 builder.Services.AddScoped<IPostRepository, PostRepository>();
 builder.Services.AddScoped<IObservationService, ObservationService>();

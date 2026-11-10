@@ -28,6 +28,10 @@
     <button type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
 </form>
 
+<form method="post" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl">
+    <button type="submit" name="provider" value="GitHub">Log in with GitHub</button>
+</form>
+
 <p class="mt-3"><a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a></p>
 
 @section Scripts {
