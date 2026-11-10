@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,18 +37,28 @@ var githubId = builder.Configuration["authentication:github:clientId"];
 if (!string.IsNullOrEmpty(githubId))
 {
 	builder
-		.Services.AddAuthentication()
+		.Services.AddAuthentication(options =>
+		{
+			options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+			options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+			options.DefaultChallengeScheme = "GitHub";
+		})
+		.AddCookie()
 		.AddGitHub(o =>
 		{
 			o.Scope.Add("user:email");
 			o.ClientId = builder.Configuration["authentication:github:clientId"]!;
 			o.ClientSecret = builder.Configuration["authentication:github:clientSecret"]!;
+			o.CallbackPath = "/login";
 		});
 }
 
 builder.Services.AddRazorPages();
 builder.Services.AddScoped<IPostRepository, PostRepository>();
 builder.Services.AddScoped<IObservationService, ObservationService>();
+
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession();
 
 var app = builder.Build();
 
@@ -82,6 +93,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseSession();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
