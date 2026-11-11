@@ -1,7 +1,13 @@
 using System.Globalization;
 using Microsoft.VisualBasic;
 
-public record ObservationViewModel(string Author, string Message, string Timestamp, int Id = 0);
+public record ObservationViewModel(
+	string Author,
+	string Message,
+	string Timestamp,
+	int Id = 0,
+	string? ImageUrl = null
+);
 
 public record CommentViewModel(string Author, string Message, string Timestamp);
 
@@ -134,7 +140,8 @@ public class ObservationService : IObservationService
 			o.Author.Name,
 			o.Text,
 			o.PubDate.ToString("MM/dd/yy H:mm:ss", CultureInfo.InvariantCulture),
-			o.PostId
+			o.PostId,
+			o.ImageUrl
 		);
 	}
 

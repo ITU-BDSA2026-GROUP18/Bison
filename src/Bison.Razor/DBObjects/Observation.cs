@@ -1,12 +1,17 @@
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using SQLitePCL;
 
 [Table("observation")]
 public class Observation : Post
 {
 	[Column("taxon_id")]
 	public int TaxonId { get; set; }
+
+	public byte[]? Image { get; set; }
+
+	public string? ImageContentType { get; set; }
+
+	[NotMapped]
+	public string? ImageUrl => Image is null ? null : $"/ob/{PostId}/image";
 
 	public Taxon Taxon { get; set; } = null!;
 
