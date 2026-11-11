@@ -37,19 +37,12 @@ var githubId = builder.Configuration["authentication:github:clientId"];
 if (!string.IsNullOrEmpty(githubId))
 {
 	builder
-		.Services.AddAuthentication(options =>
-		{
-			options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-			options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-			options.DefaultChallengeScheme = "GitHub";
-		})
-		.AddCookie()
+		.Services.AddAuthentication()
 		.AddGitHub(o =>
 		{
 			o.Scope.Add("user:email");
 			o.ClientId = builder.Configuration["authentication:github:clientId"]!;
 			o.ClientSecret = builder.Configuration["authentication:github:clientSecret"]!;
-			o.CallbackPath = "/login";
 		});
 }
 
