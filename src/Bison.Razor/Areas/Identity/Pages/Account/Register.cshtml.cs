@@ -80,7 +80,7 @@ public class RegisterModel : PageModel
 		{
 			_logger.LogInformation("A new user created an account with a password.");
 			await _signInManager.SignInAsync(user, isPersistent: false);
-			return LocalRedirect(ReturnUrl ?? "/");
+			return LocalRedirect(ReturnUrl ?? "/obs");
 		}
 
 		foreach (var error in result.Errors)
