@@ -60,7 +60,7 @@ public class LoginModel : PageModel
 
 			if (result.Succeeded)
 			{
-				return LocalRedirect(ReturnUrl ?? "/obs");
+				return LocalRedirect(ReturnUrl ?? "/");
 			}
 		}
 
