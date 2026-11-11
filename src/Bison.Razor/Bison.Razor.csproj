@@ -1,8 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 	<PropertyGroup>
 		<TargetFramework>net8</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<UserSecretsId>c4f54d11-f201-4207-a25e-913642d6616b</UserSecretsId>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -17,6 +18,7 @@
 			Version="8.0.11"
 		/>
 		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.11" />
+		<PackageReference Include="AspNet.Security.OAuth.GitHub" Version="8.*" />
 		<PackageReference Include="Microsoft.Z3" Version="4.12.2" />
 		<Compile Include="..\..\dafny\ObservationTaxonFilter.cs" />
 	</ItemGroup>
