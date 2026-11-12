@@ -1,4 +1,5 @@
-using System.ComponentModel.DataAnnotations;
+namespace Bison.Razor.DBObjects;
+
 using System.ComponentModel.DataAnnotations.Schema;
 using SQLitePCL;
 
