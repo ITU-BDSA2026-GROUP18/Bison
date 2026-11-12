@@ -281,7 +281,13 @@ namespace Bison.Razor.Migrations
                         .HasColumnType("INTEGER")
                         .HasColumnName("observation_id");
 
+                    b.Property<int?>("ParentCommentId")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("parent_comment_id");
+
                     b.HasIndex("ObservationId");
+
+                    b.HasIndex("ParentCommentId");
 
                     b.ToTable("comment", (string)null);
                 });
@@ -397,6 +403,11 @@ namespace Bison.Razor.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Comment", "ParentComment")
+                        .WithMany("Replies")
+                        .HasForeignKey("ParentCommentId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("Post", null)
                         .WithOne()
                         .HasForeignKey("Comment", "PostId")
@@ -404,6 +415,8 @@ namespace Bison.Razor.Migrations
                         .IsRequired();
 
                     b.Navigation("Observation");
+
+                    b.Navigation("ParentComment");
                 });
 
             modelBuilder.Entity("Observation", b =>
@@ -460,6 +473,11 @@ namespace Bison.Razor.Migrations
             modelBuilder.Entity("User", b =>
                 {
                     b.Navigation("Posts");
+                });
+
+            modelBuilder.Entity("Comment", b =>
+                {
+                    b.Navigation("Replies");
                 });
 
             modelBuilder.Entity("Observation", b =>
