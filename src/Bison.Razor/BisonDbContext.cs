@@ -53,6 +53,8 @@ public class BisonDbContext : IdentityDbContext<User>
 		{
 			e.ToTable("observation");
 			e.Property(o => o.TaxonId).HasColumnName("taxon_id");
+			e.Property(o => o.Image).HasColumnName("image");
+			e.Property(o => o.ImageContentType).HasColumnName("image_content_type");
 
 			e.HasOne(o => o.Taxon).WithMany(t => t.Observations).HasForeignKey(o => o.TaxonId);
 		});
