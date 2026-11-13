@@ -1,11 +1,11 @@
 body {
   background: #eccaca;
-  font-family: 'Trebuchet MS', sans-serif;
+  font-family: "Trebuchet MS", sans-serif;
   font-size: 14px;
 }
 
 a {
-  color: #26776F;
+  color: #26776f;
 }
 
 a:hover {
@@ -16,22 +16,22 @@ input[type="email"],
 input[type="text"],
 input[type="tel"],
 input[type="password"] {
-    background: white;
-    border: 1px solid #e6c0bf;
-    padding: 2px;
-    font-family: 'Trebuchet MS', sans-serif;
-    font-size: 14px;
-    border-radius: 2px;
-    -moz-border-radius: 2px;
-    -webkit-border-radius: 2px;
-    color: #571010;
+  background: white;
+  border: 1px solid #e6c0bf;
+  padding: 2px;
+  font-family: "Trebuchet MS", sans-serif;
+  font-size: 14px;
+  border-radius: 2px;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  color: #571010;
 }
 
 input[type="submit"] {
   background: #571010;
   border: 1px solid #3b0707;
   padding: 1px 3px;
-  font-family: 'Trebuchet MS', sans-serif;
+  font-family: "Trebuchet MS", sans-serif;
   font-size: 14px;
   font-weight: bold;
   border-radius: 2px;
@@ -63,7 +63,7 @@ div.page h1 img {
 }
 
 div.page div.navigation {
-  background: #DEE9E8;
+  background: #dee9e8;
   padding: 4px 10px;
   border-top: 1px solid #ccc;
   border-bottom: 1px solid #eee;
@@ -78,20 +78,20 @@ div.page div.navigation a {
 }
 
 div.page div.navigation form {
-    display: contents;
+  display: contents;
 }
 
 div.page div.navigation form button {
-    padding: unset;
-    background: unset;
-    color: #444;
-    font-weight: bold;
-    display: inline-block;
-    font-size: unset;
-    cursor: pointer;
-    text-decoration: underline;
-    font-family: unset;
-    letter-spacing: unset;
+  padding: unset;
+  background: unset;
+  color: #444;
+  font-weight: bold;
+  display: inline-block;
+  font-size: unset;
+  cursor: pointer;
+  text-decoration: underline;
+  font-family: unset;
+  letter-spacing: unset;
 }
 
 div.page h2 {
@@ -113,7 +113,7 @@ div.page div.footer {
 
 div.page div.followstatus {
   border: 1px solid #ccc;
-  background: #E3EBEA;
+  background: #e3ebea;
   border-radius: 2px;
   -moz-border-radius: 2px;
   -webkit-border-radius: 2px;
@@ -130,8 +130,8 @@ div.page ul.observations {
 div.page ul.observations li {
   margin: 10px 0;
   padding: 5px;
-  background: #F0FAF9;
-  border: 1px solid #DBF3F1;
+  background: #f0faf9;
+  border: 1px solid #dbf3f1;
   border-radius: 2px;
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
@@ -142,7 +142,13 @@ div.page ul.observations p {
   margin: 0;
 }
 
-div.page ul.observations li img {
+div.page img.observation-image {
+  max-width: 100%;
+  height: auto;
+  box-sizing: border-box;
+}
+
+div.page ul.observations li img.observation-image {
   float: left;
   padding: 0 10px 0 0;
 }
@@ -155,7 +161,7 @@ div.page ul.observations li small {
 div.page div.observationbox {
   margin: 10px 0;
   padding: 5px;
-  background: #F0FAF9;
+  background: #f0faf9;
   border: 1px solid #e29494;
   border-radius: 2px;
   -moz-border-radius: 5px;
@@ -206,8 +212,8 @@ ul.message li {
 
 div.error {
   margin: 10px 0;
-  background: #FAE4E4;
-  border: 1px solid #DD6F6F;
+  background: #fae4e4;
+  border: 1px solid #dd6f6f;
   border-radius: 2px;
   -moz-border-radius: 2px;
   -webkit-border-radius: 2px;
@@ -238,8 +244,8 @@ ul.topic {
 li.topic {
   margin: 10px 0;
   padding: 5px;
-  background: #F0FAF9;
-  border: 1px solid #DBF3F1;
+  background: #f0faf9;
+  border: 1px solid #dbf3f1;
   border-radius: 2px;
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
@@ -247,45 +253,45 @@ li.topic {
 }
 
 form * {
-    margin: 2px 0;
+  margin: 2px 0;
 }
 
 button {
-    background-color: #cc6e6e;
-    border: none;
-    color: white;
-    padding: 8px 16px;
-    text-align: center;
-    text-decoration: none;
-    cursor: pointer;
+  background-color: #cc6e6e;
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 button:hover {
-    background-color: #8b4949;
+  background-color: #8b4949;
 }
 
 ul.nav {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #cc6e6e;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #cc6e6e;
 }
 
 ul.nav li {
-    float: left;
+  float: left;
 }
 
 ul.nav li a {
-    display: block;
-    color: white;
-    text-align: center;
-    padding: 8px 8px;
-    text-decoration: none;
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 8px 8px;
+  text-decoration: none;
 }
 
 ul.nav li a:hover {
-    background-color: #8b4949;
+  background-color: #8b4949;
 }
 
 .back_button {

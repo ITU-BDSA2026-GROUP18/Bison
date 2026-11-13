@@ -13,6 +13,10 @@
     {
         <h2>@Model.Observations[0].Author's Observation <small>&mdash; @Model.Observations[0].Timestamp</small></h2>
         <p>@Model.Observations[0].Message</p>
+        @if (Model.Observations[0].ImageUrl != null)
+        {
+            <img class="observation-image" src="@Model.Observations[0].ImageUrl" alt="Observation image" />
+        }
 
         <hr />
 

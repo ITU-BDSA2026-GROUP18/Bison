@@ -101,6 +101,22 @@ app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapGet(
+	"/ob/{id:int}/image",
+	(int id, BisonDbContext dbContext) =>
+	{
+		var image = dbContext
+			.Observations.Where(observation => observation.PostId == id)
+			.Select(observation => new { observation.Image, observation.ImageContentType })
+			.FirstOrDefault();
+
+		if (image?.Image is null || string.IsNullOrWhiteSpace(image.ImageContentType))
+			return Results.NotFound();
+
+		return Results.File(image.Image, image.ImageContentType);
+	}
+);
+
 app.MapRazorPages();
 
 app.Run();

@@ -3,7 +3,13 @@ using Bison.Razor.DBObjects;
 using Bison.Razor.ViewModels;
 using Microsoft.VisualBasic;
 
-public record ObservationViewModel(string Author, string Message, string Timestamp, int Id = 0);
+public record ObservationViewModel(
+	string Author,
+	string Message,
+	string Timestamp,
+	int Id = 0,
+	string? ImageUrl = null
+);
 
 public record CommentViewModel(
 	int Id,
@@ -160,7 +166,8 @@ public class ObservationService : IObservationService
 			o.Author.Name,
 			o.Text,
 			o.PubDate.ToString("MM/dd/yy H:mm:ss", CultureInfo.InvariantCulture),
-			o.PostId
+			o.PostId,
+			o.ImageUrl
 		);
 	}
 

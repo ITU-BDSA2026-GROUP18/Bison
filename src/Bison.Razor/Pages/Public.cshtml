@@ -24,6 +24,10 @@
                         <strong>
                             <a href="/obs/@obs.Author">@obs.Author</a>
                         </strong>
+                        @if (obs.ImageUrl != null)
+                        {
+                            <img class="observation-image" src="@obs.ImageUrl" alt="Observation image" />
+                        }
                         @obs.Message
                         <small>&mdash; @obs.Timestamp</small>
                     </p>
