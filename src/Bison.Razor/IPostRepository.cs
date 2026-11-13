@@ -1,3 +1,6 @@
+using Bison.Razor.DBObjects;
+using Bison.Razor.ViewModels;
+
 public interface IPostRepository
 {
 	List<Observation> GetObservations(int page, int pageSize);
@@ -7,4 +10,5 @@ public interface IPostRepository
 	List<Comment> GetCommentsForObservation(int observationId);
 	List<Proposal> GetProposalsForObservation(int observationId);
 	Taxon GetTaxonById(int taxonId);
+	Comment AddCommentToObservation(int observationId, string authorId, CommentInput input);
 }

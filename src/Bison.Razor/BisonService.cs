@@ -1,4 +1,6 @@
 using System.Globalization;
+using Bison.Razor.DBObjects;
+using Bison.Razor.ViewModels;
 using Microsoft.VisualBasic;
 
 public record ObservationViewModel(
@@ -9,7 +11,14 @@ public record ObservationViewModel(
 	string? ImageUrl = null
 );
 
-public record CommentViewModel(string Author, string Message, string Timestamp);
+public record CommentViewModel(
+	int Id,
+	string Author,
+	string Message,
+	string Timestamp,
+	int? ParentCommentId = null,
+	List<CommentViewModel>? Replies = null
+);
 
 public record ProposalViewModel(
 	string Author,
@@ -28,14 +37,18 @@ public interface IObservationService
 		int pageSize = 32
 	);
 	public ObservationViewModel GetObservationById(int observationId);
-	public List<CommentViewModel> GetCommentsForObservation(int observationId);
+	public List<CommentViewModel> GetCommentsForObservation(
+		int observationId,
+		bool onlyRootComments
+	);
 	public List<ProposalViewModel> GetProposalsForObservation(int observationId);
-
 	public List<ObservationViewModel> GetObservationsByTaxon(
 		int taxonId,
 		int page,
 		int pageSize = 32
 	);
+
+	public int AddCommentToObservation(int observationId, string authorId, CommentInput input);
 }
 
 public class ObservationService : IObservationService
@@ -78,17 +91,24 @@ public class ObservationService : IObservationService
 	public ObservationViewModel? GetObservationById(int observationId)
 	{
 		var observation = _repository.GetObservationById(observationId);
-		if (observation == null)
-			return null;
-		return ToViewModel(observation);
+		if (observation is not null)
+			return ToViewModel(observation);
+		return null;
 	}
 
-	public List<CommentViewModel> GetCommentsForObservation(int observationId)
+	public List<CommentViewModel> GetCommentsForObservation(
+		int observationId,
+		bool onlyRootComments
+	)
 	{
 		var result = new List<CommentViewModel>();
 
 		foreach (var comment in _repository.GetCommentsForObservation(observationId))
 		{
+			if (onlyRootComments && comment.ParentCommentId.HasValue)
+			{
+				continue;
+			}
 			result.Add(ToViewModel(comment));
 		}
 
@@ -134,6 +154,12 @@ public class ObservationService : IObservationService
 		return result;
 	}
 
+	public int AddCommentToObservation(int observationId, string authorId, CommentInput input)
+	{
+		Comment comment = _repository.AddCommentToObservation(observationId, authorId, input);
+		return comment.PostId;
+	}
+
 	private static ObservationViewModel ToViewModel(Observation o)
 	{
 		return new ObservationViewModel(
@@ -148,9 +174,12 @@ public class ObservationService : IObservationService
 	private static CommentViewModel ToViewModel(Comment c)
 	{
 		return new CommentViewModel(
+			c.PostId,
 			c.Author.Name,
 			c.Text,
-			c.PubDate.ToString("MM/dd/yy H:mm:ss", CultureInfo.InvariantCulture)
+			c.PubDate.ToString("MM/dd/yy H:mm:ss", CultureInfo.InvariantCulture),
+			c.ParentCommentId,
+			c.Replies.OrderBy(r => r.PubDate).Select(ToViewModel).ToList()
 		);
 	}
 

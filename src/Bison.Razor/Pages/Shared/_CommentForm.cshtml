@@ -1,0 +1,9 @@
+@model CommentInput
+
+<form method="post" asp-page-handler="Comment" class="comment-form">
+    <input type="hidden" asp-for="ParentCommentId" />
+    <textarea asp-for="Content" rows="3"
+        placeholder="@(Model.ParentCommentId is null ? "Write a comment…" : "Write a reply…")"></textarea>
+    <span asp-validation-for="Content"></span>
+    <button type="submit">@(Model.ParentCommentId is null ? "Comment" : "Reply")</button>
+</form>

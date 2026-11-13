@@ -1,3 +1,5 @@
+namespace Bison.Razor.DBObjects;
+
 using System.ComponentModel.DataAnnotations.Schema;
 
 [Table("observation")]

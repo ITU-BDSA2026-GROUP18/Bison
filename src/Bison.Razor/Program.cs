@@ -1,4 +1,6 @@
+using Bison.Razor.DBObjects;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -52,6 +54,14 @@ builder.Services.AddScoped<IObservationService, ObservationService>();
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession();
+
+// If we are in development, then it is quite annoying for stale auth cookies to be cached, so it just makes sense for them to be validated on every request
+if (builder.Environment.IsDevelopment())
+{
+	builder.Services.Configure<SecurityStampValidatorOptions>(o =>
+		o.ValidationInterval = TimeSpan.Zero
+	);
+}
 
 var app = builder.Build();
 

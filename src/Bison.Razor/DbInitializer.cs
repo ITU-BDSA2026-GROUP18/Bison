@@ -1,4 +1,5 @@
 using System;
+using Bison.Razor.DBObjects;
 
 public static class DbInitializer
 {

@@ -1,3 +1,4 @@
+using Bison.Razor.DBObjects;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -63,10 +64,15 @@ public class BisonDbContext : IdentityDbContext<User>
 		{
 			e.ToTable("comment");
 			e.Property(c => c.ObservationId).HasColumnName("observation_id");
+			e.Property(c => c.ParentCommentId).HasColumnName("parent_comment_id");
 
 			e.HasOne(c => c.Observation)
 				.WithMany(o => o.Comments)
 				.HasForeignKey(c => c.ObservationId);
+			e.HasOne(c => c.ParentComment)
+				.WithMany(c => c.Replies)
+				.HasForeignKey(c => c.ParentCommentId)
+				.OnDelete(DeleteBehavior.Cascade);
 		});
 
 		modelBuilder.Entity<Taxon>(e =>

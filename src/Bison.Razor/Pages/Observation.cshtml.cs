@@ -1,7 +1,10 @@
+namespace Bison.Razor.Pages;
+
+using System.Security.Claims;
+using Bison.Razor.DBObjects;
+using Bison.Razor.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-
-namespace Bison.Razor.Pages;
 
 public class ObservationModel : PageModel
 {
@@ -17,7 +20,7 @@ public class ObservationModel : PageModel
 		_service = service;
 	}
 
-	public ActionResult OnGet(string id, [FromQuery] int page = 1)
+	public async Task<ActionResult> OnGetAsync(string id, [FromQuery] int page = 1)
 	{
 		if (page < 1)
 			page = 1;
@@ -44,12 +47,27 @@ public class ObservationModel : PageModel
 			Observations = [observation];
 			NrOfObservations = 1;
 
-			Comments = _service.GetCommentsForObservation(observationId);
+			Comments = _service.GetCommentsForObservation(observationId, true);
 			Proposals = _service.GetProposalsForObservation(observationId);
 
 			return Page();
 		}
 
 		return NotFound();
+	}
+
+	public async Task<IActionResult> OnPostCommentAsync(string id, CommentInput input)
+	{
+		var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+		if (userId is null)
+			return Challenge();
+
+		if (!ModelState.IsValid)
+			return await OnGetAsync(id);
+
+		var AddedCommentId = _service.AddCommentToObservation(int.Parse(id), userId, input);
+
+		// Redirect back and jump to the new comment
+		return RedirectToPage(null, null, new { id }, $"comment-{AddedCommentId}");
 	}
 }
