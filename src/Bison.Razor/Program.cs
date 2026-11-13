@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
+using Bison.Razor.DBObjects;
 
 var builder = WebApplication.CreateBuilder(args);
 

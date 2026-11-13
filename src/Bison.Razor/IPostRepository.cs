@@ -1,3 +1,5 @@
+using Bison.Razor.DBObjects;
+
 public interface IPostRepository
 {
 	List<Observation> GetObservations(int page, int pageSize);

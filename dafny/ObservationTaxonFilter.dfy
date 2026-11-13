@@ -1,8 +1,8 @@
-class {:extern} Taxon {
+class {:extern "Bison.Razor.DBObjects.Taxon"} Taxon {
   function {:extern} isSubtaxon(ancestor: Taxon): bool
 }
 
-class {:extern} Observation {
+class {:extern "Bison.Razor.DBObjects.Observation"} Observation {
   function {:extern} getTaxon(): Taxon
 }
 

@@ -1,0 +1,26 @@
+@model CommentViewModel
+
+<li class="comment" id="comment-@Model.">
+    <p>
+        <strong>
+            <a href="/obs/@Model.Author">@Model.Author</a>
+        </strong>
+        @Model.Message
+        <small>&mdash; @Model.Timestamp</small>
+    </p>
+
+    <details>
+        <summary>Reply</summary>
+        <partial name="_CommentForm" model="new CommentInput { ParentCommentId = Model.Id }" />
+    </details>
+
+    @if (Model.Replies != null && Model.Replies.Any())
+    {
+        <ul class="replies">
+            @foreach (var reply in Model.Replies.OrderBy(r => r.Timestamp))
+            {
+                <partial name="_Comment" model="reply" />
+            }
+        </ul>
+    }
+</li>

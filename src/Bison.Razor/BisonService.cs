@@ -1,9 +1,17 @@
+using Bison.Razor.DBObjects;
 using System.Globalization;
 using Microsoft.VisualBasic;
 
 public record ObservationViewModel(string Author, string Message, string Timestamp, int Id = 0);
 
-public record CommentViewModel(string Author, string Message, string Timestamp);
+public record CommentViewModel(
+	int Id, 
+	string Author, 
+	string Message, 
+	string Timestamp,
+	CommentViewModel? ParentComment = null,
+	List<CommentViewModel>? Replies = null
+);
 
 public record ProposalViewModel(
 	string Author,
@@ -72,9 +80,9 @@ public class ObservationService : IObservationService
 	public ObservationViewModel? GetObservationById(int observationId)
 	{
 		var observation = _repository.GetObservationById(observationId);
-		if (observation == null)
-			return null;
-		return ToViewModel(observation);
+		if (observation is not null)
+			return ToViewModel(observation);
+		return null;
 	}
 
 	public List<CommentViewModel> GetCommentsForObservation(int observationId)
@@ -141,9 +149,12 @@ public class ObservationService : IObservationService
 	private static CommentViewModel ToViewModel(Comment c)
 	{
 		return new CommentViewModel(
+			c.PostId,
 			c.Author.Name,
 			c.Text,
-			c.PubDate.ToString("MM/dd/yy H:mm:ss", CultureInfo.InvariantCulture)
+			c.PubDate.ToString("MM/dd/yy H:mm:ss", CultureInfo.InvariantCulture),
+			c.ParentComment is null ? null : ToViewModel(c.ParentComment),
+			c.Replies?.Select(ToViewModel).ToList()
 		);
 	}
 

@@ -1,6 +1,6 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace Bison.Razor.ViewModels;
+
+using System.ComponentModel.DataAnnotations;
 
 public class CommentInput
 {
