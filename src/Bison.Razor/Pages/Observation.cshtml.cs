@@ -57,18 +57,17 @@ public class ObservationModel : PageModel
 	}
 
 	public async Task<IActionResult> OnPostCommentAsync(string id, CommentInput input)
-    {
-			var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-			if (userId is null)
-					return Challenge();
+	{
+		var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+		if (userId is null)
+			return Challenge();
 
+		if (!ModelState.IsValid)
+			return await OnGetAsync(id);
 
-			if (!ModelState.IsValid)
-				return await OnGetAsync(id);
+		var AddedCommentId = _service.AddCommentToObservation(int.Parse(id), userId, input);
 
-			var AddedCommentId = _service.AddCommentToObservation(int.Parse(id), userId, input);
-
-			// Redirect back and jump to the new comment
-			return RedirectToPage(null, null, new { id }, $"comment-{AddedCommentId}");
-    }
+		// Redirect back and jump to the new comment
+		return RedirectToPage(null, null, new { id }, $"comment-{AddedCommentId}");
+	}
 }

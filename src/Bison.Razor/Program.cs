@@ -1,7 +1,7 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.EntityFrameworkCore;
 using Bison.Razor.DBObjects;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,7 +59,8 @@ builder.Services.AddSession();
 if (builder.Environment.IsDevelopment())
 {
 	builder.Services.Configure<SecurityStampValidatorOptions>(o =>
-        o.ValidationInterval = TimeSpan.Zero);
+		o.ValidationInterval = TimeSpan.Zero
+	);
 }
 
 var app = builder.Build();

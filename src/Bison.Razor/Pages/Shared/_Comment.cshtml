@@ -1,6 +1,6 @@
 @model CommentViewModel
 
-<li class="comment" id="comment-@Model.">
+<li id="comment-@Model.Id">
     <p>
         <strong>
             <a href="/obs/@Model.Author">@Model.Author</a>
@@ -16,7 +16,7 @@
 
     @if (Model.Replies != null && Model.Replies.Any())
     {
-        <ul class="replies">
+        <ul>
             @foreach (var reply in Model.Replies.OrderBy(r => r.Timestamp))
             {
                 <partial name="_Comment" model="reply" />

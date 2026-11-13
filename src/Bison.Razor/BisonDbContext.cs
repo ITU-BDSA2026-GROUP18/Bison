@@ -70,7 +70,7 @@ public class BisonDbContext : IdentityDbContext<User>
 			e.HasOne(c => c.ParentComment)
 				.WithMany(c => c.Replies)
 				.HasForeignKey(c => c.ParentCommentId)
-				.OnDelete(DeleteBehavior.Cascade); 
+				.OnDelete(DeleteBehavior.Cascade);
 		});
 
 		modelBuilder.Entity<Taxon>(e =>

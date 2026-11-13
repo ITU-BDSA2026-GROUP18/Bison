@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using Bison.Razor.DBObjects;
 using _module;
+using Bison.Razor.DBObjects;
 
 public static class ObservationFilter
 {

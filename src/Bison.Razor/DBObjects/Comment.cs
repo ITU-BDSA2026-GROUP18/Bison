@@ -8,6 +8,7 @@ public class Comment : Post
 {
 	[Column("observation_id")]
 	public int ObservationId { get; set; }
+
 	[Column("parent_comment_id")]
 	public int? ParentCommentId { get; set; }
 

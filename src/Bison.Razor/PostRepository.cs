@@ -1,6 +1,6 @@
-using Microsoft.EntityFrameworkCore;
 using Bison.Razor.DBObjects;
 using Bison.Razor.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 public class PostRepository : IPostRepository
 {
@@ -106,26 +106,31 @@ public class PostRepository : IPostRepository
 
 	public Comment AddCommentToObservation(int observationId, string authorId, CommentInput input)
 	{
-    var observation = GetObservationById(observationId) 
+		var observation =
+			GetObservationById(observationId)
 			?? throw new ArgumentException($"Observation with ID {observationId} not found.");
 
-		if (input.ParentCommentId is int parentId &&
-			!_context.Comments.Any(c => c.PostId == parentId && c.ObservationId == observationId))
-    {
-			throw new ArgumentException($"Comment {parentId} not found on observation {observationId}.");
-    }
-    
+		if (
+			input.ParentCommentId is int parentId
+			&& !_context.Comments.Any(c => c.PostId == parentId && c.ObservationId == observationId)
+		)
+		{
+			throw new ArgumentException(
+				$"Comment {parentId} not found on observation {observationId}."
+			);
+		}
+
 		var comment = new Comment
-    {
-        ObservationId = observation.PostId,
-        ParentCommentId = input.ParentCommentId,
-        AuthorId = authorId,
-        Text = input.Content,
-        PubDate = DateTime.UtcNow,
-    };
+		{
+			ObservationId = observation.PostId,
+			ParentCommentId = input.ParentCommentId,
+			AuthorId = authorId,
+			Text = input.Content,
+			PubDate = DateTime.UtcNow,
+		};
 
 		_context.Comments.Add(comment);
-    _context.SaveChanges();
-    return comment;
+		_context.SaveChanges();
+		return comment;
 	}
 }

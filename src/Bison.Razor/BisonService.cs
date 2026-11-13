@@ -1,14 +1,14 @@
-using Bison.Razor.DBObjects;
 using System.Globalization;
-using Microsoft.VisualBasic;
+using Bison.Razor.DBObjects;
 using Bison.Razor.ViewModels;
+using Microsoft.VisualBasic;
 
 public record ObservationViewModel(string Author, string Message, string Timestamp, int Id = 0);
 
 public record CommentViewModel(
-	int Id, 
-	string Author, 
-	string Message, 
+	int Id,
+	string Author,
+	string Message,
 	string Timestamp,
 	int? ParentCommentId = null,
 	List<CommentViewModel>? Replies = null
@@ -31,7 +31,10 @@ public interface IObservationService
 		int pageSize = 32
 	);
 	public ObservationViewModel GetObservationById(int observationId);
-	public List<CommentViewModel> GetCommentsForObservation(int observationId, bool onlyRootComments);
+	public List<CommentViewModel> GetCommentsForObservation(
+		int observationId,
+		bool onlyRootComments
+	);
 	public List<ProposalViewModel> GetProposalsForObservation(int observationId);
 	public List<ObservationViewModel> GetObservationsByTaxon(
 		int taxonId,
@@ -87,7 +90,10 @@ public class ObservationService : IObservationService
 		return null;
 	}
 
-	public List<CommentViewModel> GetCommentsForObservation(int observationId, bool onlyRootComments)
+	public List<CommentViewModel> GetCommentsForObservation(
+		int observationId,
+		bool onlyRootComments
+	)
 	{
 		var result = new List<CommentViewModel>();
 
