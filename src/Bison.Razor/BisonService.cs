@@ -1,6 +1,7 @@
 using Bison.Razor.DBObjects;
 using System.Globalization;
 using Microsoft.VisualBasic;
+using Bison.Razor.ViewModels;
 
 public record ObservationViewModel(string Author, string Message, string Timestamp, int Id = 0);
 
@@ -9,7 +10,7 @@ public record CommentViewModel(
 	string Author, 
 	string Message, 
 	string Timestamp,
-	CommentViewModel? ParentComment = null,
+	int? ParentCommentId = null,
 	List<CommentViewModel>? Replies = null
 );
 
@@ -32,12 +33,13 @@ public interface IObservationService
 	public ObservationViewModel GetObservationById(int observationId);
 	public List<CommentViewModel> GetCommentsForObservation(int observationId);
 	public List<ProposalViewModel> GetProposalsForObservation(int observationId);
-
 	public List<ObservationViewModel> GetObservationsByTaxon(
 		int taxonId,
 		int page,
 		int pageSize = 32
 	);
+
+	public int AddCommentToObservation(int observationId, string authorId, CommentInput input);
 }
 
 public class ObservationService : IObservationService
@@ -136,6 +138,12 @@ public class ObservationService : IObservationService
 		return result;
 	}
 
+	public int AddCommentToObservation(int observationId, string authorId, CommentInput input)
+	{
+		Comment comment = _repository.AddCommentToObservation(observationId, authorId, input);
+		return comment.PostId;
+	}
+
 	private static ObservationViewModel ToViewModel(Observation o)
 	{
 		return new ObservationViewModel(
@@ -153,8 +161,8 @@ public class ObservationService : IObservationService
 			c.Author.Name,
 			c.Text,
 			c.PubDate.ToString("MM/dd/yy H:mm:ss", CultureInfo.InvariantCulture),
-			c.ParentComment is null ? null : ToViewModel(c.ParentComment),
-			c.Replies?.Select(ToViewModel).ToList()
+			c.ParentCommentId,
+			c.Replies.OrderBy(r => r.PubDate).Select(ToViewModel).ToList()
 		);
 	}
 
