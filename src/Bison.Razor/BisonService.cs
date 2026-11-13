@@ -31,7 +31,7 @@ public interface IObservationService
 		int pageSize = 32
 	);
 	public ObservationViewModel GetObservationById(int observationId);
-	public List<CommentViewModel> GetCommentsForObservation(int observationId);
+	public List<CommentViewModel> GetCommentsForObservation(int observationId, bool onlyRootComments);
 	public List<ProposalViewModel> GetProposalsForObservation(int observationId);
 	public List<ObservationViewModel> GetObservationsByTaxon(
 		int taxonId,
@@ -87,12 +87,16 @@ public class ObservationService : IObservationService
 		return null;
 	}
 
-	public List<CommentViewModel> GetCommentsForObservation(int observationId)
+	public List<CommentViewModel> GetCommentsForObservation(int observationId, bool onlyRootComments)
 	{
 		var result = new List<CommentViewModel>();
 
 		foreach (var comment in _repository.GetCommentsForObservation(observationId))
 		{
+			if (onlyRootComments && comment.ParentCommentId.HasValue)
+			{
+				continue;
+			}
 			result.Add(ToViewModel(comment));
 		}
 

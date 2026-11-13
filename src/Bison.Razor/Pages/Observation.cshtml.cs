@@ -47,7 +47,7 @@ public class ObservationModel : PageModel
 			Observations = [observation];
 			NrOfObservations = 1;
 
-			Comments = _service.GetCommentsForObservation(observationId);
+			Comments = _service.GetCommentsForObservation(observationId, true);
 			Proposals = _service.GetProposalsForObservation(observationId);
 
 			return Page();
