@@ -145,14 +145,14 @@ public class ObservationFilterTests
 			string? imageContentType = null
 		) => throw new NotSupportedException();
 
-        public List<Comment> GetCommentsByAuthor(string username, int page, int pageSize)
-        {
-            throw new NotImplementedException();
-        }
+		public List<Comment> GetCommentsByAuthor(string username, int page, int pageSize)
+		{
+			throw new NotImplementedException();
+		}
 
-        List<Proposal> IPostRepository.GetProposalsByAuthor(string username, int page, int pageSize)
-        {
-            throw new NotImplementedException();
-        }
-    }
+		List<Proposal> IPostRepository.GetProposalsByAuthor(string username, int page, int pageSize)
+		{
+			throw new NotImplementedException();
+		}
+	}
 }
