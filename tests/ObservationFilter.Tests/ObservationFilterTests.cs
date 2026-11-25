@@ -120,7 +120,13 @@ public class ObservationFilterTests
 		public List<Comment> GetCommentsForObservation(int observationId) =>
 			throw new NotSupportedException();
 
+		public List<Observation> GetCommentssByAuthor(string username, int page, int pageSize) =>
+			throw new NotSupportedException();
+
 		public List<Proposal> GetProposalsForObservation(int observationId) =>
+			throw new NotSupportedException();
+
+		public List<Observation> GetProposalsByAuthor(string username, int page, int pageSize) =>
 			throw new NotSupportedException();
 
 		public Taxon GetTaxonById(int taxonId) => taxonId == root.TaxonId ? root : null!;
@@ -138,5 +144,15 @@ public class ObservationFilterTests
 			byte[]? image = null,
 			string? imageContentType = null
 		) => throw new NotSupportedException();
-	}
+
+        public List<Comment> GetCommentsByAuthor(string username, int page, int pageSize)
+        {
+            throw new NotImplementedException();
+        }
+
+        List<Proposal> IPostRepository.GetProposalsByAuthor(string username, int page, int pageSize)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }
