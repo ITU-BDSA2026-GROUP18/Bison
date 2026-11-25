@@ -1,0 +1,15 @@
+@model ObservationInput
+
+<div class="observationbox">
+    <h3>What did you see, @User.Identity?.Name?</h3>
+    <form method="post" asp-page-handler="Observation" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly"></div>
+        <input style="float: left" type="text" asp-for="Text" placeholder="Describe your observation" />
+        <input type="number" asp-for="TaxonId" placeholder="Taxon id" style="width: 90px" />
+        <input type="file" asp-for="Image" accept="image/png,image/jpeg,image/gif,image/webp" />
+        <input type="submit" value="Share" />
+        <span asp-validation-for="Text"></span>
+        <span asp-validation-for="TaxonId"></span>
+        <span asp-validation-for="Image"></span>
+    </form>
+</div>

@@ -7,6 +7,10 @@
 
 <div>
     <h2> Public Timeline &mdash; page @Model.PageNr</h2>
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <partial name="_ObservationForm" model="new ObservationInput()" />
+    }
     <small>Showing @Model.NrOfObservations observations</small>
     
     <form method="get">

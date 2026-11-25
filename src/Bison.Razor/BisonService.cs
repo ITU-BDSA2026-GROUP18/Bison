@@ -49,6 +49,7 @@ public interface IObservationService
 	);
 
 	public int AddCommentToObservation(int observationId, string authorId, CommentInput input);
+	Task<int> AddObservationAsync(string authorId, ObservationInput input);
 }
 
 public class ObservationService : IObservationService
@@ -192,6 +193,34 @@ public class ObservationService : IObservationService
 			p.Taxon.VernacularName,
 			p.PubDate.ToString("MM/dd/yy H:mm:ss", CultureInfo.InvariantCulture)
 		);
+	}
+
+	public async Task<int> AddObservationAsync(string authorId, ObservationInput input)
+	{
+		byte[]? bytes = null;
+		string? type = null;
+
+		if (input.Image is { Length: > 0 } file)
+		{
+			if (file.Length > PostRepository.MaxImageBytes)
+				throw new ArgumentException("Image is too large (max 5 MB).");
+
+			using var ms = new MemoryStream();
+			await file.CopyToAsync(ms);
+			bytes = ms.ToArray();
+			type =
+				ImageSniffer.Detect(bytes)
+				?? throw new ArgumentException("Unsupported image type.");
+		}
+
+		var obs = _repository.AddObservation(
+			authorId,
+			input.Text,
+			input.TaxonId!.Value,
+			bytes,
+			type
+		);
+		return obs.PostId;
 	}
 }
 
