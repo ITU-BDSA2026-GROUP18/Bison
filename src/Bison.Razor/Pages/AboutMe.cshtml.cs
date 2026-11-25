@@ -29,7 +29,8 @@ public class AboutMeModel : PageModel
 		ViewType = view is "comments" or "proposals" ? view : "observations";
 		page = Math.Max(page, 1);
 
-		Observations = ViewType == "observations" ? _service.GetObservationsFromAuthor(username, page) : [];
+		Observations =
+			ViewType == "observations" ? _service.GetObservationsFromAuthor(username, page) : [];
 		Comments = ViewType == "comments" ? _service.GetCommentsFromAuthor(username, page) : [];
 		Proposals = ViewType == "proposals" ? _service.GetProposalsFromAuthor(username, page) : [];
 		return Page();

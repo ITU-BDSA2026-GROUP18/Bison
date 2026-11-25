@@ -39,7 +39,11 @@ public interface IObservationService
 		int pageSize = 32
 	);
 	public List<CommentViewModel> GetCommentsFromAuthor(string author, int page, int pageSize = 32);
-	public List<ProposalViewModel> GetProposalsFromAuthor(string author, int page, int pageSize = 32);
+	public List<ProposalViewModel> GetProposalsFromAuthor(
+		string author,
+		int page,
+		int pageSize = 32
+	);
 	public ObservationViewModel GetObservationById(int observationId);
 	public List<CommentViewModel> GetCommentsForObservation(
 		int observationId,
@@ -120,11 +124,7 @@ public class ObservationService : IObservationService
 		return result;
 	}
 
-	public List<CommentViewModel> GetCommentsFromAuthor(
-		string author,
-		int page,
-		int pageSize = 32
-	)
+	public List<CommentViewModel> GetCommentsFromAuthor(string author, int page, int pageSize = 32)
 	{
 		var result = new List<CommentViewModel>();
 
