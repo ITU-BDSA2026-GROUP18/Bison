@@ -5,6 +5,14 @@ using Microsoft.EntityFrameworkCore;
 public class PostRepository : IPostRepository
 {
 	private readonly BisonDbContext _context;
+	public const int MaxImageBytes = 5 * 1024 * 1024;
+
+	private static readonly HashSet<string> AllowedImageTypes =
+	[
+		"image/png",
+		"image/jpeg",
+	];
+
 
 	public PostRepository(BisonDbContext context)
 	{
@@ -132,5 +140,44 @@ public class PostRepository : IPostRepository
 		_context.Comments.Add(comment);
 		_context.SaveChanges();
 		return comment;
+	}
+
+	public Observation AddObservation(string authorId, string text, int taxonId, byte[]? image = null, string? imageContentType = null)
+	{
+		if (string.IsNullOrWhiteSpace(authorId))
+		throw new ArgumentException("Author is required.", nameof(authorId));
+
+		if (string.IsNullOrWhiteSpace(text))
+			throw new ArgumentException("Text must not be empty.", nameof(text));
+
+		if (!_context.Users.Any(u => u.Id == authorId))
+			throw new ArgumentException($"User with ID {authorId} not found.", nameof(authorId));
+
+		if (!_context.Taxons.Any(t => t.TaxonId == taxonId))
+			throw new ArgumentException($"Taxon with ID {taxonId} not found.", nameof(taxonId));
+
+		if (image is not null)
+		{
+			if (image.Length == 0)
+				throw new ArgumentException("Image must not be empty.", nameof(image));
+			if (image.Length > MaxImageBytes)
+				throw new ArgumentException("Image is too large.", nameof(image));
+			if (imageContentType is null || !AllowedImageTypes.Contains(imageContentType))
+				throw new ArgumentException("Unsupported image type.", nameof(imageContentType));
+		}
+
+		var observation = new Observation
+		{
+			AuthorId = authorId,
+			Text = text.Trim(),
+			TaxonId = taxonId,
+			PubDate = DateTime.UtcNow,
+			Image = image,
+			ImageContentType = image is null ? null : imageContentType,
+		};
+
+		_context.Observations.Add(observation);
+		_context.SaveChanges();
+		return observation;
 	}
 }

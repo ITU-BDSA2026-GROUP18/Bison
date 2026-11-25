@@ -1,3 +1,5 @@
+using Bison.Razor.DBObjects;
+
 public class ObservationFilterTests
 {
 	[Fact]
@@ -122,5 +124,11 @@ public class ObservationFilterTests
 			throw new NotSupportedException();
 
 		public Taxon GetTaxonById(int taxonId) => taxonId == root.TaxonId ? root : null!;
+
+		public Comment AddCommentToObservation(int observationId, string authorId, Bison.Razor.ViewModels.CommentInput input) =>
+			throw new NotSupportedException();
+
+		public Observation AddObservation(string authorId, string text, int taxonId, byte[]? image = null, string? imageContentType = null) =>
+			throw new NotSupportedException();
 	}
 }

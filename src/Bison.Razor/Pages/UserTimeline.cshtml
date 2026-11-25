@@ -1,4 +1,5 @@
 ﻿@page "/obs/{author}"
+@using SQLitePCL
 @model Bison.Razor.Pages.UserTimelineModel
 @{
     ViewData["Title"] = "Bison";
@@ -7,7 +8,15 @@
 }
 
 <div>
-    <h2> @routeName's Observations &mdash; page @Model.PageNr </h2>
+     @if (Model.IsOwnTimeline)
+    {
+        <h2>My Observations &mdash; page @Model.PageNr</h2>
+        <partial name="_ObservationForm" model="Model.Input" />
+    }
+    else
+    {
+        <h2>@routeName's Observations &mdash; page @Model.PageNr</h2>
+    }
     <small>Showing @Model.NrOfObservations observations</small>
 
     @if (Model.Observations.Any())
@@ -27,6 +36,8 @@
                         @ob.Message
                         <small>&mdash; @ob.Timestamp</small>
                     </p>
+                    <hr />
+                    <a href="/ob/@ob.Id">View Details</a>
                 </li>
             }
         </ul>

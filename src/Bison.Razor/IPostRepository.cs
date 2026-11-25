@@ -11,4 +11,6 @@ public interface IPostRepository
 	List<Proposal> GetProposalsForObservation(int observationId);
 	Taxon GetTaxonById(int taxonId);
 	Comment AddCommentToObservation(int observationId, string authorId, CommentInput input);
+
+	Observation AddObservation(string authorId, string text, int taxonId, byte[]? image = null, string? imageContentType = null);
 }
