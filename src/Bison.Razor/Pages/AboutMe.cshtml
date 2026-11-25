@@ -1,19 +1,17 @@
 @page "/about"
-@using System.Security.Claims 
+@model Bison.Razor.Pages.AboutMeModel
 @{
-    ViewData["Title"] = "Bison";
+    ViewData["Title"] = "About me";
     Layout = "Shared/_Layout";
 }
-@if (User.Identity?.IsAuthenticated != true)
-{
-    Response.Redirect("/obs");
-}
+
 <h1>About me</h1>
+<p>This page shows all the personal data stored about you.</p>
+<p>Name: @User.Identity?.Name</p>
+<p>Email: @Model.Email</p>
 
-<h1>This page shows all the personal data stored about you</h1>
-
-<p>Name: @User.Identity?.Name.</p>
-<p>Email: @User.FindFirst(ClaimTypes.Email)?.Value</p>
-<a href="/obs/@Uri.EscapeDataString(User.Identity?.Name ?? "")">
-    Observations:
-</a>
+<nav class="timeline-tabs">
+    <a href="/about?view=observations">Observations</a></p>
+    <a href="/about?view=comments">Comments</a>
+    <a href="/about?view=proposals">Proposals</a>
+</nav>

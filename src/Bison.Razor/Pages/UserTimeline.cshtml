@@ -1,5 +1,4 @@
 ﻿@page "/obs/{author}"
-@using SQLitePCL
 @model Bison.Razor.Pages.UserTimelineModel
 @{
     ViewData["Title"] = "Bison";
@@ -8,7 +7,7 @@
 }
 
 <div>
-     @if (Model.IsOwnTimeline)
+    @if (Model.IsOwnTimeline)
     {
         <h2>My Observations &mdash; page @Model.PageNr</h2>
         <partial name="_ObservationForm" model="Model.Input" />
@@ -17,7 +16,7 @@
     {
         <h2>@routeName's Observations &mdash; page @Model.PageNr</h2>
     }
-    <small>Showing @Model.NrOfObservations observations</small>
+    <small>Showing @Model.Observations.Count observations</small>
 
     @if (Model.Observations.Any())
     {
@@ -26,9 +25,7 @@
             {
                 <li>
                     <p>
-                        <strong>
-                            <a href="/obs/@ob.Author">@ob.Author</a>
-                        </strong>
+                        <strong><a href="/obs/@ob.Author">@ob.Author</a></strong>
                         @if (ob.ImageUrl != null)
                         {
                             <img class="observation-image" src="@ob.ImageUrl" alt="Observation image" />
@@ -44,6 +41,6 @@
     }
     else
     {
-        <em>There are no Observations so far.</em>
+        <em>There are no observations so far.</em>
     }
 </div>

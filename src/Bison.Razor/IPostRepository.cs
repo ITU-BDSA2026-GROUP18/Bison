@@ -8,7 +8,11 @@ public interface IPostRepository
 	List<Observation> GetObservationsByAuthor(string username, int page, int pageSize);
 	Observation? GetObservationById(int observationId);
 	List<Comment> GetCommentsForObservation(int observationId);
+
+	List<Comment> GetCommentsByAuthor(string username, int page, int pageSize);
 	List<Proposal> GetProposalsForObservation(int observationId);
+
+	List<Proposal> GetProposalsByAuthor(string username, int page, int pageSize);
 	Taxon GetTaxonById(int taxonId);
 	Comment AddCommentToObservation(int observationId, string authorId, CommentInput input);
 
