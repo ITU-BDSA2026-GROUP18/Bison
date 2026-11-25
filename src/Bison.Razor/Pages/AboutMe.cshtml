@@ -1,0 +1,19 @@
+@page "/about"
+@using System.Security.Claims 
+@{
+    ViewData["Title"] = "Bison";
+    Layout = "Shared/_Layout";
+}
+@if (User.Identity?.IsAuthenticated != true)
+{
+    Response.Redirect("/obs");
+}
+<h1>About me</h1>
+
+<h1>This page shows all the personal data stored about you</h1>
+
+<p>Name: @User.Identity?.Name.</p>
+<p>Email: @User.FindFirst(ClaimTypes.Email)?.Value</p>
+<a href="/obs/@Uri.EscapeDataString(User.Identity?.Name ?? "")">
+    Observations:
+</a>
