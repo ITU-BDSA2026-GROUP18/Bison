@@ -18,8 +18,24 @@ public sealed class Fixture : IDisposable
 		var options = new DbContextOptionsBuilder<BisonDbContext>().UseSqlite(_connection).Options;
 		Context = new BisonDbContext(options);
 		Context.Database.EnsureCreated();
-		Context.Users.Add(new User { Id = "u1", Name = "alice", UserName = "alice", Email = "a@x.test" });
-		Context.Users.Add(new User { Id = "u2", Name = "bob", UserName = "bob", Email = "b@x.test" });
+		Context.Users.Add(
+			new User
+			{
+				Id = "u1",
+				Name = "alice",
+				UserName = "alice",
+				Email = "a@x.test",
+			}
+		);
+		Context.Users.Add(
+			new User
+			{
+				Id = "u2",
+				Name = "bob",
+				UserName = "bob",
+				Email = "b@x.test",
+			}
+		);
 		Context.Taxons.Add(new Taxon { TaxonId = 1, DwcTaxonId = "t1" });
 		Context.SaveChanges();
 		Repo = new PostRepository(Context);
@@ -64,8 +80,14 @@ public class AddObservationTests : IDisposable
 
 		Assert.Contains(_f.Repo.GetObservations(), o => o.PostId == obs.PostId);
 		Assert.Contains(_f.Repo.GetObservations(1, 10), o => o.PostId == obs.PostId);
-		Assert.Contains(_f.Repo.GetObservationsByAuthor("alice", 1, 10), o => o.PostId == obs.PostId);
-		Assert.DoesNotContain(_f.Repo.GetObservationsByAuthor("bob", 1, 10), o => o.PostId == obs.PostId);
+		Assert.Contains(
+			_f.Repo.GetObservationsByAuthor("alice", 1, 10),
+			o => o.PostId == obs.PostId
+		);
+		Assert.DoesNotContain(
+			_f.Repo.GetObservationsByAuthor("bob", 1, 10),
+			o => o.PostId == obs.PostId
+		);
 	}
 
 	[Fact]
@@ -115,12 +137,20 @@ public class AddObservationTests : IDisposable
 
 	[Fact]
 	public void EmptyImage_Throws() =>
-		Assert.Throws<ArgumentException>(() => _f.Repo.AddObservation("u1", "x", 1, [], "image/png"));
+		Assert.Throws<ArgumentException>(() =>
+			_f.Repo.AddObservation("u1", "x", 1, [], "image/png")
+		);
 
 	[Fact]
 	public void OversizedImage_Throws() =>
 		Assert.Throws<ArgumentException>(() =>
-			_f.Repo.AddObservation("u1", "x", 1, new byte[PostRepository.MaxImageBytes + 1], "image/png")
+			_f.Repo.AddObservation(
+				"u1",
+				"x",
+				1,
+				new byte[PostRepository.MaxImageBytes + 1],
+				"image/png"
+			)
 		);
 
 	[Theory]
@@ -144,7 +174,10 @@ public class ObservationServiceAddTests : IDisposable
 	[Fact]
 	public async Task TextOnly_ReturnsIdAndAppearsInTimelines()
 	{
-		var id = await Service.AddObservationAsync("u1", new ObservationInput { Text = "hi", TaxonId = 1 });
+		var id = await Service.AddObservationAsync(
+			"u1",
+			new ObservationInput { Text = "hi", TaxonId = 1 }
+		);
 
 		Assert.Contains(Service.GetObservationsFromAuthor("alice", 1), o => o.Id == id);
 		Assert.Contains(Service.GetObservations(1), o => o.Id == id);
@@ -156,7 +189,12 @@ public class ObservationServiceAddTests : IDisposable
 		byte[] png = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, 9];
 		var id = await Service.AddObservationAsync(
 			"u1",
-			new ObservationInput { Text = "hi", TaxonId = 1, Image = File(png) }
+			new ObservationInput
+			{
+				Text = "hi",
+				TaxonId = 1,
+				Image = File(png),
+			}
 		);
 
 		var stored = _f.Repo.GetObservationById(id)!;
@@ -170,7 +208,12 @@ public class ObservationServiceAddTests : IDisposable
 		byte[] jpg = [0xFF, 0xD8, 0xFF, 0xE0, 1];
 		var id = await Service.AddObservationAsync(
 			"u1",
-			new ObservationInput { Text = "hi", TaxonId = 1, Image = File(jpg, "x.png") }
+			new ObservationInput
+			{
+				Text = "hi",
+				TaxonId = 1,
+				Image = File(jpg, "x.png"),
+			}
 		);
 		Assert.Equal("image/jpeg", _f.Repo.GetObservationById(id)!.ImageContentType);
 	}
@@ -180,7 +223,15 @@ public class ObservationServiceAddTests : IDisposable
 	{
 		var html = System.Text.Encoding.UTF8.GetBytes("<html><script>alert(1)</script></html>");
 		await Assert.ThrowsAsync<ArgumentException>(() =>
-			Service.AddObservationAsync("u1", new ObservationInput { Text = "hi", TaxonId = 1, Image = File(html) })
+			Service.AddObservationAsync(
+				"u1",
+				new ObservationInput
+				{
+					Text = "hi",
+					TaxonId = 1,
+					Image = File(html),
+				}
+			)
 		);
 		Assert.Empty(_f.Repo.GetObservations());
 	}
@@ -191,7 +242,15 @@ public class ObservationServiceAddTests : IDisposable
 		var big = new byte[PostRepository.MaxImageBytes + 1];
 		big[0] = 0x89;
 		await Assert.ThrowsAsync<ArgumentException>(() =>
-			Service.AddObservationAsync("u1", new ObservationInput { Text = "hi", TaxonId = 1, Image = File(big) })
+			Service.AddObservationAsync(
+				"u1",
+				new ObservationInput
+				{
+					Text = "hi",
+					TaxonId = 1,
+					Image = File(big),
+				}
+			)
 		);
 	}
 }
@@ -200,7 +259,10 @@ public class ImageSnifferTests
 {
 	[Fact]
 	public void Png() =>
-		Assert.Equal("image/png", ImageSniffer.Detect([0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, 0]));
+		Assert.Equal(
+			"image/png",
+			ImageSniffer.Detect([0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, 0])
+		);
 
 	[Fact]
 	public void Jpeg() => Assert.Equal("image/jpeg", ImageSniffer.Detect([0xFF, 0xD8, 0xFF, 0xE1]));

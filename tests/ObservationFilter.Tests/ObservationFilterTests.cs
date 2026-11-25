@@ -125,10 +125,18 @@ public class ObservationFilterTests
 
 		public Taxon GetTaxonById(int taxonId) => taxonId == root.TaxonId ? root : null!;
 
-		public Comment AddCommentToObservation(int observationId, string authorId, Bison.Razor.ViewModels.CommentInput input) =>
-			throw new NotSupportedException();
+		public Comment AddCommentToObservation(
+			int observationId,
+			string authorId,
+			Bison.Razor.ViewModels.CommentInput input
+		) => throw new NotSupportedException();
 
-		public Observation AddObservation(string authorId, string text, int taxonId, byte[]? image = null, string? imageContentType = null) =>
-			throw new NotSupportedException();
+		public Observation AddObservation(
+			string authorId,
+			string text,
+			int taxonId,
+			byte[]? image = null,
+			string? imageContentType = null
+		) => throw new NotSupportedException();
 	}
 }

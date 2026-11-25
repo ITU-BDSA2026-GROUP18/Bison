@@ -3,7 +3,6 @@ using Bison.Razor.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-
 namespace Bison.Razor.Pages;
 
 public class PublicModel : PageModel
@@ -59,5 +58,4 @@ public class PublicModel : PageModel
 		Observations = _service.GetObservationsByTaxon(taxonId, PageNr);
 		NrOfObservations = Observations.Count;
 	}
-
 }

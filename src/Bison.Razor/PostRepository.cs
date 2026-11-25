@@ -7,12 +7,7 @@ public class PostRepository : IPostRepository
 	private readonly BisonDbContext _context;
 	public const int MaxImageBytes = 5 * 1024 * 1024;
 
-	private static readonly HashSet<string> AllowedImageTypes =
-	[
-		"image/png",
-		"image/jpeg",
-	];
-
+	private static readonly HashSet<string> AllowedImageTypes = ["image/png", "image/jpeg"];
 
 	public PostRepository(BisonDbContext context)
 	{
@@ -142,10 +137,16 @@ public class PostRepository : IPostRepository
 		return comment;
 	}
 
-	public Observation AddObservation(string authorId, string text, int taxonId, byte[]? image = null, string? imageContentType = null)
+	public Observation AddObservation(
+		string authorId,
+		string text,
+		int taxonId,
+		byte[]? image = null,
+		string? imageContentType = null
+	)
 	{
 		if (string.IsNullOrWhiteSpace(authorId))
-		throw new ArgumentException("Author is required.", nameof(authorId));
+			throw new ArgumentException("Author is required.", nameof(authorId));
 
 		if (string.IsNullOrWhiteSpace(text))
 			throw new ArgumentException("Text must not be empty.", nameof(text));
