@@ -58,6 +58,8 @@ public interface IObservationService
 
 	public int AddCommentToObservation(int observationId, string authorId, CommentInput input);
 	Task<int> AddObservationAsync(string authorId, ObservationInput input);
+
+	public Task<int> ReassignPostsFromUserId(string userId);
 }
 
 public class ObservationService : IObservationService
@@ -195,6 +197,11 @@ public class ObservationService : IObservationService
 	{
 		Comment comment = _repository.AddCommentToObservation(observationId, authorId, input);
 		return comment.PostId;
+	}
+
+	public Task<int> ReassignPostsFromUserId(string userId)
+	{
+		return _repository.ReassignPostsByUserId(userId);
 	}
 
 	private static ObservationViewModel ToViewModel(Observation o)

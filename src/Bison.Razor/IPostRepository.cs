@@ -16,6 +16,8 @@ public interface IPostRepository
 	Taxon GetTaxonById(int taxonId);
 	Comment AddCommentToObservation(int observationId, string authorId, CommentInput input);
 
+	Task<int> ReassignPostsByUserId(string userId);
+
 	Observation AddObservation(
 		string authorId,
 		string text,
