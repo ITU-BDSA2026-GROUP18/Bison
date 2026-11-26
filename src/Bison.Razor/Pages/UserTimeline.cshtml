@@ -7,20 +7,21 @@
 }
 
 <div>
-    @if (Model.IsOwnTimeline)
+    @if (Model.CurrentViewType == "observations")
     {
-        <h2>My Observations &mdash; page @Model.PageNr</h2>
-        <partial name="_ObservationForm" model="Model.Input" />
-    }
-    else
-    {
-        <h2>@routeName's Observations &mdash; page @Model.PageNr</h2>
-    }
-    <small>Showing @Model.Observations.Count observations</small>
-
-    @if (Model.Observations.Any())
-    {
-        <ul id="messagelist" class="observations">
+        @if (Model.IsOwnTimeline)
+        {
+            <h2>My Observations &mdash; page @Model.PageNr</h2>
+            <partial name="_ObservationForm" model="Model.Input" />
+        }
+        else
+        {
+            <h2>@routeName's Observations &mdash; page @Model.PageNr</h2>
+        }
+        <small>Showing @Model.NrOfObservations observations</small>
+        @if (Model.Observations.Any())
+        {
+            <ul id="messagelist" class="observations">
             @foreach (var ob in Model.Observations)
             {
                 <li>
@@ -37,10 +38,57 @@
                     <a href="/ob/@ob.Id">View Details</a>
                 </li>
             }
-        </ul>
+            </ul>
+        }
+        else
+        {
+            <em>There are no observations so far.</em>
+        }
+    }
+    else if (Model.CurrentViewType == "comments")
+    {
+        <h2>My Comments &mdash; page @Model.PageNr</h2>
+        <small>Showing @Model.NrOfObservations comments</small>
+        @if (Model.Comments.Any())
+        {
+            <ul class="observations">
+            @foreach (var comment in Model.Comments)
+            {
+                <li>
+                    <p>@comment.Message <small>&mdash; @comment.Timestamp</small></p>
+                    <a href="/ob/@comment.ObservationId">View observation</a>
+                </li>
+            }
+            </ul>
+        }
+        else
+        {
+            <em>You have not made any comments yet.</em>
+        }
     }
     else
     {
-        <em>There are no observations so far.</em>
+        <h2>My Proposals &mdash; page @Model.PageNr</h2>
+        <small>Showing @Model.NrOfObservations proposals</small>
+        @if (Model.Proposals.Any())
+        {
+            <ul class="observations">
+            @foreach (var proposal in Model.Proposals)
+            {
+                <li>
+                    <p>
+                        Suggested taxon: @(!string.IsNullOrEmpty(proposal.VernacularName) ? proposal.VernacularName : proposal.DwcTaxonId)
+                        <small>&mdash; @proposal.Timestamp</small><br />
+                        @proposal.Message
+                    </p>
+                    <a href="/ob/@proposal.ObservationId">View observation</a>
+                </li>
+            }
+            </ul>
+        }
+        else
+        {
+            <em>You have not made any proposals yet.</em>
+        }
     }
 </div>

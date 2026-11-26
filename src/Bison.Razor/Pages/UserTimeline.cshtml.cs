@@ -9,6 +9,9 @@ public class UserTimelineModel : PageModel
 {
 	private readonly IObservationService _service;
 	public List<ObservationViewModel> Observations { get; set; } = [];
+	public List<CommentViewModel> Comments { get; set; } = [];
+	public List<ProposalViewModel> Proposals { get; set; } = [];
+	public string CurrentViewType { get; set; } = "observations";
 	public int PageNr { get; set; }
 	public int NrOfObservations { get; set; }
 	public bool IsOwnTimeline { get; set; }
@@ -19,9 +22,13 @@ public class UserTimelineModel : PageModel
 		_service = service;
 	}
 
-	public ActionResult OnGet(string author, [FromQuery] int page = 1)
+	public ActionResult OnGet(
+		string author,
+		[FromQuery] int page = 1,
+		[FromQuery] string view = "observations"
+	)
 	{
-		Load(author, page);
+		Load(author, page, view);
 		return Page();
 	}
 
@@ -48,17 +55,34 @@ public class UserTimelineModel : PageModel
 		}
 
 		Input = input;
-		Load(author, 1);
+		Load(author, 1, "observations");
 		return Page();
 	}
 
-	private void Load(string author, int page)
+	private void Load(string author, int page, string requestedView)
 	{
 		if (page < 1)
 			page = 1;
 		PageNr = page;
 		IsOwnTimeline = User.Identity?.IsAuthenticated == true && User.Identity.Name == author;
-		Observations = _service.GetObservationsFromAuthor(author, PageNr);
-		NrOfObservations = Observations.Count;
+
+		CurrentViewType = IsOwnTimeline && (requestedView is "comments" or "proposals")
+			? requestedView
+			: "observations";
+		Observations = CurrentViewType == "observations"
+			? _service.GetObservationsFromAuthor(author, PageNr)
+			: [];
+		Comments = CurrentViewType == "comments"
+			? _service.GetCommentsFromAuthor(author, PageNr)
+			: [];
+		Proposals = CurrentViewType == "proposals"
+			? _service.GetProposalsFromAuthor(author, PageNr)
+			: [];
+		NrOfObservations = CurrentViewType switch
+		{
+			"comments" => Comments.Count,
+			"proposals" => Proposals.Count,
+			_ => Observations.Count,
+		};
 	}
 }
