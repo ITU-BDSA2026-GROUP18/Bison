@@ -66,18 +66,18 @@ public class UserTimelineModel : PageModel
 		PageNr = page;
 		IsOwnTimeline = User.Identity?.IsAuthenticated == true && User.Identity.Name == author;
 
-		CurrentViewType = IsOwnTimeline && (requestedView is "comments" or "proposals")
-			? requestedView
-			: "observations";
-		Observations = CurrentViewType == "observations"
-			? _service.GetObservationsFromAuthor(author, PageNr)
-			: [];
-		Comments = CurrentViewType == "comments"
-			? _service.GetCommentsFromAuthor(author, PageNr)
-			: [];
-		Proposals = CurrentViewType == "proposals"
-			? _service.GetProposalsFromAuthor(author, PageNr)
-			: [];
+		CurrentViewType =
+			IsOwnTimeline && (requestedView is "comments" or "proposals")
+				? requestedView
+				: "observations";
+		Observations =
+			CurrentViewType == "observations"
+				? _service.GetObservationsFromAuthor(author, PageNr)
+				: [];
+		Comments =
+			CurrentViewType == "comments" ? _service.GetCommentsFromAuthor(author, PageNr) : [];
+		Proposals =
+			CurrentViewType == "proposals" ? _service.GetProposalsFromAuthor(author, PageNr) : [];
 		NrOfObservations = CurrentViewType switch
 		{
 			"comments" => Comments.Count,

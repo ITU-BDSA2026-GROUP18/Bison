@@ -25,14 +25,15 @@ public class AboutMeModel : PageModel
 	public string? ForgetMeError { get; set; }
 
 	public AboutMeModel(
-    IObservationService service,
-    UserManager<User> userManager,
-    SignInManager<User> signInManager)
-{
-    _service = service;
-    _userManager = userManager;
-    _signInManager = signInManager;
-}
+		IObservationService service,
+		UserManager<User> userManager,
+		SignInManager<User> signInManager
+	)
+	{
+		_service = service;
+		_userManager = userManager;
+		_signInManager = signInManager;
+	}
 
 	public IActionResult OnGet([FromQuery] string view = "observations", [FromQuery] int page = 1)
 	{

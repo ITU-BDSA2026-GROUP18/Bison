@@ -175,12 +175,13 @@ public class PostRepository : IPostRepository
 	}
 
 	public Task<int> ReassignPostsByUserId(string userId)
-    {
-       return _context.Posts
-        .Where(post => post.AuthorId == userId)
-        .ExecuteUpdateAsync(update => update
-            .SetProperty(post => post.AuthorId, DeletedUserid.deletedUserId));
-    }
+	{
+		return _context
+			.Posts.Where(post => post.AuthorId == userId)
+			.ExecuteUpdateAsync(update =>
+				update.SetProperty(post => post.AuthorId, DeletedUserid.deletedUserId)
+			);
+	}
 
 	public Observation AddObservation(
 		string authorId,
