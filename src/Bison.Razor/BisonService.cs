@@ -58,6 +58,8 @@ public interface IObservationService
 
 	public int AddCommentToObservation(int observationId, string authorId, CommentInput input);
 	Task<int> AddObservationAsync(string authorId, ObservationInput input);
+
+	public Task<int> ReassignPostsFromUserId(string userId);
 }
 
 public class ObservationService : IObservationService
@@ -197,12 +199,19 @@ public class ObservationService : IObservationService
 		return comment.PostId;
 	}
 
+	public Task<int> ReassignPostsFromUserId(string userId)
+	{
+		return _repository.ReassignPostsByUserId(userId);
+	}
+
 	private static ObservationViewModel ToViewModel(Observation o)
 	{
 		return new ObservationViewModel(
 			o.Author.Name,
 			o.Text,
-			o.PubDate.ToString("MM/dd/yy H:mm:ss", CultureInfo.InvariantCulture),
+			o.AuthorId == DeletedUserid.deletedUserId
+				? ""
+				: o.PubDate.ToString("MM/dd/yy H:mm:ss", CultureInfo.InvariantCulture),
 			o.PostId,
 			o.ImageUrl
 		);
@@ -214,7 +223,9 @@ public class ObservationService : IObservationService
 			c.PostId,
 			c.Author.Name,
 			c.Text,
-			c.PubDate.ToString("MM/dd/yy H:mm:ss", CultureInfo.InvariantCulture),
+			c.AuthorId == DeletedUserid.deletedUserId
+				? ""
+				: c.PubDate.ToString("MM/dd/yy H:mm:ss", CultureInfo.InvariantCulture),
 			c.ObservationId,
 			c.ParentCommentId,
 			c.Replies.OrderBy(r => r.PubDate).Select(ToViewModel).ToList()
@@ -228,7 +239,9 @@ public class ObservationService : IObservationService
 			p.Text,
 			p.Taxon.DwcTaxonId,
 			p.Taxon.VernacularName,
-			p.PubDate.ToString("MM/dd/yy H:mm:ss", CultureInfo.InvariantCulture),
+			p.AuthorId == DeletedUserid.deletedUserId
+				? ""
+				: p.PubDate.ToString("MM/dd/yy H:mm:ss", CultureInfo.InvariantCulture),
 			p.ObservationId
 		);
 	}

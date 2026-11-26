@@ -1,10 +1,15 @@
 using System;
 using Bison.Razor.DBObjects;
 
+public static class DeletedUserid
+{
+    public const string deletedUserId = "11";
+}
 public static class DbInitializer
 {
     public static void SeedDatabase(BisonDbContext bisonContext)
     {
+        string deletedUserId = DeletedUserid.deletedUserId;
         if (!(bisonContext.Users.Any() && bisonContext.Posts.Any()))
         {
             // Taxons, the parent of Pelecaniformes is null.
@@ -69,8 +74,10 @@ public static class DbInitializer
             var a8 = new User() { Id = "8", Name = "Octavio Wagganer", Email = "Octavio.Wagganer@dtu.dk", Posts = new List<Post>() };
             var a9 = new User() { Id = "9", Name = "Johnnie Calixto", Email = "Johnnie+Calixto@itu.dk", Posts = new List<Post>() };
             var a10 = new User() { Id = "10", Name = "Jacqualine Gilcoine", Email = "Jacqualine.Gilcoine@gmail.com", Posts = new List<Post>() };
+            //id = 11
+            var a11 = new User() { Id = deletedUserId, Name = "Deleted User", Email = "", Posts = new List<Post>() };
 
-            var users = new List<User>() { a1, a2, a3, a4, a5, a6, a7, a8, a9, a10 };
+            var users = new List<User>() { a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11 };
 			foreach (var user in users)
 			{
 				var email = user.Email!;

@@ -297,3 +297,12 @@ ul.nav li a:hover {
 .back_button {
   margin-bottom: 24px;
 }
+
+.button {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: #f05065;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+}

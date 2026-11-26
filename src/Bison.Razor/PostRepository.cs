@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 public class PostRepository : IPostRepository
 {
 	private readonly BisonDbContext _context;
+
 	public const int MaxImageBytes = 5 * 1024 * 1024;
 
 	private static readonly HashSet<string> AllowedImageTypes = ["image/png", "image/jpeg"];
@@ -171,6 +172,15 @@ public class PostRepository : IPostRepository
 		_context.Comments.Add(comment);
 		_context.SaveChanges();
 		return comment;
+	}
+
+	public Task<int> ReassignPostsByUserId(string userId)
+	{
+		return _context
+			.Posts.Where(post => post.AuthorId == userId)
+			.ExecuteUpdateAsync(update =>
+				update.SetProperty(post => post.AuthorId, DeletedUserid.deletedUserId)
+			);
 	}
 
 	public Observation AddObservation(

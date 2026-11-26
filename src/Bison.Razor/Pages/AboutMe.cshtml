@@ -11,7 +11,25 @@
 <p>Email: @Model.Email</p>
 
 <nav class="timeline-tabs">
-    <a href="/about?view=observations">Observations</a></p>
-    <a href="/about?view=comments">Comments</a>
-    <a href="/about?view=proposals">Proposals</a>
+   <a href="/obs/@Uri.EscapeDataString(User.Identity?.Name ?? "")?view=observations">My observations</a>
+    <a href="/obs/@Uri.EscapeDataString(User.Identity?.Name ?? "")?view=comments">My comments</a>
+    <a href="/obs/@Uri.EscapeDataString(User.Identity?.Name ?? "")?view=proposals">My proposals</a>
 </nav>
+
+<form method="post"
+      asp-page-handler="ForgetMe"
+      onsubmit="return confirm('This will delete your account. Continue?')">
+    @Html.AntiForgeryToken()
+
+    <label>
+        Type FORGET to confirm:
+        <input asp-for="ForgetMeConfirmation" required />
+    </label>
+
+    <button type="submit">Forget me</button>
+</form>
+
+@if (Model.ForgetMeError is not null)
+{
+    <p class="error">@Model.ForgetMeError</p>
+}

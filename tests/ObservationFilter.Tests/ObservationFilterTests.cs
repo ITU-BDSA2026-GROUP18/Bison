@@ -131,6 +131,8 @@ public class ObservationFilterTests
 
 		public Taxon GetTaxonById(int taxonId) => taxonId == root.TaxonId ? root : null!;
 
+		public Task<int> ReassignPostsByUserId(string userId) => throw new NotSupportedException();
+
 		public Comment AddCommentToObservation(
 			int observationId,
 			string authorId,
