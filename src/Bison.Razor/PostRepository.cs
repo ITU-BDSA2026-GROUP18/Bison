@@ -85,6 +85,24 @@ public class PostRepository : IPostRepository
 		return result;
 	}
 
+	public List<Comment> GetCommentsByAuthor(string username, int page, int pageSize)
+	{
+		var result = new List<Comment>();
+		var query = (
+			from Comment in _context.Comments
+			where Comment.Author.Name == username
+			select Comment
+		)
+			.Include(c => c.Author)
+			.Include(c => c.Observation)
+			.OrderByDescending(c => c.PubDate)
+			.Skip((page - 1) * pageSize)
+			.Take(pageSize);
+
+		result = [.. query];
+		return result;
+	}
+
 	public List<Proposal> GetProposalsForObservation(int observationId)
 	{
 		var result = new List<Proposal>();
@@ -95,6 +113,24 @@ public class PostRepository : IPostRepository
 		)
 			.Include(c => c.Author)
 			.Include(c => c.Taxon);
+
+		result = [.. query];
+		return result;
+	}
+
+	public List<Proposal> GetProposalsByAuthor(string username, int page, int pageSize)
+	{
+		var result = new List<Proposal>();
+		var query = (
+			from Proposal in _context.Proposals
+			where Proposal.Author.Name == username
+			select Proposal
+		)
+			.Include(c => c.Author)
+			.Include(c => c.Taxon)
+			.OrderByDescending(c => c.PubDate)
+			.Skip((page - 1) * pageSize)
+			.Take(pageSize);
 
 		result = [.. query];
 		return result;

@@ -7,6 +7,7 @@
     {
         <a href="/obs/@Uri.EscapeDataString(User.Identity?.Name ?? string.Empty)">My Observations</a>
         <span>Signed in as @User.Identity?.Name</span>
+        <a href="/about"> About Me</a>
         <form method="post" action="/Identity/Account/Logout?returnUrl=%2Fobs">
             @Html.AntiForgeryToken()
             <button type="submit">Log out</button>

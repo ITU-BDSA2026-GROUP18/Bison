@@ -1,0 +1,17 @@
+@page "/about"
+@model Bison.Razor.Pages.AboutMeModel
+@{
+    ViewData["Title"] = "About me";
+    Layout = "Shared/_Layout";
+}
+
+<h1>About me</h1>
+<p>This page shows all the personal data stored about you.</p>
+<p>Name: @User.Identity?.Name</p>
+<p>Email: @Model.Email</p>
+
+<nav class="timeline-tabs">
+    <a href="/about?view=observations">Observations</a></p>
+    <a href="/about?view=comments">Comments</a>
+    <a href="/about?view=proposals">Proposals</a>
+</nav>

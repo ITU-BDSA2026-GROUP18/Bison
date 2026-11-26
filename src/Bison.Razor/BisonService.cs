@@ -16,6 +16,7 @@ public record CommentViewModel(
 	string Author,
 	string Message,
 	string Timestamp,
+	int ObservationId = 0,
 	int? ParentCommentId = null,
 	List<CommentViewModel>? Replies = null
 );
@@ -25,13 +26,20 @@ public record ProposalViewModel(
 	string Message,
 	string DwcTaxonId,
 	string VernacularName,
-	string Timestamp
+	string Timestamp,
+	int ObservationId = 0
 );
 
 public interface IObservationService
 {
 	public List<ObservationViewModel> GetObservations(int page, int pageSize = 32);
 	public List<ObservationViewModel> GetObservationsFromAuthor(
+		string author,
+		int page,
+		int pageSize = 32
+	);
+	public List<CommentViewModel> GetCommentsFromAuthor(string author, int page, int pageSize = 32);
+	public List<ProposalViewModel> GetProposalsFromAuthor(
 		string author,
 		int page,
 		int pageSize = 32
@@ -116,11 +124,39 @@ public class ObservationService : IObservationService
 		return result;
 	}
 
+	public List<CommentViewModel> GetCommentsFromAuthor(string author, int page, int pageSize = 32)
+	{
+		var result = new List<CommentViewModel>();
+
+		foreach (var comment in _repository.GetCommentsByAuthor(author, page, pageSize))
+		{
+			result.Add(ToViewModel(comment));
+		}
+
+		return result;
+	}
+
 	public List<ProposalViewModel> GetProposalsForObservation(int observationId)
 	{
 		var result = new List<ProposalViewModel>();
 
 		foreach (var proposal in _repository.GetProposalsForObservation(observationId))
+		{
+			result.Add(ToViewModel(proposal));
+		}
+
+		return result;
+	}
+
+	public List<ProposalViewModel> GetProposalsFromAuthor(
+		string author,
+		int page,
+		int pageSize = 32
+	)
+	{
+		var result = new List<ProposalViewModel>();
+
+		foreach (var proposal in _repository.GetProposalsByAuthor(author, page, pageSize))
 		{
 			result.Add(ToViewModel(proposal));
 		}
@@ -179,6 +215,7 @@ public class ObservationService : IObservationService
 			c.Author.Name,
 			c.Text,
 			c.PubDate.ToString("MM/dd/yy H:mm:ss", CultureInfo.InvariantCulture),
+			c.ObservationId,
 			c.ParentCommentId,
 			c.Replies.OrderBy(r => r.PubDate).Select(ToViewModel).ToList()
 		);
@@ -191,7 +228,8 @@ public class ObservationService : IObservationService
 			p.Text,
 			p.Taxon.DwcTaxonId,
 			p.Taxon.VernacularName,
-			p.PubDate.ToString("MM/dd/yy H:mm:ss", CultureInfo.InvariantCulture)
+			p.PubDate.ToString("MM/dd/yy H:mm:ss", CultureInfo.InvariantCulture),
+			p.ObservationId
 		);
 	}
 
