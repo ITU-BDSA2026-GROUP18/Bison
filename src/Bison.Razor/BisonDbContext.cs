@@ -13,6 +13,8 @@ public class BisonDbContext : IdentityDbContext<User>
 	public DbSet<Comment> Comments => Set<Comment>();
 	public DbSet<Proposal> Proposals => Set<Proposal>();
 	public DbSet<Post> Posts => Set<Post>();
+	public DbSet<ObservationLike> ObservationLikes => Set<ObservationLike>();
+	public DbSet<Follow> Follows => Set<Follow>();
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
@@ -56,6 +58,7 @@ public class BisonDbContext : IdentityDbContext<User>
 			e.Property(o => o.TaxonId).HasColumnName("taxon_id");
 			e.Property(o => o.Image).HasColumnName("image");
 			e.Property(o => o.ImageContentType).HasColumnName("image_content_type");
+			e.Property(o => o.Likes).HasColumnName("likes");
 
 			e.HasOne(o => o.Taxon).WithMany(t => t.Observations).HasForeignKey(o => o.TaxonId);
 		});
@@ -99,6 +102,43 @@ public class BisonDbContext : IdentityDbContext<User>
 				.WithMany(o => o.Proposals)
 				.HasForeignKey(p => p.ObservationId);
 			e.HasOne(p => p.Taxon).WithMany(t => t.Proposals).HasForeignKey(p => p.TaxonId);
+		});
+
+		modelBuilder.Entity<ObservationLike>(e =>
+		{
+			e.ToTable("observation_like");
+			e.HasKey(l => new { l.UserId, l.ObservationId });
+			e.Property(l => l.UserId).HasColumnName("user_id");
+			e.Property(l => l.ObservationId).HasColumnName("observation_id");
+
+			e.HasOne(l => l.User)
+				.WithMany(u => u.Likes)
+				.HasForeignKey(l => l.UserId)
+				.OnDelete(DeleteBehavior.Cascade);
+			e.HasOne(l => l.Observation)
+				.WithMany(o => o.LikedBy)
+				.HasForeignKey(l => l.ObservationId)
+				.OnDelete(DeleteBehavior.Cascade);
+		});
+
+		modelBuilder.Entity<Follow>(e =>
+		{
+			e.ToTable(
+				"follow",
+				t => t.HasCheckConstraint("CK_follow_not_self", "follower_id <> followee_id")
+			);
+			e.HasKey(f => new { f.FollowerId, f.FolloweeId });
+			e.Property(f => f.FollowerId).HasColumnName("follower_id");
+			e.Property(f => f.FolloweeId).HasColumnName("followee_id");
+
+			e.HasOne(f => f.Follower)
+				.WithMany(u => u.Following)
+				.HasForeignKey(f => f.FollowerId)
+				.OnDelete(DeleteBehavior.Cascade);
+			e.HasOne(f => f.Followee)
+				.WithMany(u => u.Followers)
+				.HasForeignKey(f => f.FolloweeId)
+				.OnDelete(DeleteBehavior.Cascade);
 		});
 	}
 }

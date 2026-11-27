@@ -51,6 +51,8 @@ if (!string.IsNullOrEmpty(githubId))
 builder.Services.AddRazorPages();
 builder.Services.AddScoped<IPostRepository, PostRepository>();
 builder.Services.AddScoped<IObservationService, ObservationService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession();

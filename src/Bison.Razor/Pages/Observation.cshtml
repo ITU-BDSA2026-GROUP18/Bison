@@ -17,6 +17,9 @@
         {
             <img class="observation-image" src="@Model.Observations[0].ImageUrl" alt="Observation image" />
         }
+        <div class="observation-actions">
+            <partial name="_LikeButton" model="Model.Observations[0]" />
+        </div>
 
         <hr />
 
@@ -71,7 +74,10 @@
                         <small>&mdash; @obs.Timestamp</small>
                     </p>
                     <hr />
-                    <a href="/ob/@obs.Id">View Details</a>
+                    <div class="observation-actions">
+                        <partial name="_LikeButton" model="obs" />
+                        <a href="/ob/@obs.Id">View Details</a>
+                    </div>
                 </li>
             }
         </ul>

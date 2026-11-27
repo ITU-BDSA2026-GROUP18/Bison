@@ -525,6 +525,42 @@ public static class DbInitializer
             var comments = new List<Comment>() { c1, c2, c3, c4, c5, c6, c7, c8, c9, c10 };
             var proposals = new List<Proposal>() { p1, p2, p3, p4, p5, p6 };
 
+            // Likes: a deterministic spread of likes from the regular users (not the deleted user),
+            // never on their own observations. The cached Likes count is kept in sync with the rows.
+            var likers = new List<User>() { a1, a2, a3, a4, a5, a6, a7, a8, a9, a10 };
+            var likes = new List<ObservationLike>();
+            for (int i = 0; i < observations.Count; i++)
+            {
+                var observation = observations[i];
+                for (int j = 0; j < likers.Count; j++)
+                {
+                    var liker = likers[j];
+                    if (liker == observation.Author) continue;
+                    if ((i * 7 + j * 3) % 5 != 0) continue;
+                    likes.Add(new ObservationLike() { User = liker, Observation = observation });
+                }
+            }
+            foreach (var like in likes) like.Observation.Likes++;
+
+            // Follows (follower -> followee)
+            var follows = new List<Follow>()
+            {
+                new Follow() { Follower = a1, Followee = a2 },
+                new Follow() { Follower = a1, Followee = a3 },
+                new Follow() { Follower = a1, Followee = a9 },
+                new Follow() { Follower = a2, Followee = a1 },
+                new Follow() { Follower = a2, Followee = a4 },
+                new Follow() { Follower = a3, Followee = a1 },
+                new Follow() { Follower = a3, Followee = a2 },
+                new Follow() { Follower = a4, Followee = a7 },
+                new Follow() { Follower = a5, Followee = a1 },
+                new Follow() { Follower = a6, Followee = a5 },
+                new Follow() { Follower = a7, Followee = a4 },
+                new Follow() { Follower = a8, Followee = a10 },
+                new Follow() { Follower = a9, Followee = a1 },
+                new Follow() { Follower = a10, Followee = a8 },
+            };
+
             // Back references
             var posts = new List<Post>();
             posts.AddRange(observations);
@@ -537,6 +573,8 @@ public static class DbInitializer
             bisonContext.Taxons.AddRange(taxons);
             bisonContext.Users.AddRange(users);
             bisonContext.Posts.AddRange(posts);
+            bisonContext.ObservationLikes.AddRange(likes);
+            bisonContext.Follows.AddRange(follows);
             bisonContext.SaveChanges();
         }
     }

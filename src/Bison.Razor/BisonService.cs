@@ -8,7 +8,9 @@ public record ObservationViewModel(
 	string Message,
 	string Timestamp,
 	int Id = 0,
-	string? ImageUrl = null
+	string? ImageUrl = null,
+	int Likes = 0,
+	bool LikedByCurrentUser = false
 );
 
 public record CommentViewModel(
@@ -32,11 +34,16 @@ public record ProposalViewModel(
 
 public interface IObservationService
 {
-	public List<ObservationViewModel> GetObservations(int page, int pageSize = 32);
+	public List<ObservationViewModel> GetObservations(
+		int page,
+		int pageSize = 32,
+		string? currentUserId = null
+	);
 	public List<ObservationViewModel> GetObservationsFromAuthor(
 		string author,
 		int page,
-		int pageSize = 32
+		int pageSize = 32,
+		string? currentUserId = null
 	);
 	public List<CommentViewModel> GetCommentsFromAuthor(string author, int page, int pageSize = 32);
 	public List<ProposalViewModel> GetProposalsFromAuthor(
@@ -44,7 +51,10 @@ public interface IObservationService
 		int page,
 		int pageSize = 32
 	);
-	public ObservationViewModel GetObservationById(int observationId);
+	public ObservationViewModel? GetObservationById(
+		int observationId,
+		string? currentUserId = null
+	);
 	public List<CommentViewModel> GetCommentsForObservation(
 		int observationId,
 		bool onlyRootComments
@@ -53,8 +63,20 @@ public interface IObservationService
 	public List<ObservationViewModel> GetObservationsByTaxon(
 		int taxonId,
 		int page,
+		int pageSize = 32,
+		string? currentUserId = null
+	);
+
+	// Like GetObservationsByTaxon, but only observations from users that currentUserId follows.
+	public List<ObservationViewModel> GetFollowingObservationsByTaxon(
+		string currentUserId,
+		int taxonId,
+		int page,
 		int pageSize = 32
 	);
+
+	public LikeResult ToggleLike(int observationId, string userId);
+	public Task RemoveLikesFromUserId(string userId);
 
 	public int AddCommentToObservation(int observationId, string authorId, CommentInput input);
 	Task<int> AddObservationAsync(string authorId, ObservationInput input);
@@ -72,38 +94,33 @@ public class ObservationService : IObservationService
 		_repository = repository;
 	}
 
-	public List<ObservationViewModel> GetObservations(int page, int pageSize = 32)
+	public List<ObservationViewModel> GetObservations(
+		int page,
+		int pageSize = 32,
+		string? currentUserId = null
+	)
 	{
-		var result = new List<ObservationViewModel>();
-
-		foreach (var observation in _repository.GetObservations(page, pageSize))
-		{
-			result.Add(ToViewModel(observation));
-		}
-		return result;
+		return ToViewModels(_repository.GetObservations(page, pageSize), currentUserId);
 	}
 
 	public List<ObservationViewModel> GetObservationsFromAuthor(
 		string author,
 		int page,
-		int pageSize = 32
+		int pageSize = 32,
+		string? currentUserId = null
 	)
 	{
-		var result = new List<ObservationViewModel>();
-
-		foreach (var observation in _repository.GetObservationsByAuthor(author, page, pageSize))
-		{
-			result.Add(ToViewModel(observation));
-		}
-
-		return result;
+		return ToViewModels(
+			_repository.GetObservationsByAuthor(author, page, pageSize),
+			currentUserId
+		);
 	}
 
-	public ObservationViewModel? GetObservationById(int observationId)
+	public ObservationViewModel? GetObservationById(int observationId, string? currentUserId = null)
 	{
 		var observation = _repository.GetObservationById(observationId);
 		if (observation is not null)
-			return ToViewModel(observation);
+			return ToViewModels([observation], currentUserId)[0];
 		return null;
 	}
 
@@ -169,28 +186,54 @@ public class ObservationService : IObservationService
 	public List<ObservationViewModel> GetObservationsByTaxon(
 		int taxonId,
 		int page,
+		int pageSize = 32,
+		string? currentUserId = null
+	)
+	{
+		Taxon taxon;
+		if (taxonId < 0 || (taxon = _repository.GetTaxonById(taxonId)) == null)
+		{
+			return GetObservations(page, pageSize, currentUserId);
+		}
+
+		var observations = ObservationFilter
+			.FilterBy(taxon, _repository.GetObservations())
+			.Skip((page - 1) * pageSize)
+			.Take(pageSize);
+		return ToViewModels(observations, currentUserId);
+	}
+
+	public List<ObservationViewModel> GetFollowingObservationsByTaxon(
+		string currentUserId,
+		int taxonId,
+		int page,
 		int pageSize = 32
 	)
 	{
 		Taxon taxon;
 		if (taxonId < 0 || (taxon = _repository.GetTaxonById(taxonId)) == null)
 		{
-			return GetObservations(page, pageSize);
+			return ToViewModels(
+				_repository.GetObservationsByFollowedAuthors(currentUserId, page, pageSize),
+				currentUserId
+			);
 		}
 
-		var result = new List<ObservationViewModel>();
+		var observations = ObservationFilter
+			.FilterBy(taxon, _repository.GetObservationsByFollowedAuthors(currentUserId))
+			.Skip((page - 1) * pageSize)
+			.Take(pageSize);
+		return ToViewModels(observations, currentUserId);
+	}
 
-		foreach (
-			var observation in ObservationFilter
-				.FilterBy(taxon, _repository.GetObservations())
-				.Skip((page - 1) * pageSize)
-				.Take(pageSize)
-		)
-		{
-			result.Add(ToViewModel(observation));
-		}
+	public LikeResult ToggleLike(int observationId, string userId)
+	{
+		return _repository.ToggleLike(observationId, userId);
+	}
 
-		return result;
+	public Task RemoveLikesFromUserId(string userId)
+	{
+		return _repository.RemoveLikesByUserId(userId);
 	}
 
 	public int AddCommentToObservation(int observationId, string authorId, CommentInput input)
@@ -204,7 +247,19 @@ public class ObservationService : IObservationService
 		return _repository.ReassignPostsByUserId(userId);
 	}
 
-	private static ObservationViewModel ToViewModel(Observation o)
+	private List<ObservationViewModel> ToViewModels(
+		IEnumerable<Observation> observations,
+		string? currentUserId
+	)
+	{
+		var list = observations.ToList();
+		var likedIds = string.IsNullOrEmpty(currentUserId)
+			? []
+			: _repository.GetLikedObservationIds(currentUserId, list.Select(o => o.PostId));
+		return list.Select(o => ToViewModel(o, likedIds.Contains(o.PostId))).ToList();
+	}
+
+	private static ObservationViewModel ToViewModel(Observation o, bool likedByCurrentUser)
 	{
 		return new ObservationViewModel(
 			o.Author.Name,
@@ -213,7 +268,9 @@ public class ObservationService : IObservationService
 				? ""
 				: o.PubDate.ToString("MM/dd/yy H:mm:ss", CultureInfo.InvariantCulture),
 			o.PostId,
-			o.ImageUrl
+			o.ImageUrl,
+			o.Likes,
+			likedByCurrentUser
 		);
 	}
 

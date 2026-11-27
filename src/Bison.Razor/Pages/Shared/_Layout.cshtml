@@ -5,7 +5,9 @@
     <link href="/css/style.css" rel="stylesheet" type="text/css" />
     <link rel="icon" type="image/png" href="/favicon/favicon.ico">
 </head>
-<body>
+<body data-signed-in="@(User.Identity?.IsAuthenticated == true ? "true" : "false")">
+@* Token used by fetch requests such as liking an observation. *@
+@Html.AntiForgeryToken()
 <div class=page>
     <h1><img src="/images/icon1.png" alt="Icon1"/>Bison</h1>
     @await Html.PartialAsync("_LoginPartial")
@@ -18,6 +20,7 @@
     </div>
 </div>
 
+<script src="/js/likes.js"></script>
 </body>
 @await RenderSectionAsync("Scripts", required: false)
 </html>
