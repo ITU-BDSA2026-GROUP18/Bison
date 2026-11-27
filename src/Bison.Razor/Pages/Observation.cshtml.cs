@@ -26,10 +26,11 @@ public class ObservationModel : PageModel
 			page = 1;
 
 		PageNr = page;
+		var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
 		if (string.IsNullOrEmpty(id))
 		{
-			Observations = _service.GetObservations(PageNr);
+			Observations = _service.GetObservations(PageNr, currentUserId: userId);
 			NrOfObservations = Observations.Count;
 			return Page();
 		}
@@ -38,7 +39,7 @@ public class ObservationModel : PageModel
 		{
 			// TODO: This is a waterfall of calls to the service, which is not ideal. We should refactor this to be more efficient.
 
-			var observation = _service.GetObservationById(observationId);
+			var observation = _service.GetObservationById(observationId, userId);
 			if (observation == null)
 			{
 				return NotFound();
@@ -54,6 +55,28 @@ public class ObservationModel : PageModel
 		}
 
 		return NotFound();
+	}
+
+	// Called with fetch from /js/likes.js. Returns 401 instead of a login redirect so the
+	// script can send the browser to the login page itself.
+	public IActionResult OnPostLike(string id)
+	{
+		var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+		if (userId is null)
+			return Unauthorized();
+
+		if (!int.TryParse(id, out int observationId))
+			return NotFound();
+
+		try
+		{
+			var result = _service.ToggleLike(observationId, userId);
+			return new JsonResult(new { liked = result.Liked, likes = result.Likes });
+		}
+		catch (ArgumentException)
+		{
+			return NotFound();
+		}
 	}
 
 	public async Task<IActionResult> OnPostCommentAsync(string id, CommentInput input)

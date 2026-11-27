@@ -8,6 +8,8 @@ namespace Bison.Razor.Pages;
 public class UserTimelineModel : PageModel
 {
 	private readonly IObservationService _service;
+	private readonly IUserService _userService;
+	public ProfileViewModel? Profile { get; set; }
 	public List<ObservationViewModel> Observations { get; set; } = [];
 	public List<CommentViewModel> Comments { get; set; } = [];
 	public List<ProposalViewModel> Proposals { get; set; } = [];
@@ -17,9 +19,10 @@ public class UserTimelineModel : PageModel
 	public bool IsOwnTimeline { get; set; }
 	public ObservationInput Input { get; set; } = new();
 
-	public UserTimelineModel(IObservationService service)
+	public UserTimelineModel(IObservationService service, IUserService userService)
 	{
 		_service = service;
+		_userService = userService;
 	}
 
 	public ActionResult OnGet(
@@ -59,11 +62,32 @@ public class UserTimelineModel : PageModel
 		return Page();
 	}
 
+	// Follows the profile's user, or unfollows them if already following.
+	public IActionResult OnPostFollow(string author)
+	{
+		var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+		if (userId is null)
+			return Challenge();
+
+		try
+		{
+			_userService.ToggleFollow(userId, author);
+		}
+		catch (ArgumentException)
+		{
+			return BadRequest();
+		}
+
+		return RedirectToPage(new { author });
+	}
+
 	private void Load(string author, int page, string requestedView)
 	{
 		if (page < 1)
 			page = 1;
 		PageNr = page;
+		var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+		Profile = _userService.GetProfile(author, userId);
 		IsOwnTimeline = User.Identity?.IsAuthenticated == true && User.Identity.Name == author;
 
 		CurrentViewType =
@@ -72,7 +96,7 @@ public class UserTimelineModel : PageModel
 				: "observations";
 		Observations =
 			CurrentViewType == "observations"
-				? _service.GetObservationsFromAuthor(author, PageNr)
+				? _service.GetObservationsFromAuthor(author, PageNr, currentUserId: userId)
 				: [];
 		Comments =
 			CurrentViewType == "comments" ? _service.GetCommentsFromAuthor(author, PageNr) : [];

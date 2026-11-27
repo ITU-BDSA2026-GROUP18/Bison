@@ -7,6 +7,10 @@
 
 <div>
     <h2> Public Timeline &mdash; page @Model.PageNr</h2>
+    <nav class="feed-tabs">
+        <a href="/obs" class="@(Model.Feed == "latest" ? "active" : "")">Latest</a>
+        <a href="/obs?feed=following" class="@(Model.Feed == "following" ? "active" : "")">Following</a>
+    </nav>
     @if (User.Identity?.IsAuthenticated == true)
     {
         <partial name="_ObservationForm" model="new ObservationInput()" />
@@ -14,7 +18,11 @@
     <small>Showing @Model.NrOfObservations observations</small>
     
     <form method="get">
-    <input type="text" name="strTaxonId" placeholder="Filter By TaxonId" />
+    @if (Model.Feed == "following")
+    {
+        <input type="hidden" name="feed" value="following" />
+    }
+    <input type="text" name="strTaxonId" placeholder="Filter By TaxonId" value="@Model.TaxonFilter" />
     <button type="submit">Filter</button>
     </form>
 
@@ -36,13 +44,23 @@
                         <small>&mdash; @obs.Timestamp</small>
                     </p>
                     <hr />
-                    <a href="/ob/@obs.Id">View Details</a>
+                    <div class="observation-actions">
+                        <partial name="_LikeButton" model="obs" />
+                        <a href="/ob/@obs.Id">View Details</a>
+                    </div>
                 </li>
             }
         </ul>
     }
     else
     {
-        <em>There are no observations so far.</em>
+        @if (Model.Feed == "following")
+        {
+            <em>No observations from people you follow yet. Visit a profile and press Follow to see their observations here.</em>
+        }
+        else
+        {
+            <em>There are no observations so far.</em>
+        }
     }
 </div>

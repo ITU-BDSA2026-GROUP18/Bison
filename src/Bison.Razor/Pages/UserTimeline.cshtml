@@ -7,6 +7,14 @@
 }
 
 <div>
+    @if (Model.Profile?.ShowFollowButton == true)
+    {
+        <form method="post" asp-page-handler="Follow" class="follow-form">
+            <button type="submit" class="follow-button@(Model.Profile.IsFollowing ? " following" : "")">
+                @(Model.Profile.IsFollowing ? "Following" : "Follow")
+            </button>
+        </form>
+    }
     @if (Model.CurrentViewType == "observations")
     {
         @if (Model.IsOwnTimeline)
@@ -35,7 +43,10 @@
                         <small>&mdash; @ob.Timestamp</small>
                     </p>
                     <hr />
-                    <a href="/ob/@ob.Id">View Details</a>
+                    <div class="observation-actions">
+                        <partial name="_LikeButton" model="ob" />
+                        <a href="/ob/@ob.Id">View Details</a>
+                    </div>
                 </li>
             }
             </ul>

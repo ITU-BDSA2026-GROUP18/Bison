@@ -306,3 +306,87 @@ ul.nav li a:hover {
     text-decoration: none;
     border-radius: 4px;
 }
+/* Likes */
+.observation-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  clear: both;
+}
+
+button.like-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  background: none;
+  color: #571010;
+  border: 1px solid transparent;
+  border-radius: 4px;
+}
+
+button.like-button:hover {
+  background: #fae4e4;
+  border-color: #e6c0bf;
+}
+
+button.like-button .like-icon {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+button.like-button.liked {
+  color: #cc6e6e;
+}
+
+button.like-button.liked .like-icon {
+  fill: currentColor;
+  stroke: #571010;
+}
+
+button.like-button .like-count {
+  font-weight: bold;
+  min-width: 1ch;
+}
+
+/* Feed tabs */
+nav.feed-tabs {
+  display: flex;
+  border-bottom: 2px solid #cc6e6e;
+  margin-bottom: 10px;
+}
+
+nav.feed-tabs a {
+  padding: 6px 16px;
+  text-decoration: none;
+  color: #571010;
+  font-weight: bold;
+  border-radius: 4px 4px 0 0;
+}
+
+nav.feed-tabs a:hover {
+  background: #fae4e4;
+}
+
+nav.feed-tabs a.active {
+  background: #cc6e6e;
+  color: white;
+}
+
+/* Follow */
+form.follow-form {
+  float: right;
+}
+
+button.follow-button.following {
+  background: white;
+  color: #cc6e6e;
+  border: 1px solid #cc6e6e;
+}
+
+button.follow-button.following:hover {
+  background: #fae4e4;
+}

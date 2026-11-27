@@ -114,6 +114,25 @@ public class ObservationFilterTests
 		public List<Observation> GetObservationsByAuthor(string username, int page, int pageSize) =>
 			throw new NotSupportedException();
 
+		public List<Observation> GetObservationsByFollowedAuthors(
+			string followerId,
+			int page,
+			int pageSize
+		) => throw new NotSupportedException();
+
+		public List<Observation> GetObservationsByFollowedAuthors(string followerId) =>
+			throw new NotSupportedException();
+
+		public HashSet<int> GetLikedObservationIds(
+			string userId,
+			IEnumerable<int> observationIds
+		) => [];
+
+		public LikeResult ToggleLike(int observationId, string userId) =>
+			throw new NotSupportedException();
+
+		public Task RemoveLikesByUserId(string userId) => throw new NotSupportedException();
+
 		public Observation? GetObservationById(int observationId) =>
 			throw new NotSupportedException();
 

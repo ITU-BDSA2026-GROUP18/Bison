@@ -11,6 +11,10 @@ public class PublicModel : PageModel
 	public List<ObservationViewModel> Observations { get; set; }
 	public int PageNr { get; set; }
 	public int NrOfObservations { get; set; }
+
+	// "latest" (all observations) or "following" (only from users the current user follows).
+	public string Feed { get; set; } = "latest";
+	public string TaxonFilter { get; set; } = "";
 	public ObservationInput Input { get; set; } = new();
 
 	public PublicModel(IObservationService service)
@@ -18,9 +22,16 @@ public class PublicModel : PageModel
 		_service = service;
 	}
 
-	public ActionResult OnGet([FromQuery] int page = 1, [FromQuery] string strTaxonId = "")
+	public ActionResult OnGet(
+		[FromQuery] int page = 1,
+		[FromQuery] string strTaxonId = "",
+		[FromQuery] string feed = "latest"
+	)
 	{
-		Load(page, strTaxonId);
+		if (feed == "following" && User.FindFirstValue(ClaimTypes.NameIdentifier) is null)
+			return Challenge();
+
+		Load(page, strTaxonId, feed);
 		return Page();
 	}
 
@@ -45,17 +56,24 @@ public class PublicModel : PageModel
 		}
 
 		Input = input;
-		Load(1, "");
+		Load(1, "", "latest");
 		return Page();
 	}
 
-	private void Load(int page, string strTaxonId)
+	private void Load(int page, string strTaxonId, string feed)
 	{
 		if (page < 1)
 			page = 1;
 		PageNr = page;
+		TaxonFilter = strTaxonId ?? "";
 		int taxonId = int.TryParse(strTaxonId, out int parsed) ? parsed : -1;
-		Observations = _service.GetObservationsByTaxon(taxonId, PageNr);
+		var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+		Feed = feed == "following" && userId is not null ? "following" : "latest";
+		Observations =
+			Feed == "following"
+				? _service.GetFollowingObservationsByTaxon(userId!, taxonId, PageNr)
+				: _service.GetObservationsByTaxon(taxonId, PageNr, currentUserId: userId);
 		NrOfObservations = Observations.Count;
 	}
 }

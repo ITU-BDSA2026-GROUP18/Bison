@@ -12,6 +12,12 @@ public class Observation : Post
 
 	public string? ImageContentType { get; set; }
 
+	// Cached number of rows in observation_like for this observation.
+	[Column("likes")]
+	public int Likes { get; set; }
+
+	public List<ObservationLike> LikedBy { get; set; } = [];
+
 	[NotMapped]
 	public string? ImageUrl => Image is null ? null : $"/ob/{PostId}/image";
 

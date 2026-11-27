@@ -59,6 +59,9 @@ public class AboutMeModel : PageModel
 			return Challenge();
 
 		await _service.ReassignPostsFromUserId(user.Id);
+		// Follows are removed by the database cascade when the user is deleted, but the cached
+		// like counts on observations have to be updated explicitly.
+		await _service.RemoveLikesFromUserId(user.Id);
 
 		var result = await _userManager.DeleteAsync(user);
 		if (!result.Succeeded)
